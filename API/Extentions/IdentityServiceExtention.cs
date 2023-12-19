@@ -2,6 +2,7 @@
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
 
 namespace API.Extentions;
 
@@ -18,6 +19,7 @@ public static class IdentityServiceExtention
         });
 
         services.AddIdentityCore<AppUser>()
+            .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<AppIdentityDbContext>()
             .AddApiEndpoints();
 

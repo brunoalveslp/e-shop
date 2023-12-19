@@ -1,13 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
     public class ProductController : BaseApiController
     {
-        [NonAction]
-        public IActionResult GetProducts()
+        [Authorize(Roles = "User")]
+        [HttpGet]
+        public string GetProducts()
         {
-            return Ok();
+            return "Its ok";
         }
     }
 }

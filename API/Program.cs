@@ -10,7 +10,7 @@ namespace API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
             var config = builder.Configuration;
@@ -46,10 +46,23 @@ namespace API
 
             app.UseHttpsRedirection();
 
+            // IT has to be configured to use cookies
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
             app.MapControllers();
+
+            // Seeds Roles
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+
+                await AppIdentityDbContextSeed.SeedUserAsync(userManager, roleManager);
+            }
+
 
             app.Run();
         }
