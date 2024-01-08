@@ -1,10 +1,15 @@
 
 using API.Extentions;
+using API.Helpers;
+using API.Middleware;
 using Domain.Entities.Identity;
-using Infraestructure.Data;
+using Infrastructure.Data;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace API
 {
@@ -27,11 +32,44 @@ namespace API
             builder.Services.AddDbContext<StoreDbContext>(
                 opt => opt.UseNpgsql(connectionString));
 
-            builder.Services.AddDbContext<AppIdentityDbContext>(opt =>
-                opt.UseNpgsql(config.GetConnectionString("IdentityConnection")));
+            builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
+            {
+                var options = ConfigurationOptions.Parse(config.GetConnectionString("Redis"));
+                return ConnectionMultiplexer.Connect(options);
+            });
+
 
             builder.Services.AddIdentityService(config);
 
+            builder.Services.AddApplicationService();
+
+            builder.Services.AddAutoMapper(typeof(MappingProfiles));
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAngularOrigins",
+                builder =>
+                {
+                    builder.WithOrigins(
+                                        "https://localhost:4200"
+                                        )
+                                        .AllowAnyHeader()
+                                        .AllowAnyMethod();
+                });
+            });
+
+
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                });
+
+                options.OperationFilter<SecurityRequirementsOperationFilter>();
+            });
 
             var app = builder.Build();
 
@@ -41,8 +79,13 @@ namespace API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-            
-            app.MapIdentityApi<AppUser>();
+
+            app.UseMiddleware<ExceptionMiddleware>();
+
+            // error handling needs this
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
+
+            //app.MapIdentityApi<AppUser>();
 
             app.UseHttpsRedirection();
 
@@ -53,14 +96,24 @@ namespace API
 
             app.MapControllers();
 
-            // Seeds Roles
+            // Seeds Roles and User
 
             using (var scope = app.Services.CreateScope())
             {
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+                var loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
+                
+                try
+                {
+                    await AppIdentityDbContextSeed.SeedUserAsync(userManager, roleManager);
 
-                await AppIdentityDbContextSeed.SeedUserAsync(userManager, roleManager);
+                }
+                catch(Exception ex)
+                {
+                    var logger = loggerFactory.CreateLogger<Program>();
+                    logger.LogError(ex, "An error occured during migration.");
+                }
             }
 
 
