@@ -61,4 +61,43 @@ public class ProductUnitsController : BaseApiController
             return BadRequest(ex.Message);
         }
     }
+
+
+    [HttpPost("update")]
+    public async Task<ActionResult> UpdateProductUnitAsync(ProductUnit productUnit)
+    {
+        try
+        {
+            if (productUnit is not null)
+            {
+                _unitOfWork.Repository<ProductUnit>().Update(productUnit);
+                await _unitOfWork.Complete();
+            }
+            return Ok(productUnit);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPost("delete")]
+    public async Task<ActionResult> DeleteProductUnitAsync(int id)
+    {
+        try
+        {
+            var productUnit = await _unitOfWork.Repository<ProductUnit>().GetByIdAsync(id);
+
+            if (productUnit is not null)
+            {
+                _unitOfWork.Repository<ProductUnit>().Delete(productUnit);
+                await _unitOfWork.Complete();
+            }
+            return Ok(productUnit);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }

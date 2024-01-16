@@ -60,4 +60,42 @@ public class ProductBrandsController : BaseApiController
             return BadRequest(ex.Message);
         }
     }
+
+    [HttpPost("update")]
+    public async Task<ActionResult> UpdateProductBrandAsync(ProductBrand productBrand)
+    {
+        try
+        {
+            if (productBrand is not null)
+            {
+                _unitOfWork.Repository<ProductBrand>().Update(productBrand);
+                await _unitOfWork.Complete();
+            }
+            return Ok(productBrand);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPost("delete")]
+    public async Task<ActionResult> DeleteProductBrandAsync(int id)
+    {
+        try
+        {
+            var productBrand = await _unitOfWork.Repository<ProductBrand>().GetByIdAsync(id);
+
+            if (productBrand is not null)
+            {
+                _unitOfWork.Repository<ProductBrand>().Delete(productBrand);
+                await _unitOfWork.Complete();
+            }
+            return Ok(productBrand);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }

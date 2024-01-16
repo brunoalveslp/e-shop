@@ -10,11 +10,13 @@ public class OrderService : IOrderService
 {
     private readonly ICartRepository _cartRepo;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IStockMovimentService _movimentService;
 
-    public OrderService(ICartRepository cartRepo, IUnitOfWork unitOfWork)
+    public OrderService(ICartRepository cartRepo, IUnitOfWork unitOfWork, IStockMovimentService movimentService)
     {
         _cartRepo = cartRepo;
         _unitOfWork = unitOfWork;
+        _movimentService = movimentService;
     }
 
         
@@ -28,6 +30,10 @@ public class OrderService : IOrderService
         foreach(var item in cart.Items)
         {
             var productItem = await _unitOfWork.Repository<Product>().GetByIdAsync(item.Id);
+            
+            await _movimentService.OutgoingStockMovimentService(productItem);
+            
+
             var itemOrdered = new ProductItemOrdered(productItem.Id, 
                 productItem.Name, productItem.PicturesUrls);
             var orderItem = new OrderItem(itemOrdered, productItem.Price, item.Quantity);

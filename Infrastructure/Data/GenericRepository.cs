@@ -24,7 +24,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         return await ApplySpecification(spec).CountAsync();
     }
 
-    public async Task DeleteAsync(T entity)
+    public void Delete(T entity)
     {
          _context.Set<T>().Remove(entity);
     }
@@ -52,7 +52,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 
 
 
-    public void UpdateAsync(T entity)
+    public void Update(T entity)
     {
         _context.Set<T>().Attach(entity);
         _context.Entry(entity).State = EntityState.Modified;

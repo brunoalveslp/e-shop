@@ -17,6 +17,7 @@ public class StoreDbContext : DbContext
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItem { get; set; }
     public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
+    public DbSet<ProductMovimentHistory> ProductMovimentHistory { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -6,6 +6,7 @@ using Domain.Entities;
 using Domain.Interfaces;
 using Domain.Specifications;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API.Controllers
 {
@@ -13,14 +14,16 @@ namespace API.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IFileService _fileService;
+        private readonly IStockMovimentService _movimentService;
         private readonly IMapper _mapper;
 
-        public StockController(IFileService fileService, IUnitOfWork unitOfWork, IMapper mapper)
+        public StockController(IFileService fileService, IUnitOfWork unitOfWork, IMapper mapper, IStockMovimentService movimentService)
         {
 
             _fileService = fileService;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _movimentService = movimentService;
         }
 
         [HttpGet("products")]
@@ -69,19 +72,19 @@ namespace API.Controllers
         [Consumes("multipart/form-data")] // for Zip files with form data
         [HttpPost("create-product")]
         //[Authorize(Roles = "User,Admin")]
-        public async Task<IActionResult> CreateProductAsync([FromForm]ProductReceivedDto productReceived, IFormFile[] images)
+        public async Task<IActionResult> CreateProductAsync([FromForm] ProductReceivedDto productReceived, IFormFile[] images)
         {
             List<string> picturesUrls = new();
             try
             {
-               if(productReceived is null)
+                if (productReceived is null)
                 {
                     return BadRequest(new ApiResponse(400));
-                } 
-               
-               if(images is not null)
+                }
+
+                if (images is not null)
                 {
-                    foreach(var image in images)
+                    foreach (var image in images)
                     {
                         var fileResult = _fileService.SaveImage(image);
                         if (fileResult.Item1)
@@ -94,7 +97,49 @@ namespace API.Controllers
                 productReceived.PicturesUrls = picturesUrls;
                 var product = _mapper.Map<Product>(productReceived);
 
-                
+
+                // await _movimentService.EntryStockMovimentService(product, null);
+                await _unitOfWork.Repository<Product>().AddAsync(product);
+                await _unitOfWork.Complete();
+                return Ok(product);
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(new ApiException(400, ex.Message));
+            }
+        }
+
+
+        [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
+        [DisableRequestSizeLimit]
+        [Consumes("multipart/form-data")] // for Zip files with form data
+        [HttpPost("update-product")]
+        //[Authorize(Roles = "User,Admin")]
+        public async Task<IActionResult> UpdateProductAsync([FromForm] ProductReceivedDto productReceived, IFormFile[] images)
+        {
+            List<string> picturesUrls = new();
+            try
+            {
+                if (productReceived is null)
+                {
+                    return BadRequest(new ApiResponse(400));
+                }
+
+                if (images is not null)
+                {
+                    foreach (var image in images)
+                    {
+                        var fileResult = _fileService.SaveImage(image);
+                        if (fileResult.Item1)
+                        {
+                            picturesUrls.Add(fileResult.Item2);
+                        }
+                    }
+                }
+
+                productReceived.PicturesUrls = picturesUrls;
+                var product = _mapper.Map<Product>(productReceived);
 
                 await _unitOfWork.Repository<Product>().AddAsync(product);
                 await _unitOfWork.Complete();
@@ -103,22 +148,22 @@ namespace API.Controllers
             catch (Exception ex)
             {
 
-                return BadRequest(new ApiException(400,ex.Message));
+                return BadRequest(new ApiException(400, ex.Message));
             }
         }
 
         [HttpPost("delete-product")]
-        public async Task<IActionResult> DeleteProductAsync(int id)
+        public async Task<IActionResult> DeleteProduct(int id)
         {
             var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
 
             if (product is not null)
             {
-                if(product.PicturesUrls is not null)
+                if (product.PicturesUrls is not null)
                 {
                     try
                     {
-                        foreach(var image in product.PicturesUrls)
+                        foreach (var image in product.PicturesUrls)
                         {
                             _fileService.DeleteImage(image);
                         }
@@ -127,14 +172,102 @@ namespace API.Controllers
                     {
                         return BadRequest(new ApiException(400, ex.Message));
                     }
+                    await _movimentService.OutgoingStockMovimentService(product);
                 }
             }
 
-            await _unitOfWork.Repository<Product>().DeleteAsync(product);
+            await _movimentService.OutgoingStockMovimentService(product);
+            _unitOfWork.Repository<Product>().Delete(product);
             await _unitOfWork.Complete();
 
-         return Ok("Product "+product.Name+" Deleted Successfully!");
+            return Ok("Product " + product.Name + " Deleted Successfully!");
         }
 
+        [HttpPost("stock-entry")]
+        public async Task<ActionResult> StockEntryAsync(int id, decimal quantity)
+        {
+            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
+            if(product is not null)
+            {
+                if(quantity > 0)
+                {
+                    try
+                    {
+                        await _movimentService.EntryStockMovimentService(product.Id, quantity);
+                        product.Quantity += quantity;
+                        _unitOfWork.Repository<Product>().Update(product);
+                        await _unitOfWork.Complete();
+                    }
+                    catch(Exception ex)
+                    {
+                       return BadRequest(ex.Message);
+                    }
+                }
+            }
+            
+            return Ok(product);
+        }
+
+        [HttpPost("stock-outgoing")]
+        public async Task<ActionResult> StockOutgoingAsync(int id, decimal quantity)
+        {
+            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
+            if (product is not null)
+            {
+                if (quantity > 0)
+                {
+                    try
+                    {
+                        await _movimentService.OutgoingStockMovimentService(product.Id, quantity);
+                        product.Quantity -= quantity;
+                        _unitOfWork.Repository<Product>().Update(product);
+                        await _unitOfWork.Complete();
+                    }
+                    catch (Exception ex)
+                    {
+                        return BadRequest(ex.Message);
+                    }
+                }
+            }
+
+            return Ok(product);
+        }
+
+        [HttpPost("add-product-image")]
+        public async Task<ActionResult> AddProductImage(int productId, IFormFile image)
+        {
+            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(productId);
+
+            if (product is not null)
+            {
+                var fileResult = _fileService.SaveImage(image);
+                product.PicturesUrls.Add(fileResult.Item2);
+
+                _unitOfWork.Repository<Product>().Update(product);
+                await _unitOfWork.Complete();
+            }
+            return Ok(product);
+
+        }
+
+        [HttpPost("delete-product-image")]
+        public async Task<ActionResult> DeleteProductImage(int productId, string imageName)
+        {
+            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(productId);
+
+            if (product is not null)
+            {
+                var fileResult = _fileService.DeleteImage(imageName);
+                if (fileResult)
+                {
+                    product.PicturesUrls.Remove(imageName);
+                    _unitOfWork.Repository<Product>().Update(product);
+                    await _unitOfWork.Complete();
+                }
+            }
+            
+            return Ok(product);
+
+        }
     }
 }

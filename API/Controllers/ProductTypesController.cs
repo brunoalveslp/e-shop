@@ -60,4 +60,43 @@ public class ProductTypesController : BaseApiController
             return BadRequest(ex.Message);
         }
     }
+
+
+    [HttpPost("update")]
+    public async Task<ActionResult> UpdateProductTypeAsync(ProductType productType)
+    {
+        try
+        {
+            if (productType is not null)
+            {
+                _unitOfWork.Repository<ProductType>().Update(productType);
+                await _unitOfWork.Complete();
+            }
+            return Ok(productType);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPost("delete")]
+    public async Task<ActionResult> DeleteProductTypeAsync(int id)
+    {
+        try
+        {
+            var productType = await _unitOfWork.Repository<ProductType>().GetByIdAsync(id);
+
+            if (productType is not null)
+            {
+                _unitOfWork.Repository<ProductType>().Delete(productType);
+                await _unitOfWork.Complete();
+            }
+            return Ok(productType);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }

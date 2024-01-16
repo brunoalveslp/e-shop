@@ -16,7 +16,7 @@ public class FileService : IFileService
 
     public Tuple<bool, string> SaveImage(IFormFile imageFile)
     {
-        if(imageFile is  null ) { return new Tuple<bool, string>(false, "Error has occured"); }
+        if (imageFile is null) { return new Tuple<bool, string>(false, "Error has occured"); }
 
         try
         {
@@ -40,7 +40,7 @@ public class FileService : IFileService
                 string msg = string.Format("Only {0} extensions are allowed", string.Join(",", allowedExtensions));
                 return new Tuple<bool, string>(false, msg);
             }
-            
+
             string uniqueName = Guid.NewGuid().ToString();
             // we are trying to create a unique filename here
             var newFileName = uniqueName + ext;
@@ -55,7 +55,7 @@ public class FileService : IFileService
         }
         catch (Exception ex)
         {
-            return new Tuple<bool, string>(false, "Error has occured" +"\n"+ex.Message);
+            return new Tuple<bool, string>(false, "Error has occured" + "\n" + ex.Message);
         }
     }
 

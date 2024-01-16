@@ -15,6 +15,7 @@ public static class ApplicationServicesExtentions
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IStockMovimentService, StockMovimentService>();
         services.AddScoped<IFileService, FileService>();
 
         // just like configure method inside startup class
