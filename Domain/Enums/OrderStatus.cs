@@ -10,5 +10,6 @@ public enum OrderStatus
     PaymentReceived,
     [EnumMember(Value = "Payment Failed")]
     PaymentFailed,
-
+    [EnumMember(Value = "Canceled")]
+    Canceled,
 }

@@ -24,7 +24,7 @@ public class OrdersController: BaseApiController
     }
 
     [HttpPost]
-    public async Task<ActionResult<Order>> createOrdersAsync(OrderDto orderDto)
+    public async Task<ActionResult<Order>> CreateOrdersAsync(OrderDto orderDto)
     {
         var email = HttpContext.User?.RetrieveEmailFromPrincipal();
         var address = _mapper.Map<AddressDto, Address>(orderDto.ShipToAddress);
@@ -35,6 +35,14 @@ public class OrdersController: BaseApiController
         if (order is null) return BadRequest(new ApiResponse(400, "Problem creating order."));
 
         return Ok(order);
+    }
+
+    [HttpPost("cancel")]
+    public async Task<ActionResult<Order>> CancelOrdersAsync(int id)
+    {
+        var orderCanceled = await _orderService.CancelOrderAsync(id);
+
+        return Ok(orderCanceled);
     }
 
     [HttpGet]

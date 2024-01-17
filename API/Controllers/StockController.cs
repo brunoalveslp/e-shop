@@ -6,7 +6,6 @@ using Domain.Entities;
 using Domain.Interfaces;
 using Domain.Specifications;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API.Controllers
 {
@@ -96,9 +95,6 @@ namespace API.Controllers
 
                 productReceived.PicturesUrls = picturesUrls;
                 var product = _mapper.Map<Product>(productReceived);
-
-
-                // await _movimentService.EntryStockMovimentService(product, null);
                 await _unitOfWork.Repository<Product>().AddAsync(product);
                 await _unitOfWork.Complete();
                 return Ok(product);
@@ -152,7 +148,7 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost("delete-product")]
+        [HttpPost("delete-product/{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
@@ -194,9 +190,6 @@ namespace API.Controllers
                     try
                     {
                         await _movimentService.EntryStockMovimentService(product.Id, quantity);
-                        product.Quantity += quantity;
-                        _unitOfWork.Repository<Product>().Update(product);
-                        await _unitOfWork.Complete();
                     }
                     catch(Exception ex)
                     {
@@ -219,9 +212,6 @@ namespace API.Controllers
                     try
                     {
                         await _movimentService.OutgoingStockMovimentService(product.Id, quantity);
-                        product.Quantity -= quantity;
-                        _unitOfWork.Repository<Product>().Update(product);
-                        await _unitOfWork.Complete();
                     }
                     catch (Exception ex)
                     {
@@ -231,6 +221,31 @@ namespace API.Controllers
             }
 
             return Ok(product);
+        }
+
+        [HttpGet("stock-moviments")]
+        public async Task<ActionResult> GetStockMovimentationAsync()
+        {
+            var moviments = await _unitOfWork.Repository<ProductMovimentHistory>().GetAllAsync();
+            if(moviments is not null)
+            {
+                return Ok(moviments);
+            }
+
+            return BadRequest(new ApiException(400));
+        }
+
+        [HttpGet("stock-moviments/{id}")]
+        public async Task<ActionResult> GetStockMovimentationByProductAsync(int id)
+        {
+            var spec = new ProductMovimentSpecification(id);
+            var moviments = await _unitOfWork.Repository<ProductMovimentHistory>().ListAsync(spec);
+            if (moviments is not null)
+            {
+                return Ok(moviments);
+            }
+
+            return BadRequest(new ApiException(400));
         }
 
         [HttpPost("add-product-image")]

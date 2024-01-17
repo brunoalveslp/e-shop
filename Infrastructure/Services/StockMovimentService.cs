@@ -18,6 +18,8 @@ public class StockMovimentService : IStockMovimentService
 
     public async Task EntryStockMovimentService(Product product)
     {
+        var prod = await _unitOfWork.Repository<Product>().GetByIdAsync(product.Id);
+
         var moviment = new ProductMovimentHistory
         {
             MovimentType = MovimentType.Entrance.ToString(),
@@ -27,7 +29,8 @@ public class StockMovimentService : IStockMovimentService
         try
         {
             await _unitOfWork.Repository<ProductMovimentHistory>().AddAsync(moviment);
-
+            prod.Quantity += product.Quantity;
+            _unitOfWork.Repository<Product>().Update(prod);
         }
         catch (Exception ex)
         {
@@ -51,7 +54,8 @@ public class StockMovimentService : IStockMovimentService
             try
             {
                 await _unitOfWork.Repository<ProductMovimentHistory>().AddAsync(moviment);
-
+                product.Quantity += quantity;
+                _unitOfWork.Repository<Product>().Update(product);
             }
             catch (Exception ex)
             {
@@ -64,6 +68,7 @@ public class StockMovimentService : IStockMovimentService
 
     public async Task OutgoingStockMovimentService(Product product)
     {
+        var prod = await _unitOfWork.Repository<Product>().GetByIdAsync(product.Id);
         var moviment = new ProductMovimentHistory
         {
             MovimentType = MovimentType.Output.ToString(),
@@ -74,7 +79,8 @@ public class StockMovimentService : IStockMovimentService
         try
         {
             await _unitOfWork.Repository<ProductMovimentHistory>().AddAsync(moviment);
-
+            prod.Quantity -= product.Quantity;
+            _unitOfWork.Repository<Product>().Update(prod);
         }
         catch (Exception ex)
         {
@@ -100,7 +106,8 @@ public class StockMovimentService : IStockMovimentService
                 try
                 {
                     await _unitOfWork.Repository<ProductMovimentHistory>().AddAsync(moviment);
-
+                    product.Quantity -= quantity;
+                    _unitOfWork.Repository<Product>().Update(product);
                 }
                 catch (Exception ex)
                 {

@@ -8,4 +8,5 @@ public interface IOrderService
     Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail);
     Task<Order> GetOrderByIdAsync(int id, string buyerEmail);
     Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync();
+    Task<string> CancelOrderAsync(int id);
 }

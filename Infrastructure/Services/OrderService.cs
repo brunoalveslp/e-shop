@@ -32,7 +32,6 @@ public class OrderService : IOrderService
             var productItem = await _unitOfWork.Repository<Product>().GetByIdAsync(item.Id);
             
             await _movimentService.OutgoingStockMovimentService(productItem);
-            
 
             var itemOrdered = new ProductItemOrdered(productItem.Id, 
                 productItem.Name, productItem.PicturesUrls);
@@ -59,6 +58,36 @@ public class OrderService : IOrderService
         await _cartRepo.DeleteCartAsync(cartId);
 
         return order;
+    }
+
+
+    public async Task<string> CancelOrderAsync(int id)
+    {
+        var order = await _unitOfWork.Repository<Order>().GetByIdAsync(id);
+        try
+        {
+            foreach (var item in order.OrderItems)
+            {
+                var prod = await _unitOfWork.Repository<Product>().GetByIdAsync(item.Id);
+
+                if (prod == null) continue;
+
+                await _movimentService.EntryStockMovimentService(prod);
+            }
+
+            order.Status = Domain.Enums.OrderStatus.Canceled;
+            _unitOfWork.Repository<Order>().Update(order);
+        }
+        catch(Exception ex)
+        {
+            return ex.Message;
+        }
+
+        await _unitOfWork.Complete();
+
+        return "The Order was canceled with success!";
+            
+            
     }
 
     public async Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync()
