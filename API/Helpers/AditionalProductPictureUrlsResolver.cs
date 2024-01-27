@@ -5,11 +5,11 @@ using Domain.Entities;
 
 namespace API.Helpers;
 // configuring to images be located on right place in the project so we can use images properly
-public class ProductPictureUrlsResolver : IValueResolver<Product, ProductToReturnDto, string[]>
+public class AditionalProductPictureUrlsResolver : IValueResolver<Product, ProductToReturnDto, string[]>
 {
     // IConfiguration from Microsoft not from Mapper
     private readonly IConfiguration _config;
-    public ProductPictureUrlsResolver(IConfiguration config)
+    public AditionalProductPictureUrlsResolver(IConfiguration config)
     {
         _config = config;
     }
@@ -19,19 +19,18 @@ public class ProductPictureUrlsResolver : IValueResolver<Product, ProductToRetur
 
     public string[] Resolve(Product source, ProductToReturnDto destination, string[] destMember, ResolutionContext context)
     {
-        if (source.PicturesUrls.Any())
+        if (source.AditionalPicturesUrls.Any())
         {
-        string[] imageUrls = new string[source.PicturesUrls.Count];
-            foreach (var image in source.PicturesUrls.Select((value, i) => new { i, value }))
+        string[] aditionalImageUrls = new string[source.AditionalPicturesUrls.Count];
+            foreach (var image in source.AditionalPicturesUrls.Select((value, i) => new { i, value }))
             {
                 if (!string.IsNullOrEmpty(image.value))
                 {
-
-                    imageUrls[image.i] = _config["ApiUrl"] + image.value;
+                    aditionalImageUrls[image.i] = _config["ApiUrl"] + image.value;
                 }
             }
 
-            return imageUrls;
+            return aditionalImageUrls;
         }
 
         return null;

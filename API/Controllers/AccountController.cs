@@ -35,24 +35,25 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin,User")]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
 
             var user = await _userManager.FindByEmailFromClaimsPrincipal(User);
-
             return new UserDto
             {
                 Email = user.Email,
                 DisplayName = user.DisplayName,
+                Roles = user.Roles,
                 Token = _tokenService.CreateToken(user)
             };
         }
 
+        [Authorize(Roles = "Admin,User")]
         [HttpGet("all")]
         public async Task<ActionResult> GetAllUsers()
         {
-            var users = await _userManager.Users.ToListAsync();
+            var users = await _userManager.ListUsersWithAdress();
 
             return Ok(users);
         }
@@ -72,6 +73,7 @@ namespace API.Controllers
                 DisplayName = registerUser.DisplayName,
                 Email = registerUser.Email,
                 UserName = registerUser.Email,
+                Roles = registerUser.Roles,
                 Address = new Address
                 {
                     FirstName = registerUser.Address.FirstName,
@@ -85,13 +87,16 @@ namespace API.Controllers
 
             var result = await _userManager.CreateAsync(user, registerUser.Password);
 
+            foreach (var role in registerUser.Roles)
+            {
+                await _userManager.AddToRoleAsync(user, role);
+            }
+        
             if (!result.Succeeded)
             {
                 return BadRequest(new ApiResponse(400));
 
             }
-
-            await _userManager.AddToRoleAsync(user, registerUser.Role);
 
             return Ok("Registration Succeded!");
 
@@ -140,9 +145,8 @@ namespace API.Controllers
             return _mapper.Map<Address, AddressDto>(user.Address);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin,User")]
         [HttpPut("address")]
-        [Authorize]
         public async Task<ActionResult<AddressDto>> UpdateUserAddress(AddressDto address)
         {
             var user = await _userManager.FindUserByClaimsPrincipalWithAddress(User);
@@ -161,8 +165,9 @@ namespace API.Controllers
             return BadRequest("Problem updating the user");
         }
 
+
+        [Authorize(Roles = "Admin")]
         [HttpGet("user-roles")]
-        [Authorize]
         public async Task<ActionResult> GetUserRoles()
         {
             var user = await _userManager.FindByEmailFromClaimsPrincipal(User);
@@ -176,6 +181,7 @@ namespace API.Controllers
             return Ok(roles);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("update-user-roles")]
         public async Task<IActionResult> UpdateUserRole(UserRolesDto userRole)
         {
@@ -199,14 +205,16 @@ namespace API.Controllers
             return Ok("User Role Updated!");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("Roles")]
         public async Task<IActionResult> GetAllRolesAsync()
         {
             var rolesList = await _roleManager.Roles.ToListAsync();
   
             return Ok(rolesList);
-        } 
+        }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("add-role")]
         public async Task<IActionResult> AddRole(string role)
         {
@@ -219,7 +227,7 @@ namespace API.Controllers
             return Ok("Role Created!");
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("update-role")]
         public async Task<IActionResult> UpdateRole(UpdateRolesDto roles)
         {
@@ -240,6 +248,7 @@ namespace API.Controllers
 
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("delete-role")]
         public async Task<IActionResult> DeleteRole(string roleName)
         {

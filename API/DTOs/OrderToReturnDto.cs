@@ -1,6 +1,6 @@
 ﻿
 
-using Domain.Entities.Identity;
+using Domain.Entities.OrderAggregate;
 
 namespace API.DTOs;
 

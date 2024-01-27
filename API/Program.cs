@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using StackExchange.Redis;
 using Swashbuckle.AspNetCore.Filters;
+using System.Text.Json.Serialization;
 
 namespace API
 {
@@ -22,7 +23,8 @@ namespace API
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddJsonOptions(x =>
+                    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -80,6 +82,8 @@ namespace API
                 app.UseSwaggerUI();
             }
 
+            app.UseStaticFiles();   
+
             app.UseMiddleware<ExceptionMiddleware>();
 
             // error handling needs this
@@ -88,6 +92,9 @@ namespace API
             //app.MapIdentityApi<AppUser>();
 
             app.UseHttpsRedirection();
+
+            // use cors
+            app.UseCors("AllowAngularOrigins");
 
             // IT has to be configured to use cookies
             app.UseAuthentication();

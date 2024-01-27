@@ -3,6 +3,7 @@
 using API.Errors;
 using Domain.Entities;
 using Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -43,6 +44,7 @@ public class ProductTypesController : BaseApiController
         return Ok(productType);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("Create")]
     public async Task<ActionResult> CreateProductTypeAsync(ProductType productType)
     {
@@ -61,7 +63,7 @@ public class ProductTypesController : BaseApiController
         }
     }
 
-
+    [Authorize(Roles = "Admin")]
     [HttpPost("update")]
     public async Task<ActionResult> UpdateProductTypeAsync(ProductType productType)
     {
@@ -80,7 +82,8 @@ public class ProductTypesController : BaseApiController
         }
     }
 
-    [HttpPost("delete")]
+    [Authorize(Roles = "Admin")]
+    [HttpDelete("delete/{id}")]
     public async Task<ActionResult> DeleteProductTypeAsync(int id)
     {
         try

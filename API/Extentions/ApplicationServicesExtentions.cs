@@ -13,7 +13,9 @@ public static class ApplicationServicesExtentions
     {
         // Add repository service
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+        services.AddScoped<ICartRepository, CartRepository>();
         services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IStockMovimentService, StockMovimentService>();
         services.AddScoped<IFileService, FileService>();

@@ -10,7 +10,8 @@ public class ProductReceivedDto
     public string Description { get; set; }
     public decimal Price { get; set; }
     public decimal Weight { get; set; }
-    public List<string> PicturesUrls { get; set; }
+    public string PictureUrl { get; set; }
+    public List<string> AditionalPicturesUrls { get; set; }
     public int ProductTypeId { get; set; }
     public int ProductBrandId { get; set; }
     public int ProductUnitId { get; set; }

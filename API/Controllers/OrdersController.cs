@@ -9,18 +9,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 [Authorize]
-[ApiExplorerSettings(IgnoreApi = true)]
 public class OrdersController: BaseApiController
 {
     private readonly IOrderService _orderService;
     private readonly IMapper _mapper;
-    private readonly IStockMovimentService _movimentService;
 
-    public OrdersController(IOrderService orderService, IMapper mapper, IStockMovimentService movimentService)
+    public OrdersController(IOrderService orderService, IMapper mapper)
     {
         _orderService = orderService;
         _mapper = mapper;
-        _movimentService = movimentService;
     }
 
     [HttpPost]

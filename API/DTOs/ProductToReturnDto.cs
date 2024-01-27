@@ -9,7 +9,8 @@ public class ProductToReturnDto
     public decimal Price { get; set; }
     public decimal Weight { get; set; }
     public decimal Quantity { get; set; }
-    public string[] PicturesUrls { get; set; }
+    public string PictureUrl { get; set; }
+    public string[] AditionalPicturesUrls { get; set; }
     public string ProductType { get; set; }
     public string ProductBrand { get; set; }
     public string ProductUnit { get; set; }

@@ -15,8 +15,8 @@ public class MappingProfiles : Profile
             .ForMember(pb => pb.ProductBrand, p => p.MapFrom(x => x.ProductBrand.Name))
             .ForMember(pt => pt.ProductType, p => p.MapFrom(x => x.ProductType.Name))
             .ForMember(pu => pu.ProductUnit, p => p.MapFrom(x => x.ProductUnit.Name))
-            .ForMember(pp => pp.PicturesUrls, p => p.MapFrom<ProductPictureUrlsResolver>());
-            
+            .ForMember(pp => pp.PictureUrl, p => p.MapFrom<ProductPictureUrlResolver>())
+            .ForMember(pp => pp.AditionalPicturesUrls, p => p.MapFrom<AditionalProductPictureUrlsResolver>());
 
         CreateMap<Product, ProductReceivedDto>()
             .ReverseMap();

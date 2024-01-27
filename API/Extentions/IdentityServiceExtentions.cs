@@ -20,9 +20,14 @@ public static class IdentityServiceExtentions
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<AppIdentityDbContext>();
 
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        services.AddAuthentication(auth =>
+        {
+            auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
                .AddJwtBearer(options =>
                {
+                   options.SaveToken = true;
                    options.TokenValidationParameters = new TokenValidationParameters
                    {
                        ValidateIssuerSigningKey = true,

@@ -17,7 +17,7 @@ public class CartItemDto
     [Required]
     public decimal Weight { get; set; }
     [Required]
-    public List<string> PicturesUrls { get; set; }
+    public string PictureUrl { get; set; }
     [Required]
     public string Brand { get; set; }
     [Required]

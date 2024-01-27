@@ -5,6 +5,7 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
 using Domain.Specifications;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -70,10 +71,13 @@ namespace API.Controllers
         [DisableRequestSizeLimit]
         [Consumes("multipart/form-data")] // for Zip files with form data
         [HttpPost("create-product")]
-        //[Authorize(Roles = "User,Admin")]
-        public async Task<IActionResult> CreateProductAsync([FromForm] ProductReceivedDto productReceived, IFormFile[] images)
+        [Authorize(Roles = "Admin,User")]
+        public async Task<IActionResult> CreateProductAsync(
+            [FromForm] ProductReceivedDto productReceived, 
+            IFormFile picture ,
+            IFormFile[] aditionalPictures)
         {
-            List<string> picturesUrls = new();
+            List<string> aditionalPicturesUrls = new();
             try
             {
                 if (productReceived is null)
@@ -81,19 +85,28 @@ namespace API.Controllers
                     return BadRequest(new ApiResponse(400));
                 }
 
-                if (images is not null)
+                if (picture is not null)
                 {
-                    foreach (var image in images)
+                    var fileResult = _fileService.SaveImage(picture);
+                    if (fileResult.Item1)
                     {
-                        var fileResult = _fileService.SaveImage(image);
+                        productReceived.PictureUrl = fileResult.Item2;
+                    }
+                }
+
+                if (aditionalPictures is not null)
+                {
+                    foreach (var aditionalPicture in aditionalPictures)
+                    {
+                        var fileResult = _fileService.SaveImage(aditionalPicture);
                         if (fileResult.Item1)
                         {
-                            picturesUrls.Add(fileResult.Item2);
+                            aditionalPicturesUrls.Add(fileResult.Item2);
                         }
                     }
                 }
 
-                productReceived.PicturesUrls = picturesUrls;
+                productReceived.AditionalPicturesUrls = aditionalPicturesUrls;
                 var product = _mapper.Map<Product>(productReceived);
                 await _unitOfWork.Repository<Product>().AddAsync(product);
                 await _unitOfWork.Complete();
@@ -111,10 +124,12 @@ namespace API.Controllers
         [DisableRequestSizeLimit]
         [Consumes("multipart/form-data")] // for Zip files with form data
         [HttpPost("update-product")]
-        //[Authorize(Roles = "User,Admin")]
-        public async Task<IActionResult> UpdateProductAsync([FromForm] ProductReceivedDto productReceived, IFormFile[] images)
+        [Authorize(Roles = "User,Admin")]
+        public async Task<IActionResult> UpdateProductAsync(
+            [FromForm] ProductReceivedDto productReceived,IFormFile picture, 
+            IFormFile[] aditionalPictures)
         {
-            List<string> picturesUrls = new();
+            List<string> aditionalPicturesUrls = new();
             try
             {
                 if (productReceived is null)
@@ -122,19 +137,28 @@ namespace API.Controllers
                     return BadRequest(new ApiResponse(400));
                 }
 
-                if (images is not null)
+                if (picture is not null)
                 {
-                    foreach (var image in images)
+                    var fileResult = _fileService.SaveImage(picture);
+                    if (fileResult.Item1)
                     {
-                        var fileResult = _fileService.SaveImage(image);
+                        productReceived.PictureUrl = fileResult.Item2;
+                    }
+                }
+
+                if (aditionalPictures is not null)
+                {
+                    foreach (var aditionalPicture in aditionalPictures)
+                    {
+                        var fileResult = _fileService.SaveImage(aditionalPicture);
                         if (fileResult.Item1)
                         {
-                            picturesUrls.Add(fileResult.Item2);
+                            aditionalPicturesUrls.Add(fileResult.Item2);
                         }
                     }
                 }
 
-                productReceived.PicturesUrls = picturesUrls;
+                productReceived.AditionalPicturesUrls = aditionalPicturesUrls;
                 var product = _mapper.Map<Product>(productReceived);
 
                 await _unitOfWork.Repository<Product>().AddAsync(product);
@@ -147,19 +171,21 @@ namespace API.Controllers
                 return BadRequest(new ApiException(400, ex.Message));
             }
         }
-
-        [HttpPost("delete-product/{id}")]
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("delete-product/{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
 
             if (product is not null)
             {
-                if (product.PicturesUrls is not null)
+                if (product.AditionalPicturesUrls is not null)
                 {
                     try
                     {
-                        foreach (var image in product.PicturesUrls)
+                        _fileService.DeleteImage(product.PictureUrl);
+
+                        foreach (var image in product.AditionalPicturesUrls)
                         {
                             _fileService.DeleteImage(image);
                         }
@@ -178,7 +204,7 @@ namespace API.Controllers
 
             return Ok("Product " + product.Name + " Deleted Successfully!");
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("stock-entry")]
         public async Task<ActionResult> StockEntryAsync(int id, decimal quantity)
         {
@@ -201,6 +227,7 @@ namespace API.Controllers
             return Ok(product);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("stock-outgoing")]
         public async Task<ActionResult> StockOutgoingAsync(int id, decimal quantity)
         {
@@ -256,16 +283,33 @@ namespace API.Controllers
             if (product is not null)
             {
                 var fileResult = _fileService.SaveImage(image);
-                product.PicturesUrls.Add(fileResult.Item2);
+                product.PictureUrl = fileResult.Item2; ;
 
                 _unitOfWork.Repository<Product>().Update(product);
                 await _unitOfWork.Complete();
             }
-            return Ok(product);
+            return Ok(new ApiResponse(200));
 
         }
 
-        [HttpPost("delete-product-image")]
+        [HttpPost("add-aditional-product-image")]
+        public async Task<ActionResult> AddAditionalProductImage(int productId, IFormFile image)
+        {
+            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(productId);
+
+            if (product is not null)
+            {
+                var fileResult = _fileService.SaveImage(image);
+                product.AditionalPicturesUrls.Add(fileResult.Item2);
+
+                _unitOfWork.Repository<Product>().Update(product);
+                await _unitOfWork.Complete();
+            }
+            return Ok(new ApiResponse(200));
+
+        }
+
+        [HttpDelete("delete-product-image")]
         public async Task<ActionResult> DeleteProductImage(int productId, string imageName)
         {
             var product = await _unitOfWork.Repository<Product>().GetByIdAsync(productId);
@@ -275,13 +319,33 @@ namespace API.Controllers
                 var fileResult = _fileService.DeleteImage(imageName);
                 if (fileResult)
                 {
-                    product.PicturesUrls.Remove(imageName);
+                    product.PictureUrl = "";
                     _unitOfWork.Repository<Product>().Update(product);
                     await _unitOfWork.Complete();
                 }
             }
             
-            return Ok(product);
+            return Ok(new ApiResponse(200));
+
+        }
+
+        [HttpDelete("delete-aditional-product-image")]
+        public async Task<ActionResult> DeleteAditionalProductImage(int productId, string imageName)
+        {
+            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(productId);
+
+            if (product is not null)
+            {
+                var fileResult = _fileService.DeleteImage(imageName);
+                if (fileResult)
+                {
+                    product.AditionalPicturesUrls.Remove(imageName);
+                    _unitOfWork.Repository<Product>().Update(product);
+                    await _unitOfWork.Complete();
+                }
+            }
+
+            return Ok(new ApiResponse(200));
 
         }
     }

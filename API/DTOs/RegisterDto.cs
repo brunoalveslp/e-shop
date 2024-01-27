@@ -15,6 +15,6 @@ namespace API.DTOs
         public string Password { get; set; }
         [Required]
         public AddressDto Address { get; set; }
-        public string Role {  get; set; }
+        public List<string> Roles {  get; set; }
     }
 }
