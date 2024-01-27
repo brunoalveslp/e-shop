@@ -2,13 +2,13 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities;
-
 public class Product : BaseEntity
 {
     public string Name { get; set; }
     public string Description { get; set; }
     public decimal Price { get; set; }
-    public List<string> PicturesUrls { get; set; }
+    public string PictureUrl { get; set; }
+    public List<string> AditionalPicturesUrls { get; set; }
     public decimal Weight { get; set; }
     public decimal Quantity { get; set; }
     public ProductUnit ProductUnit { get; set; }
