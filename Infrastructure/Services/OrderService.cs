@@ -34,7 +34,7 @@ public class OrderService : IOrderService
             await _movimentService.OutgoingStockMovimentService(productItem);
 
             var itemOrdered = new ProductItemOrdered(productItem.Id, 
-                productItem.Name, productItem.PicturesUrls);
+                productItem.Name, productItem.PictureUrl);
             var orderItem = new OrderItem(itemOrdered, productItem.Price, item.Quantity);
             items.Add(orderItem);
         }

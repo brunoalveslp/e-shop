@@ -27,6 +27,11 @@ public class TokenService : ITokenService
             new Claim(ClaimTypes.GivenName, user.DisplayName),
         };
 
+        foreach(var role in user.Roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));   
+        }
+
         var credentials = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256Signature);
 
         var tokenDescriptor = new SecurityTokenDescriptor

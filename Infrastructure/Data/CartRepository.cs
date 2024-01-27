@@ -12,22 +12,22 @@ public class CartRepository : ICartRepository
     {
         _database = redis.GetDatabase();
     }
-    public async Task<bool> DeleteCartAsync(string basketId)
+    public async Task<bool> DeleteCartAsync(string cartId)
     {
-        return await _database.KeyDeleteAsync(basketId);
+        return await _database.KeyDeleteAsync(cartId);
     }
 
-    public async Task<CustomerCart> GetCartAsync(string basketId)
+    public async Task<CustomerCart> GetCartAsync(string cartId)
     {
-        var data = await _database.StringGetAsync(basketId);
+        var data = await _database.StringGetAsync(cartId);
 
         return data.IsNullOrEmpty ? null : JsonSerializer.Deserialize<CustomerCart>(data);
     }
 
-    public async Task<CustomerCart> UpdateCartAsync(CustomerCart basket)
+    public async Task<CustomerCart> UpdateCartAsync(CustomerCart cart)
     {
-        var created = await _database.StringSetAsync(basket.Id, 
-                                JsonSerializer.Serialize(basket),
+        var created = await _database.StringSetAsync(cart.Id, 
+                                JsonSerializer.Serialize(cart),
                                 TimeSpan.FromDays(7)
                                 );
 
@@ -36,6 +36,6 @@ public class CartRepository : ICartRepository
             return null;
         }
 
-        return await GetCartAsync(basket.Id);
+        return await GetCartAsync(cart.Id);
     }
 }

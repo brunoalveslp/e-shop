@@ -1,10 +1,5 @@
 ﻿using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Identity;
 
@@ -23,6 +18,8 @@ public class AppIdentityDbContextSeed
             }
         }
 
+        var userRole = new List<string>() { "Admin", "Üser" };
+
         if (!userManager.Users.Any())
         {
             var user = new AppUser
@@ -30,6 +27,7 @@ public class AppIdentityDbContextSeed
                 DisplayName = "Admin",
                 Email = "admin@test.com",
                 UserName = "admin@test.com",
+                Roles = userRole,
                 Address = new Address
                 {
                     FirstName = "Admin",
