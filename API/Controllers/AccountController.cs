@@ -127,6 +127,7 @@ namespace API.Controllers
             {
                 DisplayName = user.DisplayName,
                 Email = user.Email,
+                Roles = user.Roles,
                 Token = _tokenService.CreateToken(user)
             };
 
