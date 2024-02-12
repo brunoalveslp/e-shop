@@ -1,0 +1,12 @@
+<div class="container mt-5">
+  <div><i class="fa fa-check-circle fa-5x" style="color: green;"></i></div>
+  <h2>Obrigado por confirmar seu pedido.</h2>
+  <p class="mb-4">
+    Seu pedido não foi entregue ainda.
+  </p>
+  @if(order){
+    <button class="btn btn-outline-success" routerLink="/orders/{{order.id}}">Ver seu pedido</button>
+  }@else {
+    <button class="btn btn-outline-success" routerLink="/orders">Ver seus pedidos</button>
+  }
+</div>

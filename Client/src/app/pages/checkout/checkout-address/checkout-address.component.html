@@ -1,0 +1,53 @@
+@if(checkoutForm){
+<div class="mt-4" [formGroup]="checkoutForm">
+  <div class="d-flex justify-content-between align-items-center">
+    <h4>Endereço de Entrega</h4>
+    <button
+      class="btn btn-outline-success mb-3"
+      (click)="saveUserAddress()"
+      [disabled]="
+        !checkoutForm.get('addressForm')?.valid ||
+        !checkoutForm.get('addressForm')?.dirty
+      "
+    >
+      Salvar como endereço padrão
+    </button>
+  </div>
+  <div class="row" formGroupName="addressForm">
+    <div class="form-go col-6">
+      <app-text-input
+        [label]="'Nome'"
+        formControlName="firstName"
+      ></app-text-input>
+    </div>
+    <div class="form-group col-6">
+      <app-text-input
+        [label]="'Sobrenome'"
+        formControlName="lastName"
+      ></app-text-input>
+    </div>
+    <div class="form-group col-6">
+      <app-text-input [label]="'Rua'" formControlName="street"></app-text-input>
+    </div>
+    <div class="form-group col-6">
+      <app-text-input
+        [label]="'Cidade'"
+        formControlName="city"
+      ></app-text-input>
+    </div>
+    <div class="form-group col-6">
+      <app-text-input
+        [label]="'Estado'"
+        formControlName="state"
+      ></app-text-input>
+    </div>
+    <div class="form-group col-6">
+      <app-text-input
+        [label]="'Código Postal'"
+        formControlName="postalCode"
+      ></app-text-input>
+    </div>
+  </div>
+</div>
+}
+<app-stepper-buttons next="Metodo de Entrega"></app-stepper-buttons>
