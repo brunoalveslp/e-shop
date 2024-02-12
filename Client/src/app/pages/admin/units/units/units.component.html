@@ -1,0 +1,80 @@
+<div class="container">
+  <button type="button" (click)="openModal(template)" class="btn btn-light new">Nova Unidade</button>
+  <div class="table">
+    <table class="table shadow-lg p-1 mb-5 bg-white rounded">
+      <thead class="thead-dark text-uppercase">
+        <tr>
+          <th scope="col">
+            <strong>Código</strong>
+          </th>
+          <th scope="col">
+            <strong>Descrição</strong>
+          </th>
+          <th scope="col">
+            <strong>Ação</strong>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        @if(units){
+          @for(unit of units; track unit.id){
+            <tr>
+              <th scope="row">
+                <strong class="ps-2"># {{unit.id}}</strong>
+              </th>
+              <td>
+                {{unit.name}}
+              </td>
+              <td style="width: 200px;">
+                  <div class="btn-group" dropdown>
+                    <button id="button-split" type="button" dropdownToggle class="dropdown-toggle dropdown-toggle-split"
+                            aria-controls="dropdown-split">
+
+                      <span class="pe-1">
+                        <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                      </span>
+                      <span class="sr-only visually-hidden">Split button!</span>
+                    </button>
+                    <ul id="dropdown-split" *dropdownMenu class="dropdown-menu"
+                        role="menu" aria-labelledby="button-split">
+                      <li role="menuitem"><a class="dropdown-item" (click)="openModal(template,unit)">Editar</a></li>
+                      <li class="divider dropdown-divider"></li>
+                      <li role="menuitem"><a class="dropdown-item delete" (click)="onDelete(unit.id)">Deletar</a>
+                      </li>
+                    </ul>
+                  </div>
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #template>
+    <div class="modal-header">
+       <h4 class="modal-title pull-left">Marca</h4>
+       <button type="button" class="btn close pull-right" aria-label="Close" (click)="closeModal()">
+          <span aria-hidden="true">×</span>
+       </button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="unitForm" >
+        <app-text-input [formControl]="unitForm.controls['name']" [label]="'Unidade'" />
+        <div class="d-grid">
+          @if(isEdit){
+            <button [disabled]="unitForm.invalid" class="btn btn-lg btn-primary mt-3" type="submit" (click)="onEdit()">Editar</button>
+          }
+          @else {
+            <button [disabled]="unitForm.invalid" class="btn btn-lg btn-primary mt-3" type="submit" (click)="onSubmit()">Criar</button>
+          }
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+       <button type="button" class="btn btn-default" (click)="closeModal()">Fechar</button>
+    </div>
+ </ng-template>
+</div>
+
+

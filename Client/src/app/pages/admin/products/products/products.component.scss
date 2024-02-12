@@ -1,0 +1,74 @@
+.container {
+  margin-top: .8rem;
+  height: 100vh;
+}
+
+.delete {
+  &:hover{
+    background-color: red;
+  }
+}
+
+.new {
+  border-radius: 0;
+  background-color: black;
+  color: white;
+  &:hover {
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+  }
+}
+
+.modal {
+  width: 60vw;
+  height: 60vh;
+}
+
+table {
+  margin-top: .5rem;
+}
+
+tbody {
+  min-height: 400px;
+}
+
+th {
+  font-size: .8rem;
+  padding: 5px 15px;
+  margin: 0;
+}
+
+td {
+  font-size: .8rem;
+  padding: 5px 15px;
+  margin: 0;
+
+  & button {
+    height: 20px;
+    align-content: center;
+    border: none;
+  }
+
+  & img {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+#button-split {
+  border-radius: 0;
+  &:hover {
+    border: 2px solid blue;
+  }
+}
+
+#dropdown-split {
+  li {
+    text-align: center;
+  }
+}
+
+::ng-deep .modal-lg {
+  max-width: 1080px!important;
+}

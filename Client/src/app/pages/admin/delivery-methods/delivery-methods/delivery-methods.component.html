@@ -1,0 +1,101 @@
+<div class="container">
+  <button type="button" (click)="openModal(template)" class="btn btn-light new">Novo Tipo de Entrega</button>
+  <div class="table">
+    <table class="table shadow-lg p-1 mb-5 bg-white rounded">
+      <thead class="thead-dark text-uppercase">
+        <tr>
+          <th scope="col">
+            <strong>Código</strong>
+          </th>
+          <th scope="col">
+            <strong>Nome</strong>
+          </th>
+          <th scope="col">
+            <strong>Descrição</strong>
+          </th>
+          <th scope="col">
+            <strong>Prazo</strong>
+          </th>
+          <th scope="col">
+            <strong>Preço</strong>
+          </th>
+          <th scope="col">
+            <strong>Ação</strong>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        @if(deliveryMethods){
+          @for(deliveryMethod of deliveryMethods; track deliveryMethod.id){
+            <tr>
+              <th scope="row">
+                <strong class="ps-2"># {{deliveryMethod.id}}</strong>
+              </th>
+              <td>
+                {{deliveryMethod.shortName}}
+              </td>
+              <td>
+                {{deliveryMethod.description}}
+              </td>
+              <td>
+                {{deliveryMethod.deliveryTime}}
+              </td>
+              <td>
+                {{deliveryMethod.price}}
+              </td>
+              <td style="width: 200px;">
+                  <div class="btn-group" dropdown>
+                    <button id="button-split" type="button" dropdownToggle class="dropdown-toggle dropdown-toggle-split"
+                            aria-controls="dropdown-split">
+
+                      <span class="pe-1">
+                        <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                      </span>
+                      <span class="sr-only visually-hidden">Split button!</span>
+                    </button>
+                    <ul id="dropdown-split" *dropdownMenu class="dropdown-menu"
+                        role="menu" aria-labelledby="button-split">
+                      <li role="menuitem"><a class="dropdown-item" (click)="openModal(template,deliveryMethod)">Editar</a></li>
+                      <li class="divider dropdown-divider"></li>
+                      <li role="menuitem"><a class="dropdown-item delete" (click)="onDelete(deliveryMethod.id)">Deletar</a>
+                      </li>
+                    </ul>
+                  </div>
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #template>
+    <div class="modal-header">
+       <h4 class="modal-title pull-left">Tipo de Entre</h4>
+       <button type="button" class="btn close pull-right" aria-label="Close" (click)="closeModal()">
+          <span aria-hidden="true">×</span>
+       </button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="deliveryMethodForm">
+        <app-text-input [formControl]="deliveryMethodForm.controls['shortName']" [label]="'Nome do Tipo de Entrega'" />
+        <app-text-input [formControl]="deliveryMethodForm.controls['description']" [label]="'Descrição'" />
+        <app-text-input [formControl]="deliveryMethodForm.controls['deliveryTime']" [label]="'Prazo'"/>
+        <app-text-input [type]="'number'" [formControl]="deliveryMethodForm.controls['price']" [label]="'Preço'" />
+        <div class="d-grid">
+          @if(isEdit){
+            <button [disabled]="deliveryMethodForm.invalid" class="btn btn-lg btn-primary mt-3" type="submit" (click)="onEdit()">Editar</button>
+          }
+          @else {
+            <button [disabled]="deliveryMethodForm.invalid" class="btn btn-lg btn-primary mt-3" type="submit" (click)="onSubmit()">Criar</button>
+          }
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+       <button type="button" class="btn btn-default" (click)="closeModal()">Fechar</button>
+    </div>
+ </ng-template>
+</div>
+
+

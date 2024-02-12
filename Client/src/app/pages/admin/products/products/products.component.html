@@ -1,0 +1,177 @@
+<div class="container">
+  <div class="row">
+    <section class="col-12">
+      <button type="button" (click)="openModal(template)" class="btn btn-light new">Novo Produto</button>
+      <div class="d-flex justify-content-between align-items-center pb-2">
+        <app-paging-header
+          [totalCount]="totalCount"
+          [pageNumber]="shopParams.pageNumber"
+          [pageSize]="shopParams.pageSize"
+        ></app-paging-header>
+        <div class="d-flex mt-2">
+          <input
+            (keyup.enter)="onSearch()"
+            type="text"
+            placeholder="Procurar...."
+            class="form-control me-2"
+            #search
+          />
+          <button (click)="onSearch()" class="btn btn-outline-primary mx-2">Procurar</button>
+          <button (click)="onReset()" class="btn btn-outline-success">Reset</button>
+        </div>
+      </div>
+      <div class="row row-cols-3 g-3 mb-4">
+
+        <div class="table">
+          <table class="table shadow-lg p-1 mb-5 bg-white rounded">
+            <thead class="thead-dark text-uppercase">
+              <tr>
+                <th scope="col">
+                  <strong>Código</strong>
+                </th>
+                <th scope="col">
+                  <strong>Nome</strong>
+                </th>
+                <th scope="col">
+                  <strong>Descrição</strong>
+                </th>
+                <th scope="col">
+                  <strong>Preço</strong>
+                </th>
+                <th scope="col">
+                  <strong>Ação</strong>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              @if(products){
+                @for(product of products; track product.id){
+                  <tr>
+                    <th scope="row">
+                      <strong class="ps-2"># {{product.id}}</strong>
+                    </th>
+                    <td>
+                      {{product.name}}
+                    </td>
+                    <td>
+                      {{product.description}}
+                    </td>
+                    <td>
+                      {{product.price}}
+                    </td>
+                    <td style="width: 200px;">
+                        <div class="btn-group" dropdown>
+                          <button id="button-split" type="button" dropdownToggle class="dropdown-toggle dropdown-toggle-split"
+                                  aria-controls="dropdown-split">
+
+                            <span class="pe-1">
+                              <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                            </span>
+                            <span class="sr-only visually-hidden">Split button!</span>
+                          </button>
+                          <ul id="dropdown-split" *dropdownMenu class="dropdown-menu"
+                              role="menu" aria-labelledby="button-split">
+                            <li role="menuitem"><a class="dropdown-item" (click)="openModal(template,product)">Editar</a></li>
+                            <li class="divider dropdown-divider"></li>
+                            <li role="menuitem"><a class="dropdown-item delete" (click)="onDelete(product.id)">Deletar</a>
+                            </li>
+                          </ul>
+                        </div>
+                    </td>
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <ng-template #template>
+          <div class="modal-header">
+             <h4 class="modal-title pull-left">Produto</h4>
+             <button type="button" class="btn close pull-right" aria-label="Close" (click)="closeModal()">
+                <span aria-hidden="true">×</span>
+             </button>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="productForm" >
+              <app-text-input [formControl]="productForm.controls['name']" [label]="'Nome do Produto'" />
+              <app-text-input [formControl]="productForm.controls['description']" [label]="'Descrição'" />
+              <app-text-input [type]="'number'" [formControl]="productForm.controls['price']" [label]="'Preço'" />
+              <app-text-input [type]="'number'" [formControl]="productForm.controls['weight']" [label]="'Peso'" />
+              <app-text-input [type]="'number'" [formControl]="productForm.controls['quantity']" [label]="'Quantidade Inicial'" />
+
+              <div class="input-group mb-3 grid gap-2">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="unit">Unidade -></label>
+                </div>
+                <select class="form-select" id="inputGroupSelect01">
+                  @if(!isEdit){
+                    <option selected>Selecionar...</option>
+                  }
+                  @for(unit of units; track unit.id){
+                    @if(isEdit && unit.name == productForm.value.productUnit){
+                      <option value="{{unit.id}}" selected>{{unit.name}}</option>
+                    }@else {
+                      <option value="{{unit.id}}">{{unit.name}}</option>
+                    }
+                  }
+                </select>
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="unit">Marca -></label>
+                </div>
+                <select class="form-select" id="inputGroupSelect01">
+                  @if(!isEdit){
+                    <option selected>Selecionar...</option>
+                  }
+                  @for(brand of brands; track brand.id){
+                    @if(isEdit && brand.name == productForm.value.productBrand){
+                      <option value="{{brand.id}}" selected>{{brand.name}}</option>
+                    } @else {
+                      <option value="{{brand.id}}">{{brand.name}}</option>
+                    }
+                  }
+                </select>
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="unit">Tipo -></label>
+                </div>
+                <select class="form-select" id="inputGroupSelect01">
+                  @if(!isEdit){
+                    <option selected>Selecionar...</option>
+                  }
+                  @for(type of types; track type.id){
+                    @if(isEdit && type.name == productForm.value.productType){
+                      <option value="{{type.id}}" selected>{{type.name}}</option>
+                    }@else {
+                      <option value="{{type.id}}">{{type.name}}</option>
+                    }
+                  }
+                </select>
+              </div>
+              <!-- <app-text-input [formControl]="productForm.controls['name']" [label]="'Nome do Produto'" /> -->
+              <div class="d-grid">
+                @if(isEdit){
+                  <button [disabled]="productForm.invalid" class="btn btn-lg btn-primary mt-3" type="submit" (click)="onEdit()">Editar</button>
+                }
+                @else {
+                  <button [disabled]="productForm.invalid" class="btn btn-lg btn-primary mt-3" type="submit" (click)="onSubmit()">Criar</button>
+                }
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+             <button type="button" class="btn btn-default" (click)="closeModal()">Fechar</button>
+          </div>
+       </ng-template>
+      </div>
+      @if(totalCount > 0){
+        <div class="d-flex justify-content-center">
+          <app-pager
+          [totalCount]="totalCount"
+          [pageSize]="shopParams.pageSize"
+          (pageChanged)="onPageChanged($event)"
+          ></app-pager>
+        </div>
+      }
+    </section>
+  </div>
+</div>
