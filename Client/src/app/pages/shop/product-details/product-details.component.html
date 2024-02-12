@@ -1,0 +1,79 @@
+<div class="container">
+@if(product){
+  <div class="row">
+      <div class="col-6">
+        @if(product.aditionalPicturesUrls){
+          <carousel [noPause]="false" [isAnimated]="true">
+            <slide>
+              <img src="{{ product.pictureUrl }}" alt="{{ product.name }}" class="w-100">
+            </slide>
+              @for(slide of product.aditionalPicturesUrls; track $index){
+                <slide>
+                  <img src="{{slide}}" alt="image {{ $index }}" style="display: block; width: 100%;">
+                </slide>
+              }
+          </carousel>
+        } @else {
+          <img src="{{ product.pictureUrl }}" alt="{{ product.name }}" class="w-100">
+        }
+      </div>
+      <div class="col-6 mt-5">
+        <h2>{{ product.name }}</h2>
+        <p style="font-size: 2em;">{{ product.price | currency:'BRL' }}</p>
+        @if(quantityInCart > 0){
+          <h5 class="text-primary mb-3"
+            >
+            Há {{ quantityInCart }} itens deste produto no seu carrinho.
+          </h5>
+        }
+
+        <div class="d-flex justify-content-start align-items-center">
+          <i
+            class="fa fa-minus-circle text-warning me-2"
+            style="cursor: pointer; font-size: 2em;"
+            (click)="decrementQuantity()"
+          ></i>
+          <span class="font-weight-bold" style="font-size: 1.5em;">{{ quantity }}</span>
+          <i
+            class="fa fa-plus-circle text-warning ms-2"
+            style="cursor: pointer; font-size: 2em;"
+            (click)="incrementQuantity()"
+            ></i>
+            <button
+            class="btn btn-outline-secondary ms-4"
+            (click)="updateCart()"
+            [disabled]="quantity === quantityInCart"
+          >{{ buttonText }}</button>
+        </div>
+        <div class="row mt-4 ms-2">
+          <table>
+            <tr>
+              <th>Tipo</th>
+              <th>Marca</th>
+              <th>Unidade</th>
+            </tr>
+            <tr>
+              <td>{{ product.productType }}</td>
+              <td>{{ product.productBrand }}</td>
+              <td>{{ product.productUnit }}</td>
+            </tr>
+          </table>
+        </div>
+        <div class="row mt-4">
+          <h4>Descrição</h4>
+          <p>{{ product.description }}</p>
+        </div>
+    </div>
+  </div>
+  <!-- <div class="row carroussel">
+    @for(image of product.aditionalPicturesUrls; track $index){
+      <img src="#" alt="test">
+      <div class="dock">
+        <div class="image">
+          <img src="{{ image }}">
+        </div>
+      </div>
+      }
+  </div> -->
+}
+</div>
