@@ -1,0 +1,24 @@
+<div class="d-flex justify-content-center mt-3 mb-5">
+  <div class="col-3">
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="text-center mb-4">
+        <h1 class="mb-3">Registro</h1>
+      </div>
+      <app-text-input [formControl]="registerForm.controls['displayName']" [label]="'Nome da Conta'"></app-text-input>
+      <app-text-input [formControl]="registerForm.controls['email']" [label]="'E-mail'"></app-text-input>
+      <app-text-input [formControl]="registerForm.controls['password']" [type]="'password'" [label]="'Senha'"></app-text-input>
+      <form [formGroup]="address">
+        <app-text-input [formControl]="address.controls['firstName']" [label]="'Nome'"></app-text-input>
+        <app-text-input [formControl]="address.controls['lastName']" [label]="'Sobrenome'"></app-text-input>
+        <app-text-input [formControl]="address.controls['street']" [label]="'Rua'"></app-text-input>
+        <app-text-input [formControl]="address.controls['city']" [label]="'Cidade'"></app-text-input>
+        <app-text-input [formControl]="address.controls['state']" [label]="'Estado'"></app-text-input>
+        <app-text-input [formControl]="address.controls['postalCode']" [label]="'Código Postal'"></app-text-input>
+      </form>
+
+      <div class="d-grid">
+        <button [disabled]="registerForm.invalid" class="btn btn-lg btn-primary mt-3" type="submit">Registrar</button>
+      </div>
+    </form>
+  </div>
+</div>
