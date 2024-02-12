@@ -1,0 +1,30 @@
+<div class="bg-light px-4 py-3 text-uppercase fw-bold">
+  Resumo do pedido
+</div>
+
+<div class="p-4">
+  <p class="fst-italic mb-4">
+    O custo de envio será calculado com base nas escolhas feitas durante a finalização da compra.
+  </p>
+  @if((cartService.cartTotalSource$ | async); as totals){
+    <ul class="list-unstyled mb-4">
+      @if(totals.subtotal != totals.total){
+        <li class="d-flex justify-content-between py-3 border-bottom">
+          <strong class="muted">Subtotal do Pedido</strong>
+          <strong>{{ totals.subtotal | currency:'BRL' }}</strong>
+        </li>
+      }
+      @if(totals.shipping != 0){
+        <li class="d-flex justify-content-between py-3 border-bottom">
+          <strong class="muted">Envio e Serviço</strong>
+          <strong>{{ totals.shipping | currency:'BRL' }}</strong>
+        </li>
+      }
+
+      <li class="d-flex justify-content-between py-3 border-bottom">
+        <strong class="muted">Total</strong>
+        <strong>{{ totals.total | currency:'BRL' }}</strong>
+      </li>
+    </ul>
+  }
+</div>
