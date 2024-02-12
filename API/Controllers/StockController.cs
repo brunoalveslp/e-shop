@@ -7,6 +7,7 @@ using Domain.Interfaces;
 using Domain.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace API.Controllers
 {
@@ -126,9 +127,10 @@ namespace API.Controllers
         [HttpPost("update-product")]
         [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> UpdateProductAsync(
-            [FromForm] ProductReceivedDto productReceived,IFormFile picture, 
+            [FromForm] ProductReceivedDto productReceived,IFormFile pictureUrl, 
             IFormFile[] aditionalPictures)
         {
+            var actualProduct = await _unitOfWork.Repository<Product>().GetByIdAsync(productReceived.Id);
             List<string> aditionalPicturesUrls = new();
             try
             {
@@ -137,19 +139,29 @@ namespace API.Controllers
                     return BadRequest(new ApiResponse(400));
                 }
 
-                if (picture is not null)
+                if (pictureUrl is not null)
                 {
-                    var fileResult = _fileService.SaveImage(picture);
-                    if (fileResult.Item1)
+                    if(pictureUrl.FileName != actualProduct.PictureUrl)
                     {
-                        productReceived.PictureUrl = fileResult.Item2;
+                        _fileService.DeleteImage(actualProduct.PictureUrl);
+                        var fileResult = _fileService.SaveImage(pictureUrl);
+                        if (fileResult.Item1)
+                        {
+                            productReceived.PictureUrl = fileResult.Item2;
+                        }
                     }
+                    productReceived.PictureUrl = actualProduct.PictureUrl;
                 }
 
                 if (aditionalPictures is not null)
                 {
                     foreach (var aditionalPicture in aditionalPictures)
                     {
+                        if (actualProduct.AditionalPicturesUrls.Contains(aditionalPicture.FileName))
+                        {
+                            aditionalPicturesUrls.Add(aditionalPicture.FileName);
+                            continue;
+                        }
                         var fileResult = _fileService.SaveImage(aditionalPicture);
                         if (fileResult.Item1)
                         {
