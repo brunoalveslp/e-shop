@@ -1,0 +1,75 @@
+<div
+  class="d-flex flex-column flex-md-row align-items-center justify-content-between p-1 px-md-4 mb-1 border-bottom shadow-sm fixed-top bg-white"
+>
+  <img
+    class="logo"
+    src="/assets/images/Logo.svg"
+    style="max-height: 35px"
+    alt="logo"
+    routerLink="/"
+  />
+  <nav class="my-1 mt-md-3 text-uppercase" style="font-size: larger">
+    <a
+      class="me-3 bdr"
+      routerLink="/"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      >Home</a>
+    <a class="me-3 bdr" routerLink="/shop" routerLinkActive="active">Loja</a>
+    <a class="me-3 bdr" routerLink="/orders" routerLinkActive="active">Pedidos</a>
+  </nav>
+  <div class="d-flex align-items-center">
+    <a routerLink="/cart" class="position-relative">
+      <i class="fa fa-shopping-cart fa-2x me-5 text-dark"></i>
+      @if(cartService.cartSource$ | async; as Cart){
+        <div class="cart-no">
+          {{ getCount(Cart.items) }}
+        </div>
+      }
+    </a>
+
+    @if((accountService.currentUserSource$ | async) == null){
+      <ng-container>
+        <a
+          routerLink="/account/login"
+          class="btn btn-outline-secondary me-3"
+          href="#"
+          >Entrar</a>
+        <a
+          routerLink="/account/register"
+          class="btn btn-outline-secondary me-2"
+          href="#"
+          >Registrar</a>
+      </ng-container>
+    }
+    @if(accountService.currentUserSource$ | async; as user){
+    <ng-container>
+      <div class="dropdown ms-3 me-5" style="cursor: pointer" dropdown>
+        <a dropdownToggle class="dropdown-toggle">
+          <strong>Bem-Vindo {{ user.displayName }}</strong>
+        </a>
+
+        <ul *dropdownMenu class="dropdown-menu dropdown-menu-right">
+          <li class="py-1">
+            @if(user.roles.includes('Admin')){
+              <a routerLink="/admin" class="dropdown-item">
+                <i class="fa fa-pencil-square-o me-3"></i> Painel do Administrador
+              </a>
+            }
+            <a routerLink="/cart" class="dropdown-item">
+              <i class="fa fa-shopping-cart me-3"></i> Ver Carrinho
+            </a>
+            <a routerLink="/orders" class="dropdown-item">
+              <i class="fa fa-history me-3"></i> Ver Pedidos
+            </a>
+            <div class="dropdown-divider"></div>
+            <a (click)="accountService.logout()" class="dropdown-item logout">
+              <i class="fa fa-sign-out me-3"></i> Sair
+            </a>
+          </li>
+        </ul>
+      </div>
+    </ng-container>
+    }
+  </div>
+</div>

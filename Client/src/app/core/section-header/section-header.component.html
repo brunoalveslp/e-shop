@@ -1,0 +1,22 @@
+@if($any(bcService.breadcrumbs$ | async); as breadcrumbs) {
+<ng-container>
+  @if(breadcrumbs[breadcrumbs.length -1].label !== 'Home'){
+    <section class="py-2 mb-1">
+      <div class="container">
+        <div class="row d-flex align-items-center">
+          <div class="col-9">
+            <h1>{{ breadcrumbs[breadcrumbs.length -1].label | titlecase }}</h1>
+          </div>
+          <div class="col-3">
+            <xng-breadcrumb>
+              <ng-container *xngBreadcrumbItem="let breadcrumb">
+                {{ breadcrumb | titlecase }}
+              </ng-container>
+            </xng-breadcrumb>
+          </div>
+        </div>
+      </div>
+    </section>
+  }
+</ng-container>
+}
