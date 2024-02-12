@@ -1,0 +1,21 @@
+<div class="d-flex justify-content-between flex-row mb-5">
+  @if(!previous){
+    <button class="btn btn-outline-primary" routerLink="/basket">
+      <i class="fa fa-angle-left me-2"></i> Voltar ao Carrinho
+    </button>
+  }
+  @if(previous){
+    <button class="btn btn-outline-primary" cdkStepperPrevious>
+      @if(previous == 'Entrega'){
+        <i class="fa fa-angle-left me-2"></i> Voltar a {{ previous }}
+      } @else {
+        <i class="fa fa-angle-left me-2"></i> Voltar ao {{ previous }}
+      }
+    </button>
+  }
+  @if(next){
+    <button *ngIf="next" class="btn btn-primary" cdkStepperNext>
+      Ir para {{ next }} <i class="fa fa-angle-right ms-2"></i>
+    </button>
+  }
+</div>

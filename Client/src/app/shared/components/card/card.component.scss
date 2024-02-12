@@ -1,0 +1,31 @@
+.title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid black;
+  background-color: #f1f1f1;
+  font-size: 1.2rem;
+  color: black;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.list a {
+  padding: 1rem;
+  padding-left: 2rem;
+  text-align: left;
+  text-decoration: none;
+  color: black;
+  width: 100%;
+  &:hover {
+    background-color: rgb(222, 222, 222);
+    border-bottom: 1px solid black;
+  }
+}
