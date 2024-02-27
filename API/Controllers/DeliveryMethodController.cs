@@ -70,7 +70,7 @@ public class DeliveryMethodController : BaseApiController
         {
             if (deliveryMethod is not null)
             {
-                _unitOfWork.Repository<DeliveryMethod>().Update(deliveryMethod);
+                await _unitOfWork.Repository<DeliveryMethod>().UpdateAsync(deliveryMethod);
                 await _unitOfWork.Complete();
             }
             return Ok(deliveryMethod);

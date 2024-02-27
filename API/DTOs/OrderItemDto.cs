@@ -1,4 +1,8 @@
-﻿namespace API.DTOs;
+﻿
+
+using Domain.Entities;
+
+namespace API.DTOs;
 
 public class OrderItemDto
 {
@@ -6,6 +10,7 @@ public class OrderItemDto
     public string ProductName { get; set; }
     public string PictureUrl { get; set; }
     public decimal Price { get; set; }
-    public int Quantity { get; set; }
+    public Size Size { get; set; }
+    public decimal Quantity { get; set; }
     public decimal Weight { get; set; }
 }

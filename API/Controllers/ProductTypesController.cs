@@ -71,7 +71,7 @@ public class ProductTypesController : BaseApiController
         {
             if (productType is not null)
             {
-                _unitOfWork.Repository<ProductType>().Update(productType);
+                await _unitOfWork.Repository<ProductType>().UpdateAsync(productType);
                 await _unitOfWork.Complete();
             }
             return Ok(productType);

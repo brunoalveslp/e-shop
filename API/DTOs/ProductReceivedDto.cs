@@ -1,7 +1,3 @@
-
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
-
 namespace API.DTOs;
 
 public class ProductReceivedDto
@@ -12,8 +8,11 @@ public class ProductReceivedDto
     public decimal Price { get; set; }
     public decimal Weight { get; set; }
     public string PictureUrl { get; set; }
+    public List<ProductSizeDto> ProductSizes { get; set; }
+    public IFormFile picture { get; set; }
     public List<string> AditionalPicturesUrls { get; set; }
-    public int ProductTypeId { get; set; }
-    public int ProductBrandId { get; set; }
-    public int ProductUnitId { get; set; }
+    public IFormFileCollection aditionalPictures {  get; set; }
+    public string ProductTypeName { get; set; }
+    public string ProductBrandName { get; set; }
+    public string ProductUnitName { get; set; }
 }

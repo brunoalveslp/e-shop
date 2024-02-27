@@ -15,11 +15,17 @@ public class MappingProfiles : Profile
             .ForMember(pb => pb.ProductBrand, p => p.MapFrom(x => x.ProductBrand.Name))
             .ForMember(pt => pt.ProductType, p => p.MapFrom(x => x.ProductType.Name))
             .ForMember(pu => pu.ProductUnit, p => p.MapFrom(x => x.ProductUnit.Name))
+            .ForMember(pp => pp.AditionalPicturesUrls, p => p.MapFrom<AditionalProductPictureUrlsResolver>())
             .ForMember(pp => pp.PictureUrl, p => p.MapFrom<ProductPictureUrlResolver>())
-            .ForMember(pp => pp.AditionalPicturesUrls, p => p.MapFrom<AditionalProductPictureUrlsResolver>());
+            .ReverseMap();
 
         CreateMap<Product, ProductReceivedDto>()
+            .ForMember(pb => pb.ProductBrandName, p => p.MapFrom(x => x.ProductBrand.Name))
+            .ForMember(pt => pt.ProductTypeName, p => p.MapFrom(x => x.ProductType.Name))
+            .ForMember(pu => pu.ProductUnitName, p => p.MapFrom(x => x.ProductUnit.Name))
             .ReverseMap();
+
+
 
         CreateMap<Address, AddressDto>().ReverseMap();
         

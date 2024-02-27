@@ -71,7 +71,7 @@ public class ProductUnitsController : BaseApiController
         {
             if (productUnit is not null)
             {
-                _unitOfWork.Repository<ProductUnit>().Update(productUnit);
+                await _unitOfWork.Repository<ProductUnit>().UpdateAsync(productUnit);
                 await _unitOfWork.Complete();
             }
             return Ok(productUnit);

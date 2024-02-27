@@ -183,6 +183,20 @@ namespace API.Controllers
         }
 
         [Authorize(Roles = "Admin")]
+        [HttpGet("user-roles/{id}")]
+        public async Task<ActionResult> GetUserRolesById(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if(user is null) { return NotFound(new ApiResponse(404)); }
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            if(roles is null) { return BadRequest(new ApiResponse(400)); }
+
+            return Ok(roles);
+        }
+
+        [Authorize(Roles = "Admin")]
         [HttpPost("update-user-roles")]
         public async Task<IActionResult> UpdateUserRole(UserRolesDto userRole)
         {
@@ -216,6 +230,15 @@ namespace API.Controllers
         }
 
         [Authorize(Roles = "Admin")]
+        [HttpGet("Roles/{id}")]
+        public async Task<IActionResult> GetAllRolesByIdAsync(string id)
+        {
+            var role = await _roleManager.Roles.FirstOrDefaultAsync(x => x.Id == id);
+  
+            return Ok(role);
+        }
+
+        [Authorize(Roles = "Admin")]
         [HttpPost("add-role")]
         public async Task<IActionResult> AddRole(string role)
         {
@@ -229,16 +252,16 @@ namespace API.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost("update-role")]
-        public async Task<IActionResult> UpdateRole(UpdateRolesDto roles)
+        [HttpPut("update-role")]
+        public async Task<IActionResult> UpdateRole(string id, string updatedRole)
         {
-            var roleToBeChanged = await _roleManager.FindByNameAsync(roles.RoleToBeChanged);
+            var roleToBeChanged = await _roleManager.FindByIdAsync(id);
 
             if (roleToBeChanged is null) { return NotFound(new ApiResponse(400)); }
 
-            if(roleToBeChanged.Name != roles.UpdatedRole)
+            if(updatedRole != roleToBeChanged.Name)
             {
-                roleToBeChanged.Name = roles.UpdatedRole;
+                roleToBeChanged.Name = updatedRole;
             }
 
             var result = await _roleManager.UpdateAsync(roleToBeChanged);

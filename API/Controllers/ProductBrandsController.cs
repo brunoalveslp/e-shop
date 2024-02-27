@@ -71,7 +71,7 @@ public class ProductBrandsController : BaseApiController
         {
             if (productBrand is not null)
             {
-                _unitOfWork.Repository<ProductBrand>().Update(productBrand);
+                await _unitOfWork.Repository<ProductBrand>().UpdateAsync(productBrand);
                 await _unitOfWork.Complete();
             }
             return Ok(productBrand);

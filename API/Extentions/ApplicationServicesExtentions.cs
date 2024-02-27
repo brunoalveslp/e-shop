@@ -19,6 +19,7 @@ public static class ApplicationServicesExtentions
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IStockMovimentService, StockMovimentService>();
         services.AddScoped<IFileService, FileService>();
+        services.AddScoped<IPaymentService, PaymentService>();
 
         // just like configure method inside startup class
         services.Configure<ApiBehaviorOptions>(options =>

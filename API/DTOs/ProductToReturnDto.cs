@@ -1,4 +1,3 @@
-
 namespace API.DTOs;
 
 public class ProductToReturnDto
@@ -8,7 +7,7 @@ public class ProductToReturnDto
     public string Description { get; set; }
     public decimal Price { get; set; }
     public decimal Weight { get; set; }
-    public decimal Quantity { get; set; }
+    public List<ProductSizeDto> ProductSizes { get; set; }
     public string PictureUrl { get; set; }
     public string[] AditionalPicturesUrls { get; set; }
     public string ProductType { get; set; }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Domain.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace API.DTOs;
 
@@ -9,11 +10,12 @@ public class CartItemDto
     [Required]
     public string ProductName { get; set; }
     [Required]
-    [Range(0.1, double.MaxValue, ErrorMessage = "Price must be greater than zero.")]
+    [Range(0.1, double.MaxValue, ErrorMessage = "Preço deve ser maior que zero.")]
     public Decimal Price { get; set; }
     [Required]
-    [Range(1, int.MaxValue, ErrorMessage = "Quantity must be at least 1.")]
-    public int Quantity { get; set; }
+    public Size Size { get; set; }
+    [Required]
+    public decimal Quantity { get; set; }
     [Required]
     public decimal Weight { get; set; }
     [Required]

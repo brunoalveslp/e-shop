@@ -31,8 +31,11 @@ namespace API
 
             var connectionString = config.GetConnectionString("DefaultConnection");
 
-            builder.Services.AddDbContext<StoreDbContext>(
-                opt => opt.UseNpgsql(connectionString));
+            builder.Services.AddDbContextFactory<StoreDbContext>(
+                opt => {
+                    opt.UseNpgsql(connectionString);
+                    
+                    });
 
             builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
             {

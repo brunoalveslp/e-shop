@@ -7,7 +7,6 @@ using Domain.Interfaces;
 using Domain.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace API.Controllers
 {
@@ -40,7 +39,7 @@ namespace API.Controllers
 
             if (products == null)
             {
-                return NotFound(new ApiResponse(404));
+                return NotFound(new ApiResponse(404, "Não há produtos."));
             }
 
             var data = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products);
@@ -73,10 +72,7 @@ namespace API.Controllers
         [Consumes("multipart/form-data")] // for Zip files with form data
         [HttpPost("create-product")]
         [Authorize(Roles = "Admin,User")]
-        public async Task<IActionResult> CreateProductAsync(
-            [FromForm] ProductReceivedDto productReceived, 
-            IFormFile picture ,
-            IFormFile[] aditionalPictures)
+        public async Task<IActionResult> CreateProductAsync([FromForm] ProductReceivedDto productReceived)
         {
             List<string> aditionalPicturesUrls = new();
             try
@@ -86,18 +82,20 @@ namespace API.Controllers
                     return BadRequest(new ApiResponse(400));
                 }
 
-                if (picture is not null)
+
+
+                if (productReceived.picture is not null)
                 {
-                    var fileResult = _fileService.SaveImage(picture);
+                    var fileResult = _fileService.SaveImage(productReceived.picture);
                     if (fileResult.Item1)
                     {
                         productReceived.PictureUrl = fileResult.Item2;
                     }
                 }
 
-                if (aditionalPictures is not null)
+                if (productReceived.aditionalPictures is not null)
                 {
-                    foreach (var aditionalPicture in aditionalPictures)
+                    foreach (var aditionalPicture in productReceived.aditionalPictures)
                     {
                         var fileResult = _fileService.SaveImage(aditionalPicture);
                         if (fileResult.Item1)
@@ -109,26 +107,38 @@ namespace API.Controllers
 
                 productReceived.AditionalPicturesUrls = aditionalPicturesUrls;
                 var product = _mapper.Map<Product>(productReceived);
-                await _unitOfWork.Repository<Product>().AddAsync(product);
-                await _unitOfWork.Complete();
+
+                try
+                {
+                    await _unitOfWork.Repository<Product>().AddAsync(product);
+                    await _unitOfWork.Complete();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    _fileService.DeleteImage(productReceived.PictureUrl);
+                    foreach (var image in productReceived.AditionalPicturesUrls)
+                    {
+                        _fileService.DeleteImage(image);
+                    }
+                    throw;
+                }
+
                 return Ok(product);
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine(ex);
                 return BadRequest(new ApiException(400, ex.Message));
             }
         }
 
-
         [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
         [DisableRequestSizeLimit]
         [Consumes("multipart/form-data")] // for Zip files with form data
-        [HttpPost("update-product")]
+        [HttpPut("update-product")]
         [Authorize(Roles = "User,Admin")]
-        public async Task<IActionResult> UpdateProductAsync(
-            [FromForm] ProductReceivedDto productReceived,IFormFile pictureUrl, 
-            IFormFile[] aditionalPictures)
+        public async Task<IActionResult> UpdateProductAsync([FromForm] ProductReceivedDto productReceived)
         {
             var actualProduct = await _unitOfWork.Repository<Product>().GetByIdAsync(productReceived.Id);
             List<string> aditionalPicturesUrls = new();
@@ -139,50 +149,78 @@ namespace API.Controllers
                     return BadRequest(new ApiResponse(400));
                 }
 
-                if (pictureUrl is not null)
+                if (productReceived.picture is not null)
                 {
-                    if(pictureUrl.FileName != actualProduct.PictureUrl)
+                    var fileName = Path.GetFileName(productReceived.picture.FileName);
+                    if (!actualProduct.PictureUrl.Equals(fileName))
                     {
-                        _fileService.DeleteImage(actualProduct.PictureUrl);
-                        var fileResult = _fileService.SaveImage(pictureUrl);
-                        if (fileResult.Item1)
+                        if (!string.IsNullOrEmpty(actualProduct.PictureUrl))
                         {
-                            productReceived.PictureUrl = fileResult.Item2;
+                            _fileService.DeleteImage(actualProduct.PictureUrl);
                         }
-                    }
-                    productReceived.PictureUrl = actualProduct.PictureUrl;
-                }
 
-                if (aditionalPictures is not null)
-                {
-                    foreach (var aditionalPicture in aditionalPictures)
-                    {
-                        if (actualProduct.AditionalPicturesUrls.Contains(aditionalPicture.FileName))
-                        {
-                            aditionalPicturesUrls.Add(aditionalPicture.FileName);
-                            continue;
-                        }
-                        var fileResult = _fileService.SaveImage(aditionalPicture);
+                        var fileResult = _fileService.SaveImage(productReceived.picture);
+
                         if (fileResult.Item1)
                         {
-                            aditionalPicturesUrls.Add(fileResult.Item2);
+                            actualProduct.PictureUrl = fileResult.Item2;
                         }
                     }
                 }
 
-                productReceived.AditionalPicturesUrls = aditionalPicturesUrls;
-                var product = _mapper.Map<Product>(productReceived);
+                if (productReceived.aditionalPictures is not null)
+                {
+                    var actualAditionalPictures = new List<string>(actualProduct.AditionalPicturesUrls);
+                    foreach (var aditionalPicture in productReceived.aditionalPictures)
+                    {
+                        var fileName = Path.GetFileName(aditionalPicture.FileName);
+                        if (!actualAditionalPictures.Contains(fileName))
+                        {
+                            var fileResult = _fileService.SaveImage(aditionalPicture);
+                            if (fileResult.Item1)
+                            {
+                                aditionalPicturesUrls.Add(fileResult.Item2);
+                            }
+                        }
+                        else
+                        {
+                            aditionalPicturesUrls.Add(fileName);
+                        }
+                    }
 
-                await _unitOfWork.Repository<Product>().AddAsync(product);
+                    foreach (var remainingPicture in actualAditionalPictures)
+                    {
+                        if (!aditionalPicturesUrls.Contains(remainingPicture))
+                        {
+                            _fileService.DeleteImage(remainingPicture);
+                        }
+                    }
+                }
+                else
+                {
+                    aditionalPicturesUrls = actualProduct.AditionalPicturesUrls;
+                }
+
+                actualProduct.AditionalPicturesUrls = aditionalPicturesUrls;
+
+                // Update other fields
+                actualProduct.ProductType = await _unitOfWork.Repository<ProductType>().GetProductTypeByNameAsync(productReceived.ProductTypeName);
+                actualProduct.ProductBrand = await _unitOfWork.Repository<ProductBrand>().GetProductBrandByNameAsync(productReceived.ProductBrandName);
+                actualProduct.ProductUnit = await _unitOfWork.Repository<ProductUnit>().GetProductUnitByNameAsync(productReceived.ProductUnitName);
+
+                await _unitOfWork.Repository<Product>().UpdateAsync(actualProduct);
                 await _unitOfWork.Complete();
-                return Ok(product);
+                return Ok(actualProduct);
             }
             catch (Exception ex)
             {
-
-                return BadRequest(new ApiException(400, ex.Message));
+                Console.WriteLine(ex.Message);
+                //return BadRequest(new ApiException(400, ex.Message));
+                return BadRequest(ex.Message);
             }
         }
+
+
         [Authorize(Roles = "Admin")]
         [HttpDelete("delete-product/{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
@@ -201,56 +239,38 @@ namespace API.Controllers
                         {
                             _fileService.DeleteImage(image);
                         }
+
+                        foreach (var productSize in product.ProductSizes)
+                        {
+                            await _movimentService.OutgoingStockMovimentService(product, productSize.Size, productSize.Quantity);
+                        }
                     }
                     catch (Exception ex)
                     {
                         return BadRequest(new ApiException(400, ex.Message));
                     }
-                    await _movimentService.OutgoingStockMovimentService(product);
                 }
             }
 
-            await _movimentService.OutgoingStockMovimentService(product);
             _unitOfWork.Repository<Product>().Delete(product);
             await _unitOfWork.Complete();
 
             return Ok("Product " + product.Name + " Deleted Successfully!");
         }
-        [Authorize(Roles = "Admin")]
-        [HttpPost("stock-entry")]
-        public async Task<ActionResult> StockEntryAsync(int id, decimal quantity)
-        {
-            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
-            if(product is not null)
-            {
-                if(quantity > 0)
-                {
-                    try
-                    {
-                        await _movimentService.EntryStockMovimentService(product.Id, quantity);
-                    }
-                    catch(Exception ex)
-                    {
-                       return BadRequest(ex.Message);
-                    }
-                }
-            }
-            
-            return Ok(product);
-        }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost("stock-outgoing")]
-        public async Task<ActionResult> StockOutgoingAsync(int id, decimal quantity)
+        [HttpPost("stock-entry")]
+        public async Task<ActionResult> StockEntryAsync(int id, int sizeId, decimal quantity)
         {
             var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
-            if (product is not null)
+            var size = await _unitOfWork.Repository<Size>().GetByIdAsync(sizeId);
+            if (product != null && size != null)
             {
                 if (quantity > 0)
                 {
                     try
                     {
-                        await _movimentService.OutgoingStockMovimentService(product.Id, quantity);
+                        await _movimentService.EntryStockMovimentService(product, size, quantity);
                     }
                     catch (Exception ex)
                     {
@@ -262,11 +282,37 @@ namespace API.Controllers
             return Ok(product);
         }
 
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("stock-outgoing")]
+        public async Task<ActionResult> StockOutgoingAsync(int id, int sizeId, decimal quantity)
+        {
+            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
+            var size = await _unitOfWork.Repository<Size>().GetByIdAsync(sizeId);
+            if (product != null && size != null)
+            {
+                if (quantity > 0)
+                {
+                    try
+                    {
+                        await _movimentService.OutgoingStockMovimentService(product, size, quantity);
+                    }
+                    catch (Exception ex)
+                    {
+                        return BadRequest(ex.Message);
+                    }
+                }
+            }
+
+            return Ok(product);
+        }
+
+
         [HttpGet("stock-moviments")]
         public async Task<ActionResult> GetStockMovimentationAsync()
         {
             var moviments = await _unitOfWork.Repository<ProductMovimentHistory>().GetAllAsync();
-            if(moviments is not null)
+            if (moviments is not null)
             {
                 return Ok(moviments);
             }
@@ -297,7 +343,7 @@ namespace API.Controllers
                 var fileResult = _fileService.SaveImage(image);
                 product.PictureUrl = fileResult.Item2; ;
 
-                _unitOfWork.Repository<Product>().Update(product);
+                await _unitOfWork.Repository<Product>().UpdateAsync(product);
                 await _unitOfWork.Complete();
             }
             return Ok(new ApiResponse(200));
@@ -314,7 +360,7 @@ namespace API.Controllers
                 var fileResult = _fileService.SaveImage(image);
                 product.AditionalPicturesUrls.Add(fileResult.Item2);
 
-                _unitOfWork.Repository<Product>().Update(product);
+                await _unitOfWork.Repository<Product>().UpdateAsync(product);
                 await _unitOfWork.Complete();
             }
             return Ok(new ApiResponse(200));
@@ -332,11 +378,11 @@ namespace API.Controllers
                 if (fileResult)
                 {
                     product.PictureUrl = "";
-                    _unitOfWork.Repository<Product>().Update(product);
+                    await _unitOfWork.Repository<Product>().UpdateAsync(product);
                     await _unitOfWork.Complete();
                 }
             }
-            
+
             return Ok(new ApiResponse(200));
 
         }
@@ -352,7 +398,7 @@ namespace API.Controllers
                 if (fileResult)
                 {
                     product.AditionalPicturesUrls.Remove(imageName);
-                    _unitOfWork.Repository<Product>().Update(product);
+                    await _unitOfWork.Repository<Product>().UpdateAsync(product);
                     await _unitOfWork.Complete();
                 }
             }
