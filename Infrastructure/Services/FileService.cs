@@ -32,7 +32,7 @@ public class FileService : IFileService
             // Check the allowed extenstions
             var ext = Path.GetExtension(imageFile.FileName);
 
-            var allowedExtensions = new string[] { ".jpg", ".png", ".jpeg" };
+            var allowedExtensions = new string[] { ".jpg", ".png", ".jpeg", ".webp"};
 
 
             if (!allowedExtensions.Contains(ext))

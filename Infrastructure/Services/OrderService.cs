@@ -31,30 +31,26 @@ public class OrderService : IOrderService
         {
             var productItem = await _unitOfWork.Repository<Product>().GetByIdAsync(item.Id);
             
-            await _movimentService.OutgoingStockMovimentService(productItem);
+            await _movimentService.OutgoingStockMovimentService(productItem, item.Size, item.Quantity);
 
             var itemOrdered = new ProductItemOrdered(productItem.Id, 
                 productItem.Name, productItem.PictureUrl);
-            var orderItem = new OrderItem(itemOrdered, productItem.Price, item.Quantity);
+            var orderItem = new OrderItem(itemOrdered, productItem.Price, item.Quantity, item.Size);
             items.Add(orderItem);
         }
 
-        // get delivery method
         var dm = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(deliveryMethodId);
-        // calculate subtotal
         var subtotal = items.Sum(item => item.Price * item.Quantity);
-        // create order
+
 
         var order = new Order(items,buyerEmail,ShippingAddress,dm,subtotal);
         await _unitOfWork.Repository<Order>().AddAsync(order);
 
-        // TODO: save to db
         var result = await _unitOfWork.Complete();
-        // return order
+
 
         if (result <= 0) return null;
 
-        // delete basket
         await _cartRepo.DeleteCartAsync(cartId);
 
         return order;
@@ -72,11 +68,11 @@ public class OrderService : IOrderService
 
                 if (prod == null) continue;
 
-                await _movimentService.EntryStockMovimentService(prod);
+                await _movimentService.EntryStockMovimentService(prod, item.Size, item.Quantity);
             }
 
             order.Status = Domain.Enums.OrderStatus.Canceled;
-            _unitOfWork.Repository<Order>().Update(order);
+            await _unitOfWork.Repository<Order>().UpdateAsync(order);
         }
         catch(Exception ex)
         {
