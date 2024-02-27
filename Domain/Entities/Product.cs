@@ -10,7 +10,7 @@ public class Product : BaseEntity
     public string PictureUrl { get; set; }
     public List<string> AditionalPicturesUrls { get; set; }
     public decimal Weight { get; set; }
-    public decimal Quantity { get; set; }
+    public List<ProductSize> ProductSizes { get; set; }
     public ProductUnit ProductUnit { get; set; }
     public int ProductUnitId { get; set; }
     public ProductType ProductType { get; set; }
