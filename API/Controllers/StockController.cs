@@ -7,6 +7,8 @@ using Domain.Interfaces;
 using Domain.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Logging;
+using Newtonsoft.Json;
 
 namespace API.Controllers
 {
@@ -82,8 +84,6 @@ namespace API.Controllers
                     return BadRequest(new ApiResponse(400));
                 }
 
-
-
                 if (productReceived.picture is not null)
                 {
                     var fileResult = _fileService.SaveImage(productReceived.picture);
@@ -106,11 +106,44 @@ namespace API.Controllers
                 }
 
                 productReceived.AditionalPicturesUrls = aditionalPicturesUrls;
-                var product = _mapper.Map<Product>(productReceived);
+                var pb = await _unitOfWork.Repository<ProductBrand>().GetProductBrandByNameAsync(productReceived.ProductBrandName);
+                var pu = await _unitOfWork.Repository<ProductUnit>().GetProductUnitByNameAsync(productReceived.ProductUnitName);
+                var pt = await _unitOfWork.Repository<ProductType>().GetProductTypeByNameAsync(productReceived.ProductTypeName);
+
+                var product = new Product {
+                    Name = productReceived.Name,
+                    Description = productReceived.Description,
+                    Price = productReceived.Price,
+                    PictureUrl = productReceived.PictureUrl,
+                    AditionalPicturesUrls = productReceived.AditionalPicturesUrls,
+                    Weight = productReceived.Weight,
+                    ProductBrandId = pb.Id,
+                    ProductUnitId = pu.Id,
+                    ProductTypeId = pt.Id,
+                };
+                
+                Console.WriteLine(product);
 
                 try
                 {
+                    
                     await _unitOfWork.Repository<Product>().AddAsync(product);
+                    await _unitOfWork.Complete();
+                    var prodSizeList = JsonConvert.DeserializeObject<List<ProductSize>>(productReceived.ProductSizes);
+
+                    foreach (var prodSize in prodSizeList)
+                    {
+                        var productSize = new ProductSize
+                        {
+                            ProductId = product.Id, 
+                            SizeId = prodSize.SizeId,
+                            Quantity = prodSize.Quantity,
+                            IsActive = prodSize.IsActive
+                        };
+
+                        await _unitOfWork.Repository<ProductSize>().AddAsync(productSize);
+                    }
+
                     await _unitOfWork.Complete();
                 }
                 catch (Exception ex)
@@ -121,9 +154,9 @@ namespace API.Controllers
                     {
                         _fileService.DeleteImage(image);
                     }
-                    throw;
+                    return BadRequest(new ApiException(400, ex.Message));
                 }
-
+            
                 return Ok(product);
             }
             catch (Exception ex)
@@ -168,6 +201,46 @@ namespace API.Controllers
                     }
                 }
 
+                
+                var prodSizeList = JsonConvert.DeserializeObject<List<ProductSize>>(productReceived.ProductSizes);
+                foreach (var prodSize in prodSizeList)
+                {
+                    // 1: this line is returning this
+                    var productSize = _unitOfWork.Repository<ProductSize>().GetAllAsync().Result.FirstOrDefault(x => x.ProductId == actualProduct.Id && x.SizeId == prodSize.SizeId);
+                    if (productSize == null)
+                    {
+                        productSize = new ProductSize
+                        {
+                            ProductId = actualProduct.Id,
+                            SizeId = prodSize.SizeId,
+                            Quantity = prodSize.Quantity,
+                            IsActive = prodSize.IsActive
+                        };
+                        await StockEntryAsync(actualProduct.Id, prodSize.SizeId,productSize.Quantity);
+                        await _unitOfWork.Repository<ProductSize>().AddAsync(productSize);
+                    }
+                    else
+                    {
+                        if (productSize.Quantity != prodSize.Quantity)
+                        {
+                            if (productSize.Quantity < prodSize.Quantity)
+                            {
+                                await StockEntryAsync(actualProduct.Id, prodSize.SizeId, prodSize.Quantity - productSize.Quantity);
+                            }
+                            else
+                            {
+                                await _movimentService.OutgoingStockMovimentService(actualProduct, productSize.Size, productSize.Quantity - prodSize.Quantity);
+                            }
+                        }
+                        productSize.Quantity = prodSize.Quantity;
+                        productSize.IsActive = prodSize.IsActive;
+
+                        await _unitOfWork.Repository<ProductSize>().UpdateAsync(productSize);
+                    }
+                
+                }
+
+
                 if (productReceived.aditionalPictures is not null)
                 {
                     var actualAditionalPictures = new List<string>(actualProduct.AditionalPicturesUrls);
@@ -207,16 +280,24 @@ namespace API.Controllers
                 actualProduct.ProductType = await _unitOfWork.Repository<ProductType>().GetProductTypeByNameAsync(productReceived.ProductTypeName);
                 actualProduct.ProductBrand = await _unitOfWork.Repository<ProductBrand>().GetProductBrandByNameAsync(productReceived.ProductBrandName);
                 actualProduct.ProductUnit = await _unitOfWork.Repository<ProductUnit>().GetProductUnitByNameAsync(productReceived.ProductUnitName);
+                try
+                {
+                    await _unitOfWork.Repository<Product>().UpdateAsync(actualProduct);
+                    await _unitOfWork.Complete();
 
-                await _unitOfWork.Repository<Product>().UpdateAsync(actualProduct);
-                await _unitOfWork.Complete();
-                return Ok(actualProduct);
+                    return Ok(actualProduct);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return BadRequest(new ApiException(400, ex.Message));
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                //return BadRequest(new ApiException(400, ex.Message));
-                return BadRequest(ex.Message);
+
+                return BadRequest(new ApiException(400, ex.Message));
             }
         }
 
@@ -240,10 +321,7 @@ namespace API.Controllers
                             _fileService.DeleteImage(image);
                         }
 
-                        foreach (var productSize in product.ProductSizes)
-                        {
-                            await _movimentService.OutgoingStockMovimentService(product, productSize.Size, productSize.Quantity);
-                        }
+                        
                     }
                     catch (Exception ex)
                     {

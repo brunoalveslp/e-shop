@@ -8,7 +8,7 @@ public class ProductReceivedDto
     public decimal Price { get; set; }
     public decimal Weight { get; set; }
     public string PictureUrl { get; set; }
-    public List<ProductSizeDto> ProductSizes { get; set; }
+    public string ProductSizes { get; set; }
     public IFormFile picture { get; set; }
     public List<string> AditionalPicturesUrls { get; set; }
     public IFormFileCollection aditionalPictures {  get; set; }
