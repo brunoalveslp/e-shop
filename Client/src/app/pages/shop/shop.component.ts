@@ -4,6 +4,7 @@ import { Product } from 'src/app/shared/models/product';
 import { ShopParams } from 'src/app/shared/models/shopParams';
 import { Type } from 'src/app/shared/models/type';
 import { ShopService } from './shop.service';
+import { Size } from 'src/app/shared/models/size';
 
 
 @Component({
@@ -15,6 +16,7 @@ export class ShopComponent implements OnInit {
   @ViewChild('search') searchTerm? : ElementRef;
   public products: Product[] = [];
   public types: Type[] = [];
+  sizes: Size[] = [];
   public brands: Brand[] = [];
   public shopParams: ShopParams = new ShopParams();
   public totalCount: number = 0;
@@ -30,12 +32,29 @@ export class ShopComponent implements OnInit {
     this.getProducts();
     this.getTypes();
     this.getBrands();
+    this.getSizes();
+  }
+
+  getSizes() {
+    this.shopService.getSizes().subscribe({
+      next: (response) =>
+        (this.sizes = response.sort((a, b) => a.id - b.id)),
+      error: (error) => console.assert(error),
+    });
   }
 
   getProducts(){
     this.shopService.getProducts(this.shopParams).subscribe({
       next: response => {
         this.products = response.data;
+        this.products.forEach(p => {
+          p.productSizes.forEach(ps => {
+            let size = this.sizes.find(s => s.id == ps.sizeId)
+            if(size){
+              ps.size = size;
+            }
+          })
+        });
         this.shopParams.pageSize = response.pageSize;
         this.shopParams.pageNumber = response.pageIndex;
         this.totalCount = response.count;
@@ -46,7 +65,7 @@ export class ShopComponent implements OnInit {
 
   getBrands(){
     this.shopService.getBrands().subscribe({
-      next: response => this.brands = [{id: 0, name: 'Tudas'}, ...response],
+      next: response => this.brands = [{id: 0, name: 'Todas'}, ...response],
       error: error => console.assert(error)
     });
   }

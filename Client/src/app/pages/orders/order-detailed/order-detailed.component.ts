@@ -1,35 +1,37 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Order } from 'src/app/shared/models/order';
 import { OrdersService } from '../orders.service';
-import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
   selector: 'app-order-detailed',
   templateUrl: './order-detailed.component.html',
   styleUrls: ['./order-detailed.component.scss']
 })
-export class OrderDetailedComponent implements OnInit {
+export class OrderDetailedComponent implements OnInit, OnDestroy {
   order?: Order;
-  constructor(private activatedRoute: ActivatedRoute,
-    private ordersService: OrdersService,
-    private bcService: BreadcrumbService)
-    {
-      bcService.set('@order', '');
-    }
 
+  constructor(private activatedRoute: ActivatedRoute,
+    private ordersService: OrdersService) {}
 
   ngOnInit(): void {
     this.getOrderById();
   }
 
-  getOrderById(){
+  getOrderById() {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
-    this.bcService.set('@order', `Order #${id}`);
+    if (id) {
+      this.ordersService.getOrderById(+id).subscribe({
+        next: order => {
+          this.order = order;;
+        },
+        error: error => console.log(error)
+      });
+    }
+  }
 
-    if(id) this.ordersService.getOrderById(+id).subscribe({
-      next: order => this.order = order
-    });
+  ngOnDestroy(): void {
+    // Unsubscribe from any subscriptions to prevent memory leaks
   }
 }

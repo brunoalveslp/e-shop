@@ -10,7 +10,7 @@
         <div class="row">
           <app-cart-summary
             (addItem)="incrementQuantity($event)"
-            (removeItem)="removeItem($event.id, $event.quantity)"
+            (removeItem)="removeItem($event.id, $event.quantity,$event.size)"
           ></app-cart-summary>
         </div>
 

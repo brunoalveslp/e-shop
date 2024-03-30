@@ -61,7 +61,7 @@
       <div class="row row-cols-3 g-3 mb-4">
         @for(product of products; track product.id){
           <div class="col">
-            <app-product-item [product]="product"></app-product-item>
+            <app-product-item [product]="product" [sizes]="sizes"></app-product-item>
           </div>
         }
       </div>

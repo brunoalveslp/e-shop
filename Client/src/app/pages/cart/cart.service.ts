@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Product } from '../../shared/models/product';
 import { DeliveryMethod } from '../../shared/models/deliveryMethod';
 import { Cart, CartItem, CartTotals } from '../../shared/models/cart';
+import { Size } from 'src/app/shared/models/size';
 
 @Injectable({
   providedIn: 'root'
@@ -45,27 +46,27 @@ export class CartService {
     return this.cartSource.value;
   }
 
-  addItemToCart(item: Product | CartItem, quantity = 1){
+  addItemToCart(item: Product | CartItem, quantity = 1, size: Size){
     // check it its a Product or a Cart item
-    if(this.isProduct(item)) item = this.mapProductToCartItem(item);
+    if(this.isProduct(item)) item = this.mapProductToCartItem(item, size);
 
     // gets the current Cart or create one
     const Cart = this.getCurrentCartValue() ?? this.createCart();
 
     // add an item or insert one
-    Cart.items = this.addOrUpdateItem(Cart.items, item, quantity);
+    Cart.items = this.addOrUpdateItem(Cart.items, item, quantity, size);
     // persists it
     this.setCart(Cart);
   }
 
-  removeItemFromCart(id: number, quantity = 1){
+  removeItemFromCart(id: number, quantity = 1,size: Size){
     const Cart = this.getCurrentCartValue();
 
     if(!Cart) return;
 
-    const item = Cart.items.find(p => p.id === id);
+    const item = Cart.items.find(p => p.id === id && p.size.id == size.id);
 
-    if(item){
+    if(item && item.size == size){
       item.quantity -= quantity;
       if(item.quantity === 0){
         Cart.items = Cart.items.filter(p => p.id !== id);
@@ -99,10 +100,11 @@ export class CartService {
     this.calculateTotals();
   }
 
-  private addOrUpdateItem(items: CartItem[], itemToAdd: CartItem, quantity: number): CartItem[] {
+  private addOrUpdateItem(items: CartItem[], itemToAdd: CartItem, quantity: number, size: Size): CartItem[] {
     const item = items?.find(x => x.id === itemToAdd.id);
     if(item){
       item.quantity += quantity;
+      item.size = size
     } else {
       itemToAdd.quantity = quantity;
       items?.push(itemToAdd);
@@ -117,11 +119,12 @@ export class CartService {
     return cart;
   }
 
-  private mapProductToCartItem(item: Product) : CartItem {
+  private mapProductToCartItem(item: Product, size: Size) : CartItem {
     return {
       id: item.id,
       productName: item.name,
       price: item.price,
+      size: size,
       quantity: 0,
       weight: item.weight,
       pictureUrl: item.pictureUrl,

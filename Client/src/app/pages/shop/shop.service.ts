@@ -4,6 +4,7 @@ import { Brand } from 'src/app/shared/models/brand';
 import { Pagination } from 'src/app/shared/models/pagination';
 import { Product } from 'src/app/shared/models/product';
 import { ShopParams } from 'src/app/shared/models/shopParams';
+import { Size } from 'src/app/shared/models/size';
 import { Type } from 'src/app/shared/models/type';
 import { environment } from 'src/environments/environment.development';
 
@@ -16,6 +17,10 @@ export class ShopService {
 
   constructor(private http: HttpClient) {
 
+  }
+
+  getSizes(){
+    return this.http.get<Size[]>(this.baseUrl+'sizes');
   }
 
   getProducts(shopParams: ShopParams){
