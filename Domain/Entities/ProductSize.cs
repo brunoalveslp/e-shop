@@ -7,4 +7,5 @@ public class ProductSize : BaseEntity
     public int SizeId { get; set; }
     public Size Size { get; set; }
     public decimal Quantity { get; set; }
+    public bool IsActive { get; set; }
 }

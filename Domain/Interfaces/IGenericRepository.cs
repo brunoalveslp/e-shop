@@ -11,6 +11,7 @@ public interface IGenericRepository<T> where T : BaseEntity
     Task<ProductBrand> GetProductBrandByNameAsync(string name);
     Task<ProductType> GetProductTypeByNameAsync(string name);
     Task<IReadOnlyList<T>> GetAllAsync();
+    IReadOnlyList<T> GetAll();
     Task<T> GetEntityWithSpecification(ISpecification<T> spec);
     Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec);
 
