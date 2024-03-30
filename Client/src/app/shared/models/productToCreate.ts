@@ -1,15 +1,16 @@
 import { ProductSize } from "./productSize";
 
-export interface Product {
+export interface ProductToCreate {
   id:           number;
   name:         string;
   description:  string;
   price:        number;
   pictureUrl:   string;
   aditionalPicturesUrls: string[];
-  weight: number;
   productSizes: ProductSize[];
-  productUnit: string;
-  productType:  string;
-  productBrand: string;
+  weight: number;
+  quantity: number;
+  productUnit: number;
+  productType: number;
+  productBrand: number;
 }

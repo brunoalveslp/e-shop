@@ -1,4 +1,5 @@
 import * as cuid from 'cuid';
+import { Size } from './size';
 
 export interface Cart {
   id: string;
@@ -9,6 +10,7 @@ export interface CartItem {
   id: number;
   productName: string;
   price: number;
+  size: Size
   quantity: number;
   weight: number;
   pictureUrl: string;

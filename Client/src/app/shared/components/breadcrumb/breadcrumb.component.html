@@ -1,0 +1,42 @@
+<ng-container *ngIf="breadcrumbs$ | async as breadcrumbs">
+  <section class="mb-1 py-2">
+    <div class="container">
+      <div class="row d-flex align-items-center justify-content-center">
+        <div class="col-9">
+          <h1>
+            @if(breadcrumbs[breadcrumbs.length - 1].description){
+            {{ breadcrumbs[breadcrumbs.length - 1].description | titlecase }}
+
+            }
+          </h1>
+        </div>
+        <div class="col-3">
+          @if($any(breadcrumbs$ | async); as breadcrumbs) {
+          <ng-container>
+            @if(breadcrumbs[breadcrumbs.length -1].label !== 'Home'){
+
+            <div class="row d-flex align-items-center">
+              <div class="col-3 d-flex gap-2">
+                <ng-container
+                  *ngFor="let breadcrumb of breadcrumbs; let last = last"
+                >
+                  <a
+                    *ngIf="!last; else lastLink"
+                    [routerLink]="breadcrumb.url"
+                    >{{ breadcrumb.breadcrumb }}</a
+                  >
+                  <ng-template #lastLink
+                    ><span>{{ breadcrumb.breadcrumb }}</span></ng-template
+                  >
+                  <span *ngIf="!last"> / </span>
+                </ng-container>
+              </div>
+            </div>
+            }
+          </ng-container>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+</ng-container>

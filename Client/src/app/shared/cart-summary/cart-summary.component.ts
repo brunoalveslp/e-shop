@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CartService } from 'src/app/pages/cart/cart.service';
 import { CartItem } from '../models/cart';
+import { Size } from '../models/size';
 
 @Component({
   selector: 'app-cart-summary',
@@ -9,7 +10,7 @@ import { CartItem } from '../models/cart';
 })
 export class CartSummaryComponent {
   @Output() addItem = new EventEmitter<CartItem>();
-  @Output() removeItem = new EventEmitter<{id: number, quantity: number}>();
+  @Output() removeItem = new EventEmitter<{id: number, quantity: number, size: Size}>();
   @Input() isCart = true;
 
   constructor(public cartService: CartService){}
@@ -18,7 +19,7 @@ export class CartSummaryComponent {
     this.addItem.emit(item)
   }
 
-  removeCartItem(id: number, quantity = 1){
-    this.removeItem.emit({id, quantity});
+  removeCartItem(id: number, quantity = 1, size: Size){
+    this.removeItem.emit({id, quantity, size});
   }
 }

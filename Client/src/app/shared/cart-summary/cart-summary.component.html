@@ -13,6 +13,9 @@
             <div class="py-2"><strong>Quantidade</strong></div>
           </th>
           <th>
+            <div class="py-2"><strong>Tamanho</strong></div>
+          </th>
+          <th>
             <div class="py-2"><strong>Total</strong></div>
           </th>
           @if(isCart){
@@ -59,10 +62,11 @@
                 <i
                   class="fa fa-minus-circle text-warning me-2"
                   style="cursor: pointer; font-size: 2em"
-                  (click)="removeCartItem(item.id, 1)"
+                  (click)="removeCartItem(item.id, 1, item.size)"
                 ></i>
               }
                 <strong style="font-size: 1.5em">{{ item.quantity }}</strong>
+                <strong style="font-size: 1.5em">{{ item.size }}</strong>
               @if(isCart){
                 <i
                   class="fa fa-plus-circle text-warning mx-2"
@@ -75,13 +79,14 @@
           <td class="align-middle">
             <strong>{{ item.price * item.quantity | currency:'BRL' }}</strong>
           </td>
+
             @if(isCart){
               <td class="align-middle">
                 <a class="text-danger">
                   <i
                     class="fa fa-trash"
                     style="font-size: 2em; cursor: pointer; margin-left: 1.3rem"
-                    (click)="removeCartItem(item.id, item.quantity)"
+                    (click)="removeCartItem(item.id, item.quantity, item.size)"
                   ></i>
                 </a>
               </td>

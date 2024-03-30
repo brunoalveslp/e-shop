@@ -1,0 +1,172 @@
+.grid {
+  input {
+    width: 10rem;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+}
+
+#isActive {
+  width: 2rem;
+}
+
+
+details {
+  width: 1080px;
+
+  .grid-select{
+    width: 800px;
+    padding: 1rem;
+
+    select {
+      width: 40%;
+    }
+  }
+
+  table {
+    margin: 2rem;
+    width: 800px;
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+
+    thead tr {
+      background-color: #000000;
+      color: #ffffff;
+      text-align: left;
+
+      th, td {
+        padding: 4px 5px;
+      }
+
+      td {
+        margin-left: .7rem;
+      }
+
+    tbody tr {
+        border-bottom: thin solid #dddddd;
+    }
+
+    tbody tr:nth-of-type(even) {
+        background-color: #f3f3f3;
+    }
+
+    tbody tr:last-of-type {
+        border-bottom: 2px solid #009879;
+    }
+    }
+
+  }
+}
+
+summary {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  background-color: #ccc;
+  padding: .2rem 2rem;
+
+  &::after {
+    content: '';
+    width: 18px;
+    height: 10px;
+    background: url('https://uploads.sitepoint.com/wp-content/uploads/2023/10/1697699669arrow.svg') no-repeat;
+    background-size: cover;
+    margin-left: .75em;
+    transition: 0.2s;
+  }
+}
+
+
+details[open] > summary::after {
+  transform: rotate(180deg);
+}
+
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 90px;
+  height: 34px;
+}
+
+.switch input {display:none;}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: black;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: orange;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(55px);
+  -ms-transform: translateX(55px);
+  transform: translateX(55px);
+}
+
+
+/*------ ADDED CSS ---------*/
+.on
+{
+  display: none;
+}
+
+.on, .off
+{
+  color: white;
+  position: absolute;
+  transform: translate(-50%,-50%);
+  top: 50%;
+  left: 40%;
+  font-size: 10px;
+  font-family: Verdana, sans-serif;
+}
+
+.off {
+  left: 60%;
+}
+
+input:checked+ .slider .on
+{display: block;
+}
+
+input:checked + .slider .off
+{display: none;}
+
+/*--------- END --------*/
+
+/* Rounded sliders */
+// .slider.round {
+//   // border-radius: 34px;
+// }
+
+// .slider.round:before {
+//   border-radius: 50%;}

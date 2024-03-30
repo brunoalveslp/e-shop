@@ -5,7 +5,7 @@ import { PagingHeaderComponent } from './paging-header/paging-header.component';
 import { PagerComponent } from './pager/pager.component';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { OrderTotalsComponent } from './order-totals/order-totals.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TextInputComponent } from './components/text-input/text-input.component';
 import { StepperComponent } from './components/stepper/stepper.component';
@@ -17,6 +17,9 @@ import { StepperButtonsComponent } from './components/stepper-buttons/stepper-bu
 import { CartSummaryComponent } from './cart-summary/cart-summary.component';
 import { CardComponent } from './components/card/card.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { ImageInputComponent } from './components/image-input/image-input.component';
+import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
+import { SizesComponent } from './components/sizes/sizes.component';
 
 @NgModule({
   declarations: [
@@ -28,12 +31,16 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     CartSummaryComponent,
     StepperButtonsComponent,
     CardComponent,
+    ImageInputComponent,
+    BreadcrumbComponent,
+    SizesComponent
   ],
   imports: [
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     PaginationModule.forRoot(),
     CarouselModule.forRoot(),
-    ReactiveFormsModule,
     BsDropdownModule.forRoot(),
     CdkStepperModule,
     RouterModule,
@@ -56,6 +63,9 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     AccordionModule,
     CardComponent,
     ModalModule,
+    ImageInputComponent,
+    BreadcrumbComponent,
+    SizesComponent
   ]
 })
 export class SharedModule { }

@@ -1,0 +1,54 @@
+<div class="d-flex">
+  <details open class="mt-2">
+    <div class="d-flex align-items-center justify-content-around grid-select">
+      <label style="width: 30%;">Tamanhos da grade</label>
+      <select #sizesSelect class="form-control">
+        @for(size of sizes; track size.id){
+        <option value="{{ size.id }}">{{ size.name }}</option>
+        }
+      </select>
+      <button class="btn btn-outline-dark" (click)="addSize()">Adicionar</button>
+    </div>
+    <summary>Grade e Quantidades</summary>
+    <table>
+      @if(productSizes.length > 0){
+      <thead>
+        <tr>
+          <th>Tamanho</th>
+          <th>Quantidade</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      }
+      <tbody>
+        @if(productSizes.length > 0){ @for(productSize of productSizes; track
+        productSize.sizeId){
+
+        <tr>
+          <td>
+            <span>{{ productSize.size.name }}</span>
+          </td>
+          <td>
+            <input type="number" (change)="save()" [(ngModel)]="productSize.quantity" />
+          </td>
+          <td>
+            <label class="switch">
+              <input type="checkbox" (change)="save()" id="togBtn" [(ngModel)]="productSize.isActive"/>
+              <div class="slider round">
+                <!--ADDED HTML -->
+                <span class="on">Ativo</span>
+                <span class="off">Inativo</span>
+                <!--END-->
+              </div>
+            </label>
+          </td>
+        </tr>
+        } } @else {
+        <tr>
+          Náo há tamanhos selecionados.
+        </tr>
+        }
+      </tbody>
+    </table>
+  </details>
+</div>
