@@ -11,18 +11,25 @@ public class StoreDbContext : DbContext
     {
     }
     public DbSet<Product> Products { get; set; }
-    public DbSet<ProductBrand> ProductBrands { get; set; }
     public DbSet<ProductType> ProductTypes { get; set; }
+    public DbSet<ProductBrand> ProductBrands { get; set; }
     public DbSet<ProductUnit> ProductUnits { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItem { get; set; }
     public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
     public DbSet<ProductMovimentHistory> ProductMovimentHistory { get; set; }
+   public DbSet<ProductSize> ProductSizes { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+        {
+            relationship.DeleteBehavior = DeleteBehavior.Restrict;
+        }
+
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 }

@@ -3,63 +3,104 @@ using Domain.Interfaces;
 using Domain.Specifications;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
-namespace Infrastructure.Data;
-
-public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
+namespace Infrastructure.Data
 {
-    private readonly StoreDbContext _context;
-    public GenericRepository(StoreDbContext context)
+    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
-        _context = context;
-    }
+        private readonly IDbContextFactory<StoreDbContext> _contextFactory;
 
-    public async Task AddAsync(T entity)
-    {
-        await _context.Set<T>().AddAsync(entity);
-    }
+        public GenericRepository(IDbContextFactory<StoreDbContext> contextFactory)
+        {
+            _contextFactory = contextFactory;
+        }
 
-    public async Task<int> CountAsync(ISpecification<T> spec)
-    {
-        return await ApplySpecification(spec).CountAsync();
-    }
+        public async Task AddAsync(T entity)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            await context.Set<T>().AddAsync(entity);
+            await context.SaveChangesAsync();
+        }
 
-    public void Delete(T entity)
-    {
-         _context.Set<T>().Remove(entity);
-    }
+        public async Task<int> CountAsync(ISpecification<T> spec)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            return await ApplySpecification(spec, context).CountAsync();
+        }
 
-    public async Task<IReadOnlyList<T>> GetAllAsync()
-    {
-        return await _context.Set<T>().ToListAsync();
-    }
+        public void Delete(T entity)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            context.Set<T>().Remove(entity);
+            context.SaveChanges();
+        }
 
-    public async Task<T> GetByIdAsync(int id)
-    {
-        return await _context.Set<T>().FindAsync(id);
-    }
+        public IReadOnlyList<T> GetAll()
+        {
+            using var context = _contextFactory.CreateDbContext();
+            return context.Set<T>().ToList();
+        }
 
-    public async Task<T> GetEntityWithSpecification(ISpecification<T> spec)
-    {
-        return await ApplySpecification(spec).FirstOrDefaultAsync(); 
-    }
+        public async Task<IReadOnlyList<T>> GetAllAsync()
+        {
+            using var context = _contextFactory.CreateDbContext();
+            return await context.Set<T>().ToListAsync();
+        }
 
+        public async Task<ProductUnit> GetProductUnitByNameAsync(string name)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            return await context.ProductUnits.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower());
+        }
+        public async Task<ProductType> GetProductTypeByNameAsync(string name)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            return await context.ProductTypes.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower());
+        }
 
-    public async Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec)
-    {
-        return await ApplySpecification(spec).ToListAsync();
-    }
+        public async Task<ProductBrand> GetProductBrandByNameAsync(string name)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            return await context.ProductBrands.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower());
+        }
 
+        public async Task<T> GetByIdAsync(int id)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            return await context.Set<T>().FindAsync(id);
+        }
 
+        public async Task<T> GetEntityWithSpecification(ISpecification<T> spec)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            return await ApplySpecification(spec, context).FirstOrDefaultAsync();
+        }
 
-    public void Update(T entity)
-    {
-        _context.Set<T>().Attach(entity);
-        _context.Entry(entity).State = EntityState.Modified;
-    }
+        public async Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            return await ApplySpecification(spec, context).ToListAsync();
+        }
 
-    private IQueryable<T> ApplySpecification(ISpecification<T> spec)
-    {
-        return SpecificationEvaluator<T>.GetQuery(_context.Set<T>().AsQueryable(), spec);
+        public async Task UpdateAsync(T entity)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var existingEntity = await context.Set<T>().FindAsync(entity.Id);
+            if (existingEntity != null)
+            {
+                // Detach the existing entity
+                context.Entry(existingEntity).State = EntityState.Detached;
+            }
+            // Now attach & update your entity
+            context.Set<T>().Attach(entity);
+            context.Entry(entity).State = EntityState.Modified;
+            await context.SaveChangesAsync();
+        }
+
+        private IQueryable<T> ApplySpecification(ISpecification<T> spec, StoreDbContext context)
+        {
+            return SpecificationEvaluator<T>.GetQuery(context.Set<T>().AsQueryable(), spec);
+        }
     }
 }

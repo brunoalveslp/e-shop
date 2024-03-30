@@ -1,30 +1,23 @@
 [
   {
     "Id": 1,
-    "ShortName": "UPS1",
-    "Description": "Fastest delivery time",
+    "ShortName": "Correios - Sedex",
+    "Description": "Entrega dentro de 2 dias uteis.",
     "DeliveryTime": "1-2 Days",
-    "Price": 10
+    "Price": 20
   },
   {
     "Id": 2,
-    "ShortName": "UPS2",
-    "Description": "Get it within 5 days",
+    "ShortName": "Correios - PAC",
+    "Description": "Entrega dentro de 5 dias uteis.",
     "DeliveryTime": "2-5 Days",
-    "Price": 5
+    "Price": 10
   },
   {
     "Id": 3,
-    "ShortName": "UPS3",
-    "Description": "Slower but cheap",
+    "ShortName": "Transportadora Barata",
+    "Description": "Entrega em até 10 dias uteis.",
     "DeliveryTime": "5-10 Days",
-    "Price": 2
-  },
-  {
-    "Id": 4,
-    "ShortName": "FREE",
-    "Description": "Free! You get what you pay for",
-    "DeliveryTime": "1-2 Weeks",
-    "Price": 0
+    "Price": 5
   }
 ]
