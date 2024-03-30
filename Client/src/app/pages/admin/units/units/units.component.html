@@ -63,10 +63,10 @@
         <app-text-input [formControl]="unitForm.controls['name']" [label]="'Unidade'" />
         <div class="d-grid">
           @if(isEdit){
-            <button [disabled]="unitForm.invalid" class="btn btn-lg btn-primary mt-3" type="submit" (click)="onEdit()">Editar</button>
+            <button [disabled]="unitForm.invalid" class="btn btn-outline-dark mt-3" type="submit" (click)="onEdit()">Editar</button>
           }
           @else {
-            <button [disabled]="unitForm.invalid" class="btn btn-lg btn-primary mt-3" type="submit" (click)="onSubmit()">Criar</button>
+            <button [disabled]="unitForm.invalid" class="btn btn-outline-dark mt-3" type="submit" (click)="onSubmit()">Criar</button>
           }
         </div>
       </form>

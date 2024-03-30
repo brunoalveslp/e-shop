@@ -1,6 +1,15 @@
-import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import {
+  AfterContentInit,
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Product } from 'src/app/shared/models/product';
 import { ShopService } from 'src/app/pages/shop/shop.service';
@@ -10,192 +19,340 @@ import { Unit } from 'src/app/shared/models/unit';
 import { Brand } from 'src/app/shared/models/brand';
 import { Type } from 'src/app/shared/models/type';
 import { UnitsService } from '../../units/units.service';
-
+import { ProductSize } from 'src/app/shared/models/productSize';
+import { Size } from 'src/app/shared/models/size';
+import { SizesComponent } from 'src/app/shared/components/sizes/sizes.component';
 
 @Component({
   selector: 'app-products',
   templateUrl: './products.component.html',
-  styleUrl: './products.component.scss'
+  styleUrl: './products.component.scss',
 })
-export class ProductsComponent implements OnInit{
-  @ViewChild('search') searchTerm? : ElementRef;
+export class ProductsComponent implements OnInit, AfterViewInit {
+  @ViewChild('search') searchTerm?: ElementRef;
   public products: Product[] = [];
   public types: Type[] = [];
   public brands: Brand[] = [];
   public units: Unit[] = [];
+  public sizes: Size[] = []
+  public productSizes: ProductSize[] = [];
   public shopParams: ShopParams = new ShopParams();
   public totalCount: number = 0;
+  public productImage: File | undefined;
+  public productAditionalImages: File[] = [];
+  public quantityOfAditionalImages: number = 0;
 
   modalRef: BsModalRef;
   isEdit = false;
 
   config = {
     backdrop: true,
-    ignoreBackdropClick: false
+    ignoreBackdropClick: false,
   };
 
   productForm = this.createForm();
 
-  constructor(private shopService: ShopService, private UnitsService: UnitsService, private productsService: ProductsService, private fb: FormBuilder,  private modalService: BsModalService,private router: Router){}
+  constructor(
+    private shopService: ShopService,
+    private UnitsService: UnitsService,
+    private productsService: ProductsService,
+    private fb: FormBuilder,
+    private modalService: BsModalService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.getProducts();
     this.getBrands();
     this.getTypes();
     this.getUnits();
+    this.getSizes();
   }
 
-  getBrands(){
+  ngAfterViewInit(): void {
+
+  }
+
+  saveSize(e: any){
+    console.log('saving size')
+    console.log(this.productSizes)
+  }
+
+  getBrands() {
     this.shopService.getBrands().subscribe({
-      next: response => this.brands = response,
-      error: error => console.assert(error)
+      next: (response) =>
+        (this.brands = [{ id: 0, name: 'Selecionar...' }, ...response.sort((a, b) => a.id - b.id)]),
+      error: (error) => console.assert(error),
     });
   }
 
-  getTypes(){
+  getSizes() {
+    this.productsService.getSizes().subscribe({
+      next: (response) =>
+        (this.sizes = [{ id: 0, name: 'Selecionar...', isActive: true }, ...response.sort((a, b) => a.id - b.id)]),
+      error: (error) => console.assert(error),
+    });
+  }
+  getTypes() {
     this.shopService.getTypes().subscribe({
-      next: response => this.types = response,
-      error: error => console.assert(error)
+      next: (response) =>
+        (this.types = [{ id: 0, name: 'Selecionar...' }, ...response.sort((a, b) => a.id - b.id)]),
+      error: (error) => console.assert(error),
     });
   }
 
-  getUnits(){
+  getUnits() {
     this.UnitsService.getUnits().subscribe({
-      next: response => this.units = response,
-      error: error => console.assert(error)
+      next: (response) =>
+        (this.units = [{ id: 0, name: 'Selecionar...' }, ...response.sort((a, b) => a.id - b.id)]),
+      error: (error) => console.assert(error),
+    });
+
+    this.productForm.patchValue({
+      productUnit: 'Selecionar...',
+      productBrand: 'Selecionar...',
+      productType: 'Selecionar...',
     });
   }
 
-  getProducts(){
+  getProducts() {
     this.shopService.getProducts(this.shopParams).subscribe({
-      next: response => {
-        this.products = response.data;
+      next: (response) => {
+        this.products = response.data.sort((a, b) => a.id - b.id);
         this.shopParams.pageSize = response.pageSize;
         this.shopParams.pageNumber = response.pageIndex;
         this.totalCount = response.count;
       },
-      error: error => console.assert(error)
+      error: (error) => console.assert(error),
     });
   }
 
-  onBrandSelected(brandId: number){
-    this.shopParams.brandId = brandId;
-    this.shopParams.pageNumber = 1;
-    this.getProducts();
-  }
-
-  onTypeSelected(typeId: number){
-    this.shopParams.typeId = typeId;
-    this.shopParams.pageNumber = 1;
-    this.getProducts();
-  }
-
-  onSortSelected(event: any){
-    this.shopParams.sort = event.target.value;
-    this.getProducts();
-  }
-
-  onPageChanged(event: any){
-    if(this.shopParams.pageNumber !== event){
+  onPageChanged(event: any) {
+    if (this.shopParams.pageNumber !== event) {
       this.shopParams.pageNumber = event;
       this.getProducts();
     }
   }
 
-  onSearch(){
+  onSearch() {
     this.shopParams.search = this.searchTerm?.nativeElement.value;
     this.shopParams.pageNumber = 1;
     this.getProducts();
   }
 
-  onReset(){
-    if(this.searchTerm) this.searchTerm.nativeElement.value = '';
+  onReset() {
+    if (this.searchTerm) this.searchTerm.nativeElement.value = '';
 
     this.shopParams = new ShopParams();
 
     this.getProducts();
   }
 
-  onDelete(id: number){
+  onDelete(id: number) {
     this.productsService.deleteProduct(id).subscribe({
       next: () => {
-        this.getProducts()
-        this.modalRef.hide()
-      }
-    })
+        this.getProducts();
+        this.modalRef.hide();
+      },
+    });
   }
 
-  openModal(template: TemplateRef<any>,entity?:Product) {
+  openModal(template: TemplateRef<any>, entity?: Product) {
+    if(entity?.productSizes){
 
+      this.productSizes = entity.productSizes.map((size) => ({
+        productSizeId: entity.id,
+        sizeId: size.sizeId,
+        size: size.size,
+        quantity: size.quantity,
+        isActive: size.isActive,
+      }));
+    }
     this.modalRef = this.modalService.show(template, this.config);
     this.modalRef.onHide?.subscribe((reason: string | any) => {
-      if(reason === 'backdrop-click') {
+      if (reason === 'backdrop-click') {
         this.clearEntity();
       }
     });
     this.modalRef.setClass('modal-lg');
 
-    if(entity){
+
+    if (entity) {
       this.isEdit = true;
-     this.productForm.setValue({
-      id: entity.id,
-      name: entity.name,
-      description: entity.description,
-      price: entity.price,
-      pictureUrl: entity.pictureUrl,
-      aditionalPicturesUrls: entity.aditionalPicturesUrls,
-      weight: entity.weight,
-      quantity: entity.quantity,
-      productType: entity.productType,
-      productUnit: entity.productUnit,
-      productBrand: entity.productBrand,
-     });
-     console.log(entity.productType)
+      this.productForm.patchValue({
+          id: entity.id,
+          name: entity.name,
+          description: entity.description,
+          price: entity.price,
+          pictureUrl: entity.pictureUrl,
+          aditionalPicturesUrls: entity.aditionalPicturesUrls,
+          weight: entity.weight,
+          productSizes: entity.productSizes.map((size) => ({
+              sizeId: size.sizeId,
+              size: size.size,
+              quantity: size.quantity,
+              isActive: size.isActive,
+          })),
+          productType: entity.productType,
+          productUnit: entity.productUnit,
+          productBrand: entity.productBrand,
+      });
+  }
+  }
+
+  updateSize(event: any){
+    console.log(event)
+  }
+
+  closeModal() {
+    this.modalRef.hide();
+    this.clearEntity();
+  }
+
+  onSubmit() {
+
+    let formData = new FormData();
+
+    Object.keys(this.productForm.controls).forEach((formControlName) => {
+      if (formControlName == 'pictureUrl') {
+        if (this.productImage) {
+          console.log(this.productImage);
+          formData.append('picture', this.productImage, this.productImage.name);
+        }
+      } else if (formControlName == 'aditionalPicturesUrls') {
+        console.log(this.productAditionalImages);
+        this.productAditionalImages.forEach((file) => {
+          if (file) {
+            formData.append('aditionalPictures', file, file.name);
+          }
+        });
+      } else if(formControlName == 'productSizes'){
+        formData.append(formControlName, JSON.stringify(this.productSizes))
+      } else if (
+        formControlName == 'productType' ||
+        formControlName == 'productBrand' ||
+        formControlName == 'productUnit'
+      ) {
+        formData.append(
+          formControlName + 'Name',
+          this.productForm.get(formControlName)?.value
+        );
+      }
+      formData.append(
+        formControlName,
+        this.productForm.get(formControlName)?.value
+      );
+    });
+
+    this.productsService.createProduct(formData).subscribe({
+      next: () => {
+        this.getProducts();
+        this.modalRef.hide();
+      },
+    });
+  }
+
+  onEdit() {
+
+
+    let formData = new FormData();
+    Object.keys(this.productForm.controls).forEach((formControlName) => {
+      if (formControlName == 'pictureUrl' && this.productImage) {
+        formData.append('picture', this.productImage, this.productImage.name);
+      } else if (
+        formControlName == 'aditionalPicturesUrls' &&
+        this.productAditionalImages.length > 0
+      ) {
+        this.productAditionalImages.forEach((file) => {
+          if (file) {
+            formData.append('aditionalPictures', file, file.name);
+          }
+        });
+      } else if(formControlName == 'productSizes'){
+          formData.append(formControlName, JSON.stringify(this.productSizes))
+      } else if (
+        formControlName == 'productType' ||
+        formControlName == 'productBrand' ||
+        formControlName == 'productUnit'
+      ) {
+        formData.append(
+          formControlName + 'Name',
+          this.productForm.get(formControlName)?.value
+        );
+      } else {
+        formData.append(
+          formControlName,
+          this.productForm.get(formControlName)?.value
+        );
+      }
+    });
+    if (formData) {
+      this.productsService.updateProduct(formData).subscribe({
+        next: () => {
+          this.getProducts();
+          this.modalRef.hide();
+          this.clearEntity();
+        },
+      });
     }
- }
+  }
 
- closeModal(){
-   this.modalRef.hide();
-   this.clearEntity();
- }
+  clearEntity() {
+    this.productForm = this.createForm();
+    this.isEdit = false;
+    this.quantityOfAditionalImages = 0;
+  }
 
- onSubmit(){
-  this.productsService.updateProduct(this.productForm.value as Product).subscribe({
-    next: () => {
-      this.getProducts()
-      this.modalRef.hide()
+  onAddImage(img: File) {
+    console.log(img);
+    this.productImage = img;
+  }
+
+  onAddAditionalImage(img: File) {
+    console.log(img);
+    this.productAditionalImages.push(img);
+  }
+
+  onRemoveImage(){
+    this.productImage = undefined;
+    console.log('removed')
+  }
+
+  onRemoveAditionalImage(index: number, url: string | undefined){
+    this.productAditionalImages.splice(index, 1);
+    this.quantityOfAditionalImages -= 1;
+    console.log('removed')
+    if(url) {
+      this.productForm.value.aditionalPicturesUrls?.splice(this.productForm.value.aditionalPicturesUrls?.indexOf(url), 1);
     }
-  });
-}
+  }
 
-onEdit() {
-  this.productsService.updateProduct(this.productForm.value as Product).subscribe({
-    next: () => {
-      this.getProducts()
-      this.modalRef.hide()
-      this.clearEntity()
+  onAddIndex() {
+    this.quantityOfAditionalImages += 1;
+  }
+
+  createRange(number: number) {
+    // return new Array(number);
+    return new Array(number).fill(0).map((n, index) => index + 1);
+  }
+
+    createForm() {
+      return this.fb.group({
+        id: 0,
+        name: '',
+        pictureUrl: '',
+        description: '',
+        price: 0.0,
+        aditionalPicturesUrls: [['']],
+        weight: 0.0,
+        productUnit: new FormControl(),
+        productType: new FormControl(),
+        productBrand: new FormControl(),
+        productSizes: this.fb.array([]),
+      });
     }
-  });
-}
 
- clearEntity() {
-  this.productForm = this.createForm()
-  this.isEdit = false;
-}
-
-createForm(){
-  return this.fb.group({
-    id: 0,
-    name: '',
-    description: '',
-    price: 0,
-    pictureUrl: '',
-    aditionalPicturesUrls: [['']],
-    weight: 0,
-    quantity:0,
-    productUnit: undefined,
-    productType: undefined,
-    productBrand: undefined,
-  });
-}
+  compareUnits(unit1: any, unit2: any) {
+    return unit1 && unit2 ? unit1.id === unit2.id : unit1 === unit2;
+  }
 }

@@ -1,7 +1,134 @@
 <div class="container">
-    <section class="row">
-        <app-card class="col-sm g-3 mb-4" [title]="'Produto'" [links]="listOfProductslinks" />
-        <app-card  class="col-sm g-3 mb-4" [title]="'Pedidos'" [links]="listOfOrderslinks" />
-        <app-card  class="col-sm g-3 mb-4" [title]="'Usuarios'" [links]="[]" />
-    </section>
+  <div class="dropdowns d-flex">
+    <div class="btn-group" dropdown>
+      <button
+        id="button-basic"
+        dropdownToggle
+        type="button"
+        class="btn dropdown-toggle"
+        aria-controls="products"
+      >
+        Produtos
+      </button>
+      <ul
+        id="products"
+        *dropdownMenu
+        class="dropdown-menu"
+        role="menu"
+        aria-labelledby="button-basic"
+      >
+        <li>
+          <a
+            class="dropdown-item"
+            [routerLink]="[{ outlets: { admin: ['products'] } }]"
+            >Produtos</a
+          >
+        </li>
+        <li>
+          <a
+            class="dropdown-item"
+            [routerLink]="[{ outlets: { admin: ['units'] } }]"
+            >Unidades</a
+          >
+        </li>
+        <li>
+          <a
+            class="dropdown-item"
+            [routerLink]="[{ outlets: { admin: ['productSizes'] } }]"
+            >Tamanhos</a
+          >
+        </li>
+        <li>
+          <a
+            class="dropdown-item"
+            [routerLink]="[{ outlets: { admin: ['types'] } }]"
+            >Tipos</a
+          >
+        </li>
+        <li>
+          <a
+            class="dropdown-item"
+            [routerLink]="[{ outlets: { admin: ['brands'] } }]"
+            >Marcas</a
+          >
+        </li>
+      </ul>
+    </div>
+    <div class="btn-group" dropdown>
+      <button
+        id="button-basic"
+        dropdownToggle
+        type="button"
+        class="btn dropdown-toggle"
+        aria-controls="orders"
+      >
+        Pedidos
+      </button>
+      <ul
+        id="orders"
+        *dropdownMenu
+        class="dropdown-menu"
+        role="menu"
+        aria-labelledby="button-basic"
+      >
+        <li>
+          <a
+            class="dropdown-item"
+            [routerLink]="[{ outlets: { admin: ['deliveryMethod'] } }]"
+            >Tipo de Entrega</a
+          >
+        </li>
+
+      </ul>
+    </div>
+    <div class="btn-group" dropdown>
+      <button
+        id="button-basic"
+        dropdownToggle
+        type="button"
+        class="btn dropdown-toggle"
+        aria-controls="stock"
+      >
+        Estoque
+      </button>
+      <ul
+        id="stock"
+        *dropdownMenu
+        class="dropdown-menu"
+        role="menu"
+        aria-labelledby="button-basic"
+      >
+        <li>
+          <a
+            class="dropdown-item"
+            [routerLink]="[{ outlets: { admin: ['products'] } }]"
+            >Produtos</a
+          >
+        </li>
+        <li>
+          <a
+            class="dropdown-item"
+            [routerLink]="[{ outlets: { admin: ['units'] } }]"
+            >Unidades</a
+          >
+        </li>
+        <li>
+          <a
+            class="dropdown-item"
+            [routerLink]="[{ outlets: { admin: ['types'] } }]"
+            >Tipos</a
+          >
+        </li>
+        <li>
+          <a
+            class="dropdown-item"
+            [routerLink]="[{ outlets: { admin: ['brands'] } }]"
+            >Marcas</a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <router-outlet name="admin"></router-outlet>
 </div>

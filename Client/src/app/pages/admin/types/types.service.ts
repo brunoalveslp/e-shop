@@ -24,7 +24,7 @@ export class TypesService {
   }
 
   updateType(type:Type){
-    return this.http.post<Type>(this.baseUrl+'producttypes/update', type);
+    return this.http.put<Type>(this.baseUrl+'producttypes/update', type);
   }
 
   deleteType(id: number){

@@ -1,5 +1,5 @@
 <div class="container">
-  <button type="button" (click)="openModal(template)" class="btn btn-light new">Novo Tipo</button>
+  <button type="button" (click)="openModal(template)" class="btn btn-light new">Novo Tamanho</button>
   <div class="table">
     <table class="table shadow-lg p-1 mb-5 bg-white rounded">
       <thead class="thead-dark text-uppercase">
@@ -8,7 +8,10 @@
             <strong>Código</strong>
           </th>
           <th scope="col">
-            <strong>Descrição</strong>
+            <strong>Tamanho</strong>
+          </th>
+          <th scope="col">
+            <strong>Ativo</strong>
           </th>
           <th scope="col">
             <strong>Ação</strong>
@@ -16,14 +19,21 @@
         </tr>
       </thead>
       <tbody>
-        @if(types){
-          @for(type of types; track type.id){
+        @if(sizes){
+          @for(size of sizes; track size.id){
             <tr>
               <th scope="row">
-                <strong class="ps-2"># {{type.id}}</strong>
+                <strong class="ps-2"># {{size.id}}</strong>
               </th>
               <td>
-                {{type.name}}
+                {{size.name}}
+              </td>
+              <td>
+                @if(size.isActive){
+                  Sim
+                } @else {
+                  Não
+                }
               </td>
               <td style="width: 200px;">
                   <div class="btn-group" dropdown>
@@ -37,9 +47,9 @@
                     </button>
                     <ul id="dropdown-split" *dropdownMenu class="dropdown-menu"
                         role="menu" aria-labelledby="button-split">
-                      <li role="menuitem"><a class="dropdown-item" (click)="openModal(template,type)">Editar</a></li>
+                      <li role="menuitem"><a class="dropdown-item" (click)="openModal(template,size)">Editar</a></li>
                       <li class="divider dropdown-divider"></li>
-                      <li role="menuitem"><a class="dropdown-item delete" (click)="onDelete(type.id)">Deletar</a>
+                      <li role="menuitem"><a class="dropdown-item delete" (click)="onDelete(size.id)">Deletar</a>
                       </li>
                     </ul>
                   </div>
@@ -53,20 +63,29 @@
 
   <ng-template #template>
     <div class="modal-header">
-       <h4 class="modal-title pull-left">Tipo</h4>
+       <h4 class="modal-title pull-left">Tamanho</h4>
        <button type="button" class="btn close pull-right" aria-label="Close" (click)="closeModal()">
           <span aria-hidden="true">×</span>
        </button>
     </div>
     <div class="modal-body">
-      <form [formGroup]="typeForm" >
-        <app-text-input [formControl]="typeForm.controls['name']" [label]="'Nome do Tipo'" />
+      <form [formGroup]="sizeForm" class="d-flex align-items-center justify-content-around">
+        <app-text-input [formControl]="sizeForm.controls['name']" [label]="'Tamanho'" />
+        <label class="switch">
+          <input type="checkbox" id="togBtn" [formControl]="sizeForm.controls['isActive']">
+          <div class="slider round">
+           <!--ADDED HTML -->
+           <span class="on">Ativo</span>
+           <span class="off">Inativo</span>
+           <!--END-->
+          </div>
+         </label>
         <div class="d-grid">
           @if(isEdit){
-            <button [disabled]="typeForm.invalid" class="btn btn-lg btn-primary mt-3" type="submit" (click)="onEdit()">Editar</button>
+            <button [disabled]="sizeForm.invalid" class="btn btn-outline-dark" type="submit" (click)="onEdit()">Editar</button>
           }
           @else {
-            <button [disabled]="typeForm.invalid" class="btn btn-lg btn-primary mt-3" type="submit" (click)="onSubmit()">Criar</button>
+            <button [disabled]="sizeForm.invalid" class="btn btn-outline-dark" type="submit" (click)="onSubmit()">Criar</button>
           }
         </div>
       </form>

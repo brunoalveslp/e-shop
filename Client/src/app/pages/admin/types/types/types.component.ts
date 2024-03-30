@@ -36,7 +36,7 @@ export class TypesComponent implements OnInit{
   };
 
   onSubmit(){
-    this.typesService.updateType(this.typeForm.value as Type).subscribe({
+    this.typesService.createType(this.typeForm.value as Type).subscribe({
       next: () => {
         this.getTypes()
         this.modalRef.hide()

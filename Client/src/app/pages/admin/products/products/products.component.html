@@ -1,3 +1,4 @@
+@defer {
 <div class="container">
   <div class="row">
     <section class="col-12">
@@ -93,67 +94,68 @@
              </button>
           </div>
           <div class="modal-body">
-            <form [formGroup]="productForm" >
-              <app-text-input [formControl]="productForm.controls['name']" [label]="'Nome do Produto'" />
-              <app-text-input [formControl]="productForm.controls['description']" [label]="'Descrição'" />
-              <app-text-input [type]="'number'" [formControl]="productForm.controls['price']" [label]="'Preço'" />
-              <app-text-input [type]="'number'" [formControl]="productForm.controls['weight']" [label]="'Peso'" />
-              <app-text-input [type]="'number'" [formControl]="productForm.controls['quantity']" [label]="'Quantidade Inicial'" />
-
+            <form [formGroup]="productForm" enctype="multipart/form-data">
+              <div class="input-group mb-3 grid gap-2">
+                @if(isEdit){
+                  <app-image-input [url]="productForm.value.pictureUrl" (newImageEvent)="onAddImage($event.value)"></app-image-input>
+                } @else {
+                  <app-image-input (newImageEvent)="onAddImage($event)"></app-image-input>
+                }
+                <div class="flex-fill">
+                  <app-text-input [formControl]="productForm.controls['name']" [label]="'Nome do Produto'" />
+                  <app-text-input [formControl]="productForm.controls['description']" [label]="'Descrição'" />
+                  <app-text-input [type]="'number'" [formControl]="productForm.controls['price']" [label]="'Preço (R$)'" />
+                </div>
+              </div>
+              <app-text-input [type]="'number'" [formControl]="productForm.controls['weight']" [label]="'Peso (KG)'" />
+              <!-- <app-text-input [type]="'number'" [formControl]="productForm.controls['quantity']" [label]="'Quantidade Inicial'" /> -->
+              <div class="input-group mb-3 grid gap-2">
+                <app-sizes #grid [productSizes]="productSizes" [sizes]="sizes"></app-sizes>
+              </div>
               <div class="input-group mb-3 grid gap-2">
                 <div class="input-group-prepend">
                   <label class="input-group-text" for="unit">Unidade -></label>
                 </div>
-                <select class="form-select" id="inputGroupSelect01">
-                  @if(!isEdit){
-                    <option selected>Selecionar...</option>
-                  }
-                  @for(unit of units; track unit.id){
-                    @if(isEdit && unit.name == productForm.value.productUnit){
-                      <option value="{{unit.id}}" selected>{{unit.name}}</option>
-                    }@else {
-                      <option value="{{unit.id}}">{{unit.name}}</option>
-                    }
-                  }
+                <select class="form-select" formControlName="productUnit">
+                  <option *ngFor="let unit of units" [value]="unit.name">{{ unit.name }}</option>
                 </select>
                 <div class="input-group-prepend">
                   <label class="input-group-text" for="unit">Marca -></label>
                 </div>
-                <select class="form-select" id="inputGroupSelect01">
-                  @if(!isEdit){
-                    <option selected>Selecionar...</option>
-                  }
-                  @for(brand of brands; track brand.id){
-                    @if(isEdit && brand.name == productForm.value.productBrand){
-                      <option value="{{brand.id}}" selected>{{brand.name}}</option>
-                    } @else {
-                      <option value="{{brand.id}}">{{brand.name}}</option>
-                    }
-                  }
+                <select class="form-select" formControlName="productBrand">
+                  <option *ngFor="let brand of brands" [value]="brand.name">{{brand.name}}</option>
                 </select>
                 <div class="input-group-prepend">
                   <label class="input-group-text" for="unit">Tipo -></label>
                 </div>
-                <select class="form-select" id="inputGroupSelect01">
-                  @if(!isEdit){
-                    <option selected>Selecionar...</option>
-                  }
-                  @for(type of types; track type.id){
-                    @if(isEdit && type.name == productForm.value.productType){
-                      <option value="{{type.id}}" selected>{{type.name}}</option>
-                    }@else {
-                      <option value="{{type.id}}">{{type.name}}</option>
-                    }
-                  }
+                <select class="form-select" formControlName="productType">
+                  <option *ngFor="let type of types" [value]="type.name">{{type.name}}</option>
                 </select>
               </div>
+              <div class="d-flex flex-wrap gap-2">
+                  @if(productForm.value.aditionalPicturesUrls && isEdit){
+                    @for(image of productForm.value.aditionalPicturesUrls; track $index){
+                      <app-image-input url="{{image}}" (removeImageEvent)="onRemoveAditionalImage($index, image)" (newImageEvent)="onAddAditionalImage($event)" />
+                    }
+                  }@else {
+                    <app-image-input (newImageEvent)="onAddAditionalImage($event)" />
+                  }
+                  @if(quantityOfAditionalImages > 0){
+                    @for(index of createRange(quantityOfAditionalImages); track $index){
+                      <app-image-input (newImageEvent)="onAddAditionalImage($event)"/>
+                    }
+                  }
+                  <button class="btn plusBtn"(click)="onAddIndex()">+</button>
+
+
+                </div>
               <!-- <app-text-input [formControl]="productForm.controls['name']" [label]="'Nome do Produto'" /> -->
               <div class="d-grid">
                 @if(isEdit){
-                  <button [disabled]="productForm.invalid" class="btn btn-lg btn-primary mt-3" type="submit" (click)="onEdit()">Editar</button>
+                  <button [disabled]="productForm.invalid" class="btn btn-outline-dark mt-3" type="submit" (click)="onEdit()">Editar</button>
                 }
                 @else {
-                  <button [disabled]="productForm.invalid" class="btn btn-lg btn-primary mt-3" type="submit" (click)="onSubmit()">Criar</button>
+                  <button [disabled]="productForm.invalid" class="btn btn-outline-dark mt-3" type="submit" (click)="onSubmit()">Criar</button>
                 }
               </div>
             </form>
@@ -175,3 +177,4 @@
     </section>
   </div>
 </div>
+}

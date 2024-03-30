@@ -18,3 +18,16 @@ export class AdminComponent {
     {route: 'deliveryMethod', title: 'Tipo de Entrega'},
   ];
 }
+
+interface tamanho {
+  id: number;
+  name: string;
+  isActive: boolean;
+}
+
+
+interface grade {
+  id: string;
+  name: string;
+  tamanhos: tamanho[]
+}

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TypesComponent } from './types/types.component';
-import { TypesRoutingModule } from './types-routing.module';
+import { TypesRoutingModule } from './user-roles-routing.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 
 

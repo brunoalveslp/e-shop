@@ -41,7 +41,7 @@
                 {{deliveryMethod.deliveryTime}}
               </td>
               <td>
-                {{deliveryMethod.price}}
+                {{deliveryMethod.price | currency:'BRL'}}
               </td>
               <td style="width: 200px;">
                   <div class="btn-group" dropdown>
@@ -71,7 +71,7 @@
 
   <ng-template #template>
     <div class="modal-header">
-       <h4 class="modal-title pull-left">Tipo de Entre</h4>
+       <h4 class="modal-title pull-left">Tipo de Entrega</h4>
        <button type="button" class="btn close pull-right" aria-label="Close" (click)="closeModal()">
           <span aria-hidden="true">×</span>
        </button>
@@ -84,10 +84,10 @@
         <app-text-input [type]="'number'" [formControl]="deliveryMethodForm.controls['price']" [label]="'Preço'" />
         <div class="d-grid">
           @if(isEdit){
-            <button [disabled]="deliveryMethodForm.invalid" class="btn btn-lg btn-primary mt-3" type="submit" (click)="onEdit()">Editar</button>
+            <button [disabled]="deliveryMethodForm.invalid" class="btn btn-outline-dark mt-3" type="submit" (click)="onEdit()">Editar</button>
           }
           @else {
-            <button [disabled]="deliveryMethodForm.invalid" class="btn btn-lg btn-primary mt-3" type="submit" (click)="onSubmit()">Criar</button>
+            <button [disabled]="deliveryMethodForm.invalid" class="btn btn-outline-dark mt-3" type="submit" (click)="onSubmit()">Criar</button>
           }
         </div>
       </form>

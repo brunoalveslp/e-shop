@@ -1,17 +1,24 @@
 import { Component, OnDestroy, OnInit, TemplateRef } from '@angular/core';
 import { Type } from 'src/app/shared/models/type';
-import { TypesService } from '../types.service';
+import { TypesService } from '../user-roles.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Role } from 'src/app/shared/models/roles';
 
 @Component({
-  selector: 'app-types',
-  templateUrl: './types.component.html',
-  styleUrl: './types.component.scss'
+  selector: 'app-user-roles',
+  templateUrl: './user-roles.component.html',
+  styleUrl: './user-roles.component.scss'
 })
-export class TypesComponent implements OnInit{
-  types: Type[];
+
+
+
+export class UserRolesComponent implements OnInit{
+
+
+
+  roles: Role[];
   modalRef: BsModalRef;
   isEdit = false;
 

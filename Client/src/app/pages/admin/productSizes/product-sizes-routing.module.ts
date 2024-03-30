@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { TypesComponent } from './types/types.component';
+import { ProductSizesComponent } from './productSizes/product-sizes.component';
 
 const routes: Routes = [
-  {path: '', component: TypesComponent},
+  {path: '', component: ProductSizesComponent},
   { path: '**', redirectTo: '', pathMatch: 'full' },
 ];
 
@@ -11,4 +11,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class TypesRoutingModule { }
+export class ProductSizesRoutingModule { }
