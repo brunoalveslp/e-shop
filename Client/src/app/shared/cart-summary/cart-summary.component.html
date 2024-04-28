@@ -66,7 +66,7 @@
                 ></i>
               }
                 <strong style="font-size: 1.5em">{{ item.quantity }}</strong>
-                <strong style="font-size: 1.5em">{{ item.size }}</strong>
+
               @if(isCart){
                 <i
                   class="fa fa-plus-circle text-warning mx-2"
@@ -76,6 +76,7 @@
               }
             </div>
           </td>
+          <td class="align-middle"><strong style="font-size: 1.5em">{{ item.size.name }}</strong></td>
           <td class="align-middle">
             <strong>{{ item.price * item.quantity | currency:'BRL' }}</strong>
           </td>

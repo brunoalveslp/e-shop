@@ -28,7 +28,6 @@ export class ProductDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.getSizes();
     this.loadProduct();
-
   }
 
   getSizes() {
@@ -54,11 +53,13 @@ export class ProductDetailsComponent implements OnInit {
           this.bcService.updateDescription(product.name)
           this.cartService.cartSource$.pipe(take(1)).subscribe({
             next: cart => {
-              const item = cart?.items.find(p => p.id === +id);
-              if (item) {
-                this.quantity = item.quantity;
-                this.size = item.size;
-                this.quantityInCart = item.quantity;
+              if(cart){
+                cart.items.forEach(item => {
+                  if (item.id === product.id) {
+                    this.quantityInCart += item.quantity;
+                    this.size = item.size;
+                  }
+                })
               }
             }
           });
@@ -70,7 +71,6 @@ export class ProductDetailsComponent implements OnInit {
 
   incrementQuantity() {
     this.quantity++;
-    console.log(this.product);
   }
 
   decrementQuantity() {
@@ -90,13 +90,26 @@ export class ProductDetailsComponent implements OnInit {
       } else if(productSize){
         const itemsToRemove = this.quantityInCart - this.quantity;
         this.quantityInCart -= itemsToRemove;
-        this.cartService.removeItemFromCart(this.product.id, this.quantity, productSize);
+        this.cartService.removeItemFromCart(this.product.id, itemsToRemove, productSize);
       }
     }
   }
 
   setActive(index: number) {
     this.activeIndex = index;
+
+    this.cartService.cartSource$.pipe(take(1)).subscribe({
+      next: cart => {
+        const item = cart?.items.find(p => p.id === this.product?.id && p.size.id === index);
+        if (item) {
+          this.quantityInCart = item.quantity;
+          this.quantity = item.quantity;
+        } else {
+          this.quantityInCart = 0;
+          this.quantity = 1;
+        }
+      }
+    });
   }
 
   get buttonText() {

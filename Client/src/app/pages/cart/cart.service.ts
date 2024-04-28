@@ -61,15 +61,13 @@ export class CartService {
 
   removeItemFromCart(id: number, quantity = 1,size: Size){
     const Cart = this.getCurrentCartValue();
-
     if(!Cart) return;
-
-    const item = Cart.items.find(p => p.id === id && p.size.id == size.id);
-
-    if(item && item.size == size){
+    console.log(id, quantity, size,' deleted')
+    const item = Cart.items.find(p => p.id === id && p.size.id === size.id);
+    if(item && item.size.id == size.id){
       item.quantity -= quantity;
       if(item.quantity === 0){
-        Cart.items = Cart.items.filter(p => p.id !== id);
+        Cart.items = Cart.items.filter(p => p.size.id !== size.id);
       }
 
       if(Cart.items.length > 0){
@@ -101,12 +99,12 @@ export class CartService {
   }
 
   private addOrUpdateItem(items: CartItem[], itemToAdd: CartItem, quantity: number, size: Size): CartItem[] {
-    const item = items?.find(x => x.id === itemToAdd.id);
-    if(item){
+    const item = items?.find(x => x.id === itemToAdd.id && x.size.id === size.id);
+    if(item && item.size.id == size.id){
       item.quantity += quantity;
-      item.size = size
     } else {
       itemToAdd.quantity = quantity;
+      itemToAdd.size = size;
       items?.push(itemToAdd);
     }
 

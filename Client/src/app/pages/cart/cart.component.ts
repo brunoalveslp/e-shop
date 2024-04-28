@@ -16,6 +16,7 @@ export class CartComponent {
   }
 
   removeItem(id: number, quantity: number, size: Size){
+    console.log(id, quantity, size,' deleted')
     this.cartService.removeItemFromCart(id,quantity, size);
   }
 }
