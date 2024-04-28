@@ -18,7 +18,7 @@ public class CartController : BaseApiController
         _cartRepository = cartRepository;
         _mapper = mapper;
     }
-    [HttpGet]
+    [HttpGet("{id}")]
     public async Task<ActionResult<CustomerCart>> GetCartById(string id)
     {
         var cart = await _cartRepository.GetCartAsync(id);
