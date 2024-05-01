@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, map } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { HttpClient } from '@angular/common/http';
 import { Product } from '../../shared/models/product';
@@ -15,14 +15,19 @@ export class CartService {
   baseUrl = environment.apiUrl;
   private cartSource = new BehaviorSubject<Cart | null>(null);
   private cartTotalSource = new BehaviorSubject<CartTotals | null>(null);
-  shipping = 0;
 
   cartSource$ = this.cartSource.asObservable();
   cartTotalSource$ = this.cartTotalSource.asObservable();
 
-//continue tomorrow
 
   constructor(private http: HttpClient  ) { }
+
+  createPaymentIntent(){
+    return this.http.post<Cart>(this.baseUrl+'payment/'+this.getCurrentCartValue()?.id, {})
+      .pipe(
+        map((cart: Cart) => { this.cartSource.next(cart); })
+      )
+  }
 
   getCart(id: string){
     return this.http.get<Cart>(this.baseUrl+'cart?id='+id).subscribe({
@@ -94,8 +99,13 @@ export class CartService {
   }
 
   setShippingPrice(deliveryMethod: DeliveryMethod){
-    this.shipping = deliveryMethod.price;
-    this.calculateTotals();
+    const cart = this.getCurrentCartValue();
+
+    if(cart) {
+      cart.shippingPrice = deliveryMethod.price;
+      cart.deliveryMethodId = deliveryMethod.id;
+      this.setCart(cart);
+    }
   }
 
   private addOrUpdateItem(items: CartItem[], itemToAdd: CartItem, quantity: number, size: Size): CartItem[] {
@@ -136,9 +146,9 @@ export class CartService {
       const Cart = this.getCurrentCartValue();
       if(!Cart) return;
       const subtotal = Cart.items.reduce((prev, current) => (current.price * current.quantity) + prev, 0);
-      const total = this.shipping + subtotal;
+      const total = Cart.shippingPrice + subtotal;
 
-      this.cartTotalSource.next({shipping: this.shipping, subtotal, total});
+      this.cartTotalSource.next({shipping: Cart.shippingPrice, subtotal, total});
    }
 
    private isProduct(item: Product | CartItem): item is Product {
