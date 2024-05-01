@@ -21,4 +21,11 @@
   </div>
 </div>
 }
-<app-stepper-buttons previous="Endereço de Entrega" next="Review do Pedido"></app-stepper-buttons>
+<div class="d-flex justify-content-between flex-row mb-5">
+  <button class="btn btn-outline-primary" cdkStepperPrevious>
+    <i class="fa fa-angle-left me-2"></i> Voltar ao Endereço de Entrega
+  </button>
+  <button class="btn btn-primary" [disabled]="checkoutForm?.get('deliveryForm')?.invalid" cdkStepperNext>
+    Ir para Revisão <i class="fa fa-angle-right ms-2"></i>
+  </button>
+</div>

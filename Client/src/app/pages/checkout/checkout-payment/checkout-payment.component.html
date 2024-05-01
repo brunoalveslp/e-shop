@@ -1,8 +1,44 @@
-
+@if(checkoutForm){
+  <div class="mt-4" [formGroup]="checkoutForm">
+    <div class="row">
+      <div class="form-group col-12" formGroupName="paymentForm">
+        <app-text-input [label]="'Nome no Cartão'" formControlName="nameOnCard"></app-text-input>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-6">
+        <div class="form-floating">
+          <div class="form-control" #cardNumber></div>
+          <label for="cardNumber">Número do cartão</label>
+          <span>{{cardErrors}}</span>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="form-floating">
+          <div class="form-control" #cardExpiry></div>
+          <label for="cardExpiry">Valido até</label>
+          <span>{{cardErrors}}</span>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="form-floating">
+          <div class="form-control" #cardCVC></div>
+          <label for="cardCVC">Código de segurança (CVC)</label>
+          <span>{{cardErrors}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+}
 <div class="d-flex justify-content-between flex-row mb-5">
-  <app-stepper-buttons previous="Review"></app-stepper-buttons>
+  <button class="btn btn-outline-primary" cdkStepperPrevious>
+      <i class="fa fa-angle-left me-2"></i> Voltar a revisão
+  </button>
 
-  <button class="btn btn-primary" (click)="submitOrder()">
+  <button class="btn btn-primary" [disabled]="loading || !paymentFormComplete" (click)="submitOrder()">
     Finalizar pedido <i class="fa fa-angle-right ms-2"></i>
+    @if(loading){
+      <i class="fa fa-spinner fa-spin"></i>
+    }
   </button>
 </div>
