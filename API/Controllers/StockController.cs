@@ -174,6 +174,13 @@ namespace API.Controllers
         public async Task<IActionResult> UpdateProductAsync([FromForm] ProductReceivedDto productReceived)
         {
             var actualProduct = await _unitOfWork.Repository<Product>().GetByIdAsync(productReceived.Id);
+
+            actualProduct.Description = productReceived.Description;
+            actualProduct.Price = productReceived.Price;
+            actualProduct.Weight = productReceived.Weight;
+            actualProduct.Name = productReceived.Name;
+
+
             List<string> aditionalPicturesUrls = new();
             try
             {
