@@ -23,35 +23,43 @@ public class OrderService : IOrderService
     public async Task<Order> CreateOrderAsync(string buyerEmail, 
         int deliveryMethodId, string cartId, Address ShippingAddress)
     {
-        // get cart from repo
         var cart = await _cartRepo.GetCartAsync(cartId);
-        // get items from products repo
+
         var items = new List<OrderItem>();
         foreach(var item in cart.Items)
         {
             var productItem = await _unitOfWork.Repository<Product>().GetByIdAsync(item.Id);
-            
-            await _movimentService.OutgoingStockMovimentService(productItem, item.Size, item.Quantity);
 
             var itemOrdered = new ProductItemOrdered(productItem.Id, 
                 productItem.Name, productItem.PictureUrl);
             var orderItem = new OrderItem(itemOrdered, productItem.Price, item.Quantity, item.Size);
             items.Add(orderItem);
+            await _movimentService.OutgoingStockMovimentService(productItem, item.Size, item.Quantity);
         }
 
         var dm = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(deliveryMethodId);
+
         var subtotal = items.Sum(item => item.Price * item.Quantity);
 
+        var spec = new OrderByPaymentIntentIdSpecification(cart.PaymentIntentId);
+        var order = await _unitOfWork.Repository<Order>().GetEntityWithSpecification(spec);
 
-        var order = new Order(items,buyerEmail,ShippingAddress,dm,subtotal);
-        await _unitOfWork.Repository<Order>().AddAsync(order);
+        if(order is not null)
+        {
+            order.ShipToAddress = ShippingAddress;
+            order.DeliveryMethod = dm;
+            order.Subtotal = subtotal;
+            await _unitOfWork.Repository<Order>().UpdateAsync(order);
+        }
+        else
+        {
+            order = new Order(items,buyerEmail,ShippingAddress,dm,subtotal,cart.PaymentIntentId);
+            await _unitOfWork.Repository<Order>().AddAsync(order);
+        }
+
 
         var result = await _unitOfWork.Complete();
 
-
-        if (result <= 0) return null;
-
-        await _cartRepo.DeleteCartAsync(cartId);
 
         return order;
     }
@@ -95,7 +103,9 @@ public class OrderService : IOrderService
     {
         var spec = new OrdersWithItemsAndOrderingSpecification(id, buyerEmail);
 
-        return await _unitOfWork.Repository<Order>().GetEntityWithSpecification(spec);
+        var order = await _unitOfWork.Repository<Order>().GetOrderWithSpecification(spec);
+
+        return order;
     }
 
     public async Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail)

@@ -42,7 +42,8 @@ public class StockMovimentService : IStockMovimentService
     public async Task OutgoingStockMovimentService(Product product, Size size, decimal quantity)
     {
         var prod = await _unitOfWork.Repository<Product>().GetByIdAsync(product.Id);
-        var prodSize = prod.ProductSizes.FirstOrDefault(ps => ps.SizeId == size.Id);
+        if(prod is not null){
+            var prodSize = _unitOfWork.Repository<ProductSize>().GetAllAsync().Result.FirstOrDefault(x => x.ProductId == prod.Id && x.SizeId == size.Id);
 
         if (quantity <= prodSize.Quantity)
         {
@@ -64,6 +65,7 @@ public class StockMovimentService : IStockMovimentService
             {
                 throw new Exception(ex.Message);
             }
+        }
         }
 
         await _unitOfWork.Complete();

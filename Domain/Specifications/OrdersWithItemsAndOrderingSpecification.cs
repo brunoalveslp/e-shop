@@ -17,4 +17,5 @@ public class OrdersWithItemsAndOrderingSpecification : BaseSpecification<Order>
         AddInclude(o => o.OrderItems);
         AddInclude(o => o.DeliveryMethod);
     }
+
 }

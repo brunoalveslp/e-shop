@@ -1,8 +1,10 @@
 ﻿using Domain.Entities;
 using Domain.Entities.OrderAggregate;
 using Domain.Interfaces;
+using Domain.Specifications;
 using Microsoft.Extensions.Configuration;
 using Stripe;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Infrastructure.Services;
 
@@ -26,6 +28,9 @@ public class PaymentService : IPaymentService
     {
         StripeConfiguration.ApiKey = _config["StripeSettings:SecretKey"];
         var cart = await _cartRepository.GetCartAsync(cartId);
+
+        if (cart is null) return null;
+
         var shippingPrice = 0m;
 
         if(cart.DeliveryMethodId.HasValue)
@@ -74,5 +79,33 @@ public class PaymentService : IPaymentService
         await _cartRepository.UpdateCartAsync(cart);
 
         return cart;
+    }
+
+    public async Task<Order> UpdateOrderForFailedPayment(string intentId)
+    {
+        var spec = new OrderByPaymentIntentIdSpecification(intentId);
+        var order = await _unitOfWork.Repository<Order>().GetEntityWithSpecification(spec);
+
+        if (order is null) return null;
+
+        order.Status = Domain.Enums.OrderStatus.PaymentFailed;
+        await _unitOfWork.Repository<Order>().UpdateAsync(order);
+        await _unitOfWork.Complete();
+
+        return order;
+    }
+
+    public async Task<Order> UpdateOrderForSucceededPayment(string intentId)
+    {
+        var spec = new OrderByPaymentIntentIdSpecification(intentId);
+        var order = await _unitOfWork.Repository<Order>().GetEntityWithSpecification(spec);
+
+        if (order is null) return null;
+
+        order.Status = Domain.Enums.OrderStatus.PaymentReceived;
+        await _unitOfWork.Repository<Order>().UpdateAsync(order);
+        await _unitOfWork.Complete();
+
+        return order;
     }
 }
