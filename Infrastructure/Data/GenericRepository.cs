@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Entities.OrderAggregate;
 using Domain.Interfaces;
 using Domain.Specifications;
 using Microsoft.EntityFrameworkCore;
@@ -74,7 +75,26 @@ namespace Infrastructure.Data
         public async Task<T> GetEntityWithSpecification(ISpecification<T> spec)
         {
             using var context = _contextFactory.CreateDbContext();
+
+
             return await ApplySpecification(spec, context).FirstOrDefaultAsync();
+        }
+
+        public async Task<Order> GetOrderWithSpecification(ISpecification<T> spec)
+        {
+            using var context = _contextFactory.CreateDbContext();
+
+            var result = await ApplySpecification(spec, context).FirstOrDefaultAsync();
+
+            if (result is Order order)
+            {
+                foreach (var item in order.OrderItems)
+                {
+                    context.Entry(item).Reference(i => i.ItemOrdered).Load();
+                }
+            }
+
+            return result as Order;
         }
 
         public async Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec)

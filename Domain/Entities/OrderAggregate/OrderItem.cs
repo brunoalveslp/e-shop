@@ -2,7 +2,10 @@
 
 public class OrderItem : BaseEntity
 {
+    public int ItemOrderedId { get; set; }
     public ProductItemOrdered ItemOrdered { get; set; }
+    public int OrderId { get; set; }
+    public int SizeId { get; set; }
     public Size Size { get; set; }
     public decimal Price { get; set; }
     public int Quantity { get; set; }
@@ -16,7 +19,7 @@ public class OrderItem : BaseEntity
         ItemOrdered = itemOrdered;
         Price = price;
         Quantity = quantity;
-        Size = size;
+        SizeId = size.Id;
     }
 }
 

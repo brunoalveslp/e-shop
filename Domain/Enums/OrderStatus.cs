@@ -4,11 +4,11 @@ namespace Domain.Enums;
 
 public enum OrderStatus
 {
-    [EnumMember(Value = "Pending")]
+    [EnumMember(Value = "Pendente")]
     Pending,
-    [EnumMember(Value = "Payment Received")]
+    [EnumMember(Value = "Pagamento Recebido")]
     PaymentReceived,
-    [EnumMember(Value = "Payment Failed")]
+    [EnumMember(Value = "Falha no Pagamento")]
     PaymentFailed,
     [EnumMember(Value = "Canceled")]
     Canceled,
