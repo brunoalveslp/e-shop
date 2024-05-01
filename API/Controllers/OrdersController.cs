@@ -26,12 +26,19 @@ public class OrdersController: BaseApiController
         var email = HttpContext.User?.RetrieveEmailFromPrincipal();
         var address = _mapper.Map<AddressDto, Address>(orderDto.ShipToAddress);
 
-        var order = await _orderService.CreateOrderAsync(email, 
-                        orderDto.DeliveryMethodId,orderDto.CartId,address);
+        try{
+            var order = await _orderService.CreateOrderAsync(email, 
+                            orderDto.DeliveryMethodId,orderDto.CartId,address);
 
-        if (order is null) return BadRequest(new ApiResponse(400, "Problem creating order."));
+            if (order is null) return BadRequest(new ApiResponse(400, "Problem creating order."));
+            
+            return Ok(order);
+        }catch(Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return BadRequest(new ApiResponse(400, ex.Message));
+        }
 
-        return Ok(order);
     }
 
     [HttpPost("cancel")]
@@ -50,7 +57,7 @@ public class OrdersController: BaseApiController
 
         if (orders is null) return BadRequest(new ApiResponse(404));
 
-        return Ok(_mapper.Map<IReadOnlyList<OrderToReturnDto>>(orders));
+        return Ok(_mapper.Map<IReadOnlyList<Order>,IReadOnlyList<OrderToReturnDto>>(orders));
     }
 
     [HttpGet("{id}")]
@@ -61,7 +68,8 @@ public class OrdersController: BaseApiController
 
         if (order is null) return BadRequest(new ApiResponse(400));
 
-        return Ok(_mapper.Map<OrderToReturnDto>(order));
+        return _mapper.Map<Order, OrderToReturnDto>(order);
+
     }
 
     [HttpGet("deliveryMethods")]

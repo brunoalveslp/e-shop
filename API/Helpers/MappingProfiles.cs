@@ -2,6 +2,7 @@
 using AutoMapper;
 using Domain.Entities;
 using Domain.Entities.Identity;
+using Domain.Entities.OrderAggregate;
 using Newtonsoft.Json;
 
 
@@ -37,7 +38,7 @@ public class MappingProfiles : Profile
 
         CreateMap<ProductSize, ProductSizeDto>().ReverseMap();
 
-        CreateMap<Address, AddressDto>().ReverseMap();
+        CreateMap<Domain.Entities.Identity.Address, AddressDto>().ReverseMap();
         
 
         CreateMap<CustomerCartDto, CustomerCart>();
@@ -49,11 +50,13 @@ public class MappingProfiles : Profile
              .ForMember(o => o.DeliveryMethod, o => o.MapFrom(s => s.DeliveryMethod.ShortName))
              .ForMember(d => d.ShippingPrice, d => d.MapFrom(s => s.DeliveryMethod.Price));
 
-      
-       CreateMap<Domain.Entities.OrderAggregate.OrderItem, OrderItemDto>()
-            .ForMember(p => p.ProductId, p => p.MapFrom(s => s.ItemOrdered.ProductItemId))
-            .ForMember(p => p.ProductName, p => p.MapFrom(s => s.ItemOrdered.ProductName));
- 
+
+        CreateMap<OrderItem, OrderItemDto>()
+                .ForMember(d => d.ProductId, o => o.MapFrom(s => s.ItemOrdered.ProductItemId))
+                .ForMember(d => d.ProductName, o => o.MapFrom(s => s.ItemOrdered.ProductName))
+                .ForMember(d => d.PictureUrl, o => o.MapFrom(s => s.ItemOrdered.PictureUrl))
+                .ForMember(d => d.PictureUrl, o => o.MapFrom<OrderItemUrlResolver>());
+
     }
 
 }
