@@ -24,7 +24,8 @@ export class OrderDetailedComponent implements OnInit, OnDestroy {
     if (id) {
       this.ordersService.getOrderById(+id).subscribe({
         next: order => {
-          this.order = order;;
+          this.order = order;
+          console.log(order)
         },
         error: error => console.log(error)
       });

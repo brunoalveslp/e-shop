@@ -15,8 +15,8 @@
             @for(order of orders; track order.id){
               <tr routerLink="/orders/{{ order.id }}">
                 <th># {{ order.id }}</th>
-                <td>{{ order.orderDate | date : "medium" }}</td>
-                <td>{{ order.total | currency }}</td>
+                <td>{{ order.orderDate | date : "dd / MM / yyyy HH:mm" }}</td>
+                <td>{{ order.total | currency:'BRL' }}</td>
                 <td>{{ order.status }}</td>
               </tr>
           }
