@@ -8,6 +8,7 @@ namespace Domain.Interfaces;
 public interface IGenericRepository<T> where T : BaseEntity
 {
     Task<T> GetByIdAsync(int id);
+    Task<Product> GetProductByNameAsync(string name);
     Task<ProductUnit> GetProductUnitByNameAsync(string name);
     Task<ProductBrand> GetProductBrandByNameAsync(string name);
     Task<ProductType> GetProductTypeByNameAsync(string name);

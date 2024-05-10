@@ -130,6 +130,7 @@ namespace API.Controllers
                     await _unitOfWork.Repository<Product>().AddAsync(product);
                     await _unitOfWork.Complete();
                     var prodSizeList = JsonConvert.DeserializeObject<List<ProductSize>>(productReceived.ProductSizes);
+                    var savedProduct = await _unitOfWork.Repository<Product>().GetProductByNameAsync(product.Name);
 
                     foreach (var prodSize in prodSizeList)
                     {
@@ -140,7 +141,7 @@ namespace API.Controllers
                             Quantity = prodSize.Quantity,
                             IsActive = prodSize.IsActive
                         };
-
+                        await StockEntryAsync(savedProduct.Id, prodSize.SizeId, productSize.Quantity);
                         await _unitOfWork.Repository<ProductSize>().AddAsync(productSize);
                     }
 
@@ -345,9 +346,9 @@ namespace API.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost("stock-entry")]
-        public async Task<ActionResult> StockEntryAsync(int id, int sizeId, decimal quantity)
+        public async Task<ActionResult> StockEntryAsync(int productId, int sizeId, decimal quantity)
         {
-            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
+            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(productId);
             var size = await _unitOfWork.Repository<Size>().GetByIdAsync(sizeId);
             if (product != null && size != null)
             {
@@ -370,9 +371,9 @@ namespace API.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost("stock-outgoing")]
-        public async Task<ActionResult> StockOutgoingAsync(int id, int sizeId, decimal quantity)
+        public async Task<ActionResult> StockOutgoingAsync(int productId, int sizeId, decimal quantity)
         {
-            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
+            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(productId);
             var size = await _unitOfWork.Repository<Size>().GetByIdAsync(sizeId);
             if (product != null && size != null)
             {
@@ -396,10 +397,12 @@ namespace API.Controllers
         [HttpGet("stock-moviments")]
         public async Task<ActionResult> GetStockMovimentationAsync()
         {
-            var moviments = await _unitOfWork.Repository<ProductMovimentHistory>().GetAllAsync();
+            var spec = new ProductMovimentSpecification();
+            var moviments = await _unitOfWork.Repository<ProductMovimentHistory>().ListAsync(spec);
             if (moviments is not null)
             {
-                return Ok(moviments);
+                var movimentsDto = _mapper.Map<List<StockMoviment>>(moviments);
+                return Ok(movimentsDto);
             }
 
             return BadRequest(new ApiException(400));
@@ -408,11 +411,12 @@ namespace API.Controllers
         [HttpGet("stock-moviments/{id}")]
         public async Task<ActionResult> GetStockMovimentationByProductAsync(int id)
         {
-            var spec = new ProductMovimentSpecification(id);
+            var spec = new ProductMovimentSpecification();
             var moviments = await _unitOfWork.Repository<ProductMovimentHistory>().ListAsync(spec);
             if (moviments is not null)
             {
-                return Ok(moviments);
+                var movimentsDto = _mapper.Map<List<StockMoviment>>(moviments);
+                return Ok(movimentsDto);
             }
 
             return BadRequest(new ApiException(400));

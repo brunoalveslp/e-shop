@@ -1,4 +1,5 @@
 ﻿using API.Errors;
+using API.Helpers;
 using Domain.Interfaces;
 using Infraestructure.Services;
 using Infrastructure.Data;
@@ -20,6 +21,7 @@ public static class ApplicationServicesExtentions
         services.AddScoped<IStockMovimentService, StockMovimentService>();
         services.AddScoped<IFileService, FileService>();
         services.AddScoped<IPaymentService, PaymentService>();
+        services.AddScoped<SizeNameResolver>();
 
         // just like configure method inside startup class
         services.Configure<ApiBehaviorOptions>(options =>

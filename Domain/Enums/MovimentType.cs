@@ -2,6 +2,6 @@
 
 public enum MovimentType
 {
-    Entrance,
-    Output
+    Entrada,
+    Saida
 }

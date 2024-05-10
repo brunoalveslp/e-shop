@@ -49,6 +49,12 @@ namespace Infrastructure.Data
             return await context.Set<T>().ToListAsync();
         }
 
+        public async Task<Product> GetProductByNameAsync(string name)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            return await context.Products.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower());
+        }
+
         public async Task<ProductUnit> GetProductUnitByNameAsync(string name)
         {
             using var context = _contextFactory.CreateDbContext();

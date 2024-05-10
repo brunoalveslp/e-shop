@@ -10,6 +10,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "API\API.csproj", "{8CF7F008-63B4-4925-9BCA-1FD9599CB5BD}"
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "Client", "Client\Client.esproj", "{84E5312C-8A97-42CA-B188-15A42515B687}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8CF7F008-63B4-4925-9BCA-1FD9599CB5BD} = {8CF7F008-63B4-4925-9BCA-1FD9599CB5BD}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

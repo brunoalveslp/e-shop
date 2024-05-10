@@ -21,6 +21,15 @@ import { ImageInputComponent } from './components/image-input/image-input.compon
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import { SizesComponent } from './components/sizes/sizes.component';
 
+// Material
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatButtonModule } from '@angular/material/button';
+import {MatInputModule} from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+
 @NgModule({
   declarations: [
     PagingHeaderComponent,
@@ -46,6 +55,13 @@ import { SizesComponent } from './components/sizes/sizes.component';
     RouterModule,
     AccordionModule,
     ModalModule.forRoot(),
+    MatTableModule,
+    MatPaginatorModule,
+    MatButtonModule,
+    MatInputModule,
+    MatSelectModule,
+    MatDialogModule,
+    MatIconModule
   ],
   exports: [
     PaginationModule,
@@ -65,7 +81,14 @@ import { SizesComponent } from './components/sizes/sizes.component';
     ModalModule,
     ImageInputComponent,
     BreadcrumbComponent,
-    SizesComponent
+    SizesComponent,
+    MatTableModule,
+    MatPaginatorModule,
+    MatButtonModule,
+    MatInputModule,
+    MatSelectModule,
+    MatDialogModule,
+    MatIconModule
   ]
 })
 export class SharedModule { }

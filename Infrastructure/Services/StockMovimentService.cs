@@ -19,7 +19,7 @@ public class StockMovimentService : IStockMovimentService
 
         var moviment = new ProductMovimentHistory
         {
-            MovimentType = MovimentType.Entrance.ToString(),
+            MovimentType = MovimentType.Entrada.ToString(),
             ProductId = product.Id,
             SizeId = size.Id,
             Quantity = quantity
@@ -49,7 +49,7 @@ public class StockMovimentService : IStockMovimentService
         {
             var moviment = new ProductMovimentHistory
             {
-                MovimentType = MovimentType.Output.ToString(),
+                MovimentType = MovimentType.Saida.ToString(),
                 ProductId = product.Id,
                 SizeId = size.Id,
                 Quantity = quantity

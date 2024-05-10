@@ -14,6 +14,7 @@ const routes: Routes = [
       { path: 'deliveryMethod', loadChildren: () => import('./delivery-methods/delivery-methods.module').then(m => m.DeliveryMethodsModule), data: { breadcrumb: 'Tipo de Entrega'}, outlet: 'admin' },
       { path: 'productSizes', loadChildren: () => import('./productSizes/product-sizes.module').then(m => m.ProductSizesModule), data: { breadcrumb: 'Tamanhos'}, outlet: 'admin' },
       { path: 'products', loadChildren: () => import('./products/products.module').then(m => m.ProductsModule), data: { breadcrumb: 'Produtos'}, outlet: 'admin' },
+      { path: 'stock', loadChildren: () => import('./stock/stock.module').then(m => m.StockModule), data: { breadcrumb: 'Estoque'}, outlet: 'admin' },
     ]
   }
 ];

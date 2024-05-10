@@ -11,6 +11,8 @@
 /* bootswatch import */
 @import "node_modules/bootswatch/dist/zephyr/bootstrap.min";
 
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+
 
 .xng-breadcrumb-root {
   padding: 8px 16px;

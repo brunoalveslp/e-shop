@@ -1,0 +1,111 @@
+
+<div class="container">
+  <div class="d-flex justify-content-between">
+    <button mat-flat-button color="primary" (click)="openModal(template)" class="my-2 btn">Novo Movimento de estoque</button>
+    <mat-form-field>
+      <mat-label>Filtro</mat-label>
+      <input matInput class="filter" type="text" [(ngModel)]="filter" (keyup)="applyFilter()" placeholder="Ex: M">
+    </mat-form-field>
+  </div>
+  <div class="table">
+    <mat-table [dataSource]="dataSource" class="full-width-table">
+
+      <!-- Id Column -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef class="center-text"> <strong>Id</strong> </th>
+        <td mat-cell *matCellDef="let moviment" class="center-text"> <strong># {{moviment.id}}</strong> </td>
+      </ng-container>
+
+      <!-- Product Id Column -->
+      <ng-container matColumnDef="productId">
+        <th mat-header-cell *matHeaderCellDef class="center-text"> <strong>Id do Produto</strong> </th>
+        <td mat-cell *matCellDef="let moviment" class="center-text"> <strong># {{moviment.productId}}</strong> </td>
+      </ng-container>
+
+      <!-- Product Name Column -->
+      <ng-container matColumnDef="productName">
+        <th mat-header-cell *matHeaderCellDef class="center-text"> <strong>Nome do produto</strong> </th>
+        <td mat-cell *matCellDef="let moviment" class="center-text"> {{moviment.productName}} </td>
+      </ng-container>
+
+      <!-- Size Name Column -->
+      <ng-container matColumnDef="sizeName">
+        <th mat-header-cell *matHeaderCellDef class="center-text"> <strong>Tamanho</strong> </th>
+        <td mat-cell *matCellDef="let moviment" class="center-text"> {{moviment.sizeName}} </td>
+      </ng-container>
+
+      <!-- Quantity Column -->
+      <ng-container matColumnDef="quantity">
+        <th mat-header-cell *matHeaderCellDef class="center-text"> <strong>Quantidade</strong> </th>
+        <td mat-cell *matCellDef="let moviment" class="center-text"> {{moviment.quantity}} </td>
+      </ng-container>
+
+      <!-- Moviment Type Column -->
+      <ng-container matColumnDef="movimentType">
+        <th mat-header-cell *matHeaderCellDef class="center-text"> <strong>Tipo de Movimento</strong> </th>
+        <td mat-cell *matCellDef="let moviment" class="center-text"> {{moviment.movimentType}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </mat-table>
+    <mat-paginator
+          #paginator
+          class="paginator"
+          aria-label="Select page"
+          [pageSize]="10"
+          [length]="dataSource.data.length"
+          [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons>
+    </mat-paginator>
+  </div>
+
+
+
+  <ng-template #template>
+    <mat-dialog-content class="modal-header">
+      <h2 class="modal-title">Novo Movimento de Entoque</h2>
+      <button mat-icon-button class="close" aria-label="Close" (click)="closeModal()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-dialog-content>
+
+    <mat-dialog-content class="modal-body">
+      <form [formGroup]="movimentForm" (ngSubmit)="onSubmit()">
+        <mat-form-field class="form-group">
+          <mat-label>Produto</mat-label>
+          <mat-select formControlName="productId" (selectionChange)="getSizes()">
+            <mat-option *ngFor="let product of products" [value]="product.id">{{product.name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="form-group">
+          <mat-label>Tamanho</mat-label>
+          <mat-select formControlName="sizeId">
+            <mat-option *ngFor="let size of sizes" [value]="size.id">{{size.name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="form-group">
+          <mat-label>Quantidade</mat-label>
+          <input matInput type="number" formControlName="quantity">
+        </mat-form-field>
+
+        <mat-form-field class="form-group">
+          <mat-label>Tipo de Movimento</mat-label>
+          <mat-select formControlName="movimentType">
+            <mat-option value="entrada">Entrada</mat-option>
+            <mat-option value="saida">Saída</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit" (click)="onSubmit()">Gravar</button>
+      </form>
+    </mat-dialog-content>
+
+    <mat-dialog-actions class="modal-footer">
+      <button mat-button (click)="closeModal()">Fechar</button>
+    </mat-dialog-actions>
+ </ng-template>
+</div>
+
+

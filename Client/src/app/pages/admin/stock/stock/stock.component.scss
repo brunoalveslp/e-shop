@@ -1,0 +1,27 @@
+
+.full-width-table {
+  width: 1000px;
+}
+
+.full-width-table .mat-column-id,
+.full-width-table .mat-column-productId,
+.full-width-table .mat-column-productName,
+.full-width-table .mat-column-sizeName,
+.full-width-table .mat-column-quantity,
+.full-width-table .mat-column-movimentType {
+  width: 16.66%; /* 100% dividido por 6 colunas */
+}
+
+.center-text {
+  text-align: center;
+}
+
+.wide-table {
+  width: 100%; /* ou qualquer outra largura que você deseja */
+}
+
+
+
+.btn {
+  height: 3rem !important; /* Ajuste este valor conforme necessário */
+}

@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { TypesComponent } from './types/types.component';
+import { StockComponent } from './stock/stock.component';
+
 
 const routes: Routes = [
-  {path: '', component: TypesComponent},
+  {path: '', component: StockComponent},
   { path: '**', redirectTo: '', pathMatch: 'full' },
 ];
 
@@ -11,4 +12,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class TypesRoutingModule { }
+export class StockRoutingModule { }

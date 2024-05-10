@@ -35,6 +35,9 @@ public class MappingProfiles : Profile
             .ForMember(pu => pu.ProductUnit, p => p.MapFrom(x => x.ProductUnitName))
             .ForMember(p => p.ProductSizes, p => p.Ignore());
 
+        CreateMap<ProductMovimentHistory, StockMoviment>()
+            .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name))
+            .ForMember(dest => dest.SizeName, opt => opt.MapFrom(src => src.Size.Name));
 
         CreateMap<ProductSize, ProductSizeDto>().ReverseMap();
 
