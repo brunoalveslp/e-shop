@@ -40,6 +40,7 @@ Análise de Requisitos e Definição de Escopo;
 </p>
 
 Figura 1: Diagrama de Caso de Uso
+<img src"/Imagens_do_projeto/Caso de Uso Base.png" >
 Figura 2: Diagrama de Classe
 Figura 3: Demonstração do fluxo da arquitetura
 
