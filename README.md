@@ -39,13 +39,13 @@ Análise de Requisitos e Definição de Escopo;
 O desenvolvimento do sistema começa com o levantamento de requisitos, que são transformados em diagramas para facilitar a compreensão e implementação do sistema. Abaixo podemos observar os diagramas de Caso de Uso (Figura 1), de Classe (Figura 2) e um fluxo de como a arquitetura do sistema funciona (Figura 3).
 
 Figura 1: Diagrama de Caso de Uso
-![Diagrama de Caso de Uso](/Imagens_do_projeto/Caso_de_Uso_Base.png)
+![Diagrama de Caso de Uso](,/Imagens_do_projeto/Caso_de_Uso_Base.png)
 
 Figura 2: Diagrama de Classe
-![Diagrama de Classe](/Imagens_do_projeto/Diagrama_de_Classe.png)
+![Diagrama de Classe](./Imagens_do_projeto/Diagrama_de_Classe.png)
 
 Figura 3: Demonstração do fluxo da arquitetura
-![Demonstração do fluxo da arquitetura](/Imagens_do_projeto/Fluxo_da_Arquitetura.png)
+![Demonstração do fluxo da arquitetura](./Imagens_do_projeto/Fluxo_da_Arquitetura.png)
 
 
 ## Arquitetura
@@ -64,10 +64,10 @@ A Arquitetura Limpa permite que as regras de negócio sejam facilmente testadas 
 A seguir, apresentamos a demonstração da arquitetura planejada através do código fonte e sua organização do código.
 
 Figura 4: Código Fonte Geral
-![Código Fonte Geral](/Imagens_do_projeto/Codigo_Fonte_Geral.png)
+![Código Fonte Geral](,/Imagens_do_projeto/Codigo_Fonte_Geral.png)
 
 Figura 5: Código Fonte Front-End 
-![Código Fonte Front-End](/Imagens_do_projeto/Codigo_Fonte_Front_End.png)
+![Código Fonte Front-End](./Imagens_do_projeto/Codigo_Fonte_Front_End.png)
 
 Todo sistema deve ter um meio de login e registro de usuários, portanto iniciamos demonstrando suas telas.
 
