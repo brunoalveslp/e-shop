@@ -62,14 +62,14 @@
 
 
   <ng-template #template>
-    <mat-dialog-content class="modal-header">
+    <div class="modal-header">
       <h2 class="modal-title">Novo Movimento de Entoque</h2>
       <button mat-icon-button class="close" aria-label="Close" (click)="closeModal()">
-        <mat-icon>close</mat-icon>
+        x
       </button>
-    </mat-dialog-content>
+    </div>
 
-    <mat-dialog-content class="modal-body">
+    <div class="modal-body">
       <form [formGroup]="movimentForm" (ngSubmit)="onSubmit()">
         <mat-form-field class="form-group">
           <mat-label>Produto</mat-label>
@@ -100,11 +100,11 @@
 
         <button mat-raised-button color="primary" type="submit" (click)="onSubmit()">Gravar</button>
       </form>
-    </mat-dialog-content>
+    </div>
 
-    <mat-dialog-actions class="modal-footer">
+    <div class="modal-footer">
       <button mat-button (click)="closeModal()">Fechar</button>
-    </mat-dialog-actions>
+    </div>
  </ng-template>
 </div>
 

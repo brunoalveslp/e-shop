@@ -17,6 +17,7 @@ export class ProductDetailsComponent implements OnInit {
   public sizes: Size[] = []
   public quantity = 1;
   public size: Size;
+  private sizeQuantity = 0;
   public quantityInCart = 0;
   activeIndex: number = -1;
 
@@ -70,11 +71,13 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   incrementQuantity() {
-    this.quantity++;
+    if(this.quantity < this.sizeQuantity){
+      this.quantity++;
+    }
   }
 
   decrementQuantity() {
-    if (this.quantity > 0) {
+    if (this.quantity > 0 && this.quantity-1 > 0) {
       this.quantity--;
     }
   }
@@ -95,8 +98,9 @@ export class ProductDetailsComponent implements OnInit {
     }
   }
 
-  setActive(index: number) {
+  setActive(index: number, sizeQuantity: number) {
     this.activeIndex = index;
+    this.sizeQuantity = sizeQuantity;
 
     this.cartService.cartSource$.pipe(take(1)).subscribe({
       next: cart => {

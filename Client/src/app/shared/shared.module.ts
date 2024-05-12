@@ -21,14 +21,22 @@ import { ImageInputComponent } from './components/image-input/image-input.compon
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import { SizesComponent } from './components/sizes/sizes.component';
 
-// Material
+//
 import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatListModule } from '@angular/material/list';
+import { getPortuguesePaginatorIntl } from './pager/portuguese-paginator-intl';
+
 
 @NgModule({
   declarations: [
@@ -61,7 +69,13 @@ import { MatIconModule } from '@angular/material/icon';
     MatInputModule,
     MatSelectModule,
     MatDialogModule,
-    MatIconModule
+    MatIconModule,
+    MatToolbarModule,
+    MatMenuModule,
+    MatDividerModule,
+    MatTabsModule,
+    MatFormFieldModule,
+    MatListModule,
   ],
   exports: [
     PaginationModule,
@@ -88,7 +102,16 @@ import { MatIconModule } from '@angular/material/icon';
     MatInputModule,
     MatSelectModule,
     MatDialogModule,
-    MatIconModule
+    MatIconModule,
+    MatToolbarModule,
+    MatMenuModule,
+    MatDividerModule,
+    MatTabsModule,
+    MatFormFieldModule,
+    MatListModule
+  ],
+  providers: [
+    { provide: MatPaginatorIntl, useValue: getPortuguesePaginatorIntl() }
   ]
 })
 export class SharedModule { }

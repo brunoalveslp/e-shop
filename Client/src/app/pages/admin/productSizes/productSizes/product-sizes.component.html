@@ -70,7 +70,7 @@
     </div>
     <div class="modal-body">
       <form [formGroup]="sizeForm" class="d-flex align-items-center justify-content-around">
-        <app-text-input [formControl]="sizeForm.controls['name']" [label]="'Tamanho'" />
+        <app-text-input [formControl]="sizeForm.controls['name']" [label]="'Nome do Tamanho'" />
         <label class="switch">
           <input type="checkbox" id="togBtn" [formControl]="sizeForm.controls['isActive']">
           <div class="slider round">
@@ -82,10 +82,10 @@
          </label>
         <div class="d-grid">
           @if(isEdit){
-            <button [disabled]="sizeForm.invalid" class="btn btn-outline-dark" type="submit" (click)="onEdit()">Editar</button>
+            <button [disabled]="sizeForm.invalid" mat-flat-button color="primary" type="submit" (click)="onEdit()">Editar</button>
           }
           @else {
-            <button [disabled]="sizeForm.invalid" class="btn btn-outline-dark" type="submit" (click)="onSubmit()">Criar</button>
+            <button [disabled]="sizeForm.invalid" mat-flat-button color="primary" type="submit" (click)="onSubmit()">Criar</button>
           }
         </div>
       </form>

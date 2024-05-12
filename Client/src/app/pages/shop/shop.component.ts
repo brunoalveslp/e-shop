@@ -29,10 +29,10 @@ export class ShopComponent implements OnInit {
   constructor(private shopService: ShopService){}
 
   ngOnInit(): void {
-    this.getProducts();
     this.getTypes();
     this.getBrands();
     this.getSizes();
+    this.getProducts();
   }
 
   getSizes() {

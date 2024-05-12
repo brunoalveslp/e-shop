@@ -11,7 +11,7 @@
 /* bootswatch import */
 @import "node_modules/bootswatch/dist/zephyr/bootstrap.min";
 
-@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 
 
 .xng-breadcrumb-root {
@@ -31,3 +31,12 @@ label.xng-breadcrumb-trail {
   color: orange;
 }
 
+.cdk-global-overlay-wrapper, .cdk-overlay-container { z-index: 9999!important; }
+
+html {
+  zoom: 0.96;
+}
+
+.modal-backdrop {
+  zoom: 1.04166667;
+}

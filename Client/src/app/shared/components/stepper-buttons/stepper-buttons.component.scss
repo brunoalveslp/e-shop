@@ -1,0 +1,15 @@
+.btn-color-outline {
+  background-color: white;
+  color: #673ab7;
+  border-color: #673ab7;
+
+  &:hover {
+    background-color: #673ab7;
+    color: white;
+  }
+}
+
+.btn-color{
+  background-color: #673ab7;
+  color: white;
+}

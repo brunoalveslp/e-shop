@@ -63,10 +63,10 @@
         <app-text-input [formControl]="brandForm.controls['name']" [label]="'Marca'" />
         <div class="d-grid">
           @if(isEdit){
-            <button [disabled]="brandForm.invalid" class="btn btn-lg btn-primary mt-3" type="submit" (click)="onEdit()">Editar</button>
+            <button [disabled]="brandForm.invalid" mat-flat-button color="primary" type="submit" (click)="onEdit()">Editar</button>
           }
           @else {
-            <button [disabled]="brandForm.invalid" class="btn btn-lg btn-primary mt-3" type="submit" (click)="onSubmit()">Criar</button>
+            <button [disabled]="brandForm.invalid" mat-flat-button color="primary" type="submit" (click)="onSubmit()">Criar</button>
           }
         </div>
       </form>

@@ -27,14 +27,11 @@ export class StockComponent implements OnInit {
   products: Product[] = [];
   sizes: Size[] = [];
   modalRef: BsModalRef;
-  isEdit = false;
 
   config = {
     backdrop: true,
     ignoreBackdropClick: false
   };
-
-
 
 
   constructor(private fb: FormBuilder, public stockService: StockService, private modalService: BsModalService, private router: Router) { }

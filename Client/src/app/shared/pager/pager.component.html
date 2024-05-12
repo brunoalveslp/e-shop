@@ -1,13 +1,7 @@
-<pagination *ngIf="totalCount && pageSize && pageChanged"
-  [boundaryLinks]="true"
-  [totalItems]="totalCount"
-  [itemsPerPage]="pageSize"
-  (pageChanged)="onPageChanged($event)"
-  [maxSize]="10"
-  previousText="&lsaquo;"
-  nextText="&rsaquo;"
-  firstText="&laquo;"
-  lastText="&raquo;"
->
-</pagination>
-
+<mat-paginator *ngIf="totalCount && pageSize"
+  [length]="totalCount"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[10, 25, 50, 100]"
+  (page)="onPageChanged($event)"
+  showFirstLastButtons="true">
+</mat-paginator>

@@ -63,10 +63,10 @@
         <app-text-input [formControl]="typeForm.controls['name']" [label]="'Nome do Tipo'" />
         <div class="d-grid">
           @if(isEdit){
-            <button [disabled]="typeForm.invalid" class="btn btn-lg btn-primary mt-3" type="submit" (click)="onEdit()">Editar</button>
+            <button [disabled]="typeForm.invalid" mat-flat-button color="primary" type="submit" (click)="onEdit()">Editar</button>
           }
           @else {
-            <button [disabled]="typeForm.invalid" class="btn btn-lg btn-primary mt-3" type="submit" (click)="onSubmit()">Criar</button>
+            <button [disabled]="typeForm.invalid" mat-flat-button color="primary" type="submit" (click)="onSubmit()">Criar</button>
           }
         </div>
       </form>

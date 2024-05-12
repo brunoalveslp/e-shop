@@ -1,27 +1,25 @@
-<div class="form-floating mb-3">
-  <input
-    class="form-control"
-    type={{type}}
+<mat-form-field class="w-100" appearance="fill">
+  <input matInput
+    [type]="type"
     [formControl]="control"
-    placeholder={{label}}
-    [ngClass]="(control.touched) ? control.invalid ? 'is-invalid' : 'is-valid': null"
-    >
-    @if(control.status === 'PENDING'){
-      <div *ngIf="control.status === 'PENDING'" class="fa fa-spinner fa-spin loader"></div>
-    }
-  <label for="floatingInput">{{ label }}</label>
+    [placeholder]="label"
+    [ngClass]="(control.touched) ? control.invalid ? 'mat-warn' : 'mat-primary': null">
+  @if(control.status === 'PENDING'){
+    <div *ngIf="control.status === 'PENDING'" class="fa fa-spinner fa-spin loader"></div>
+  }
+  <mat-label>{{ label }}</mat-label>
   @if(label == 'E-mail' || label == 'Nome da Conta' || label == 'Nome' || label == 'Sobrenome' || label == 'Estado' || label == 'Código Postal' || control.errors?.['required']){
-    <div class="invalid-feedback">Por favor preencha o {{ label | lowercase }}.</div>
+    <mat-error>Por favor preencha o {{ label | lowercase }}.</mat-error>
   } @else if(control.errors?.['required']) {
-    <div>Por favor preencha a {{ label | lowercase }}.</div>
+    <mat-error>Por favor preencha a {{ label | lowercase }}.</mat-error>
   }
   @if(control.errors?.['email']){
-    <div>E-mail invalido.</div>
+    <mat-error>E-mail invalido.</mat-error>
   }
   @if(control.errors?.['pattern']){
-    <div class="invalid-feedback">Sua senha deve ter pelo menos 6 letras, uma maiúscula, uma minúscula, um número e um caractere especial.</div>
+    <mat-error>Sua senha deve ter pelo menos 6 letras, uma maiúscula, uma minúscula, um número e um caractere especial.</mat-error>
   }
   @if(control.errors?.['emailExists']){
-    <div class="invalid-feedback">Este e-mail está atualmente em uso.</div>
+    <mat-error>Este e-mail está atualmente em uso.</mat-error>
   }
-</div>
+</mat-form-field>

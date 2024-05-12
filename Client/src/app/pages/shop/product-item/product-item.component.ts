@@ -95,7 +95,7 @@ export class ProductItemComponent implements OnInit {
   }
 
   decrementQuantity(){
-    if(this.quantity > 0){
+    if(this.quantity > 0 && this.quantity-1 > 0){
       this.quantity -= 1
     }
   }

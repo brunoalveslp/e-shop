@@ -41,6 +41,8 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   public productImage: File | undefined;
   public productAditionalImages: File[] = [];
   public quantityOfAditionalImages: number = 0;
+  displayedColumns: string[] = ['id', 'name', 'description', 'price', 'action'];
+
 
   modalRef: BsModalRef;
   isEdit = false;
@@ -248,6 +250,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
       next: () => {
         this.getProducts();
         this.modalRef.hide();
+        this.clearEntity();
       },
     });
   }

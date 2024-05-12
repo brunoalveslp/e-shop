@@ -1,24 +1,65 @@
 <div class="d-flex justify-content-center mt-3 mb-5">
-  <div class="col-3">
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-      <div class="text-center mb-4">
-        <h1 class="mb-3">Registro</h1>
+  <div >
+    <div class="text-center mb-4">
+      <h1 class="mb-3">Registro</h1>
+    </div>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="row justify-content-center">
+      <div class="col-4">
+        <h3>Dados de login</h3>
+        <app-text-input
+          [formControl]="registerForm.controls['displayName']"
+          [label]="'Nome da Conta'"
+        ></app-text-input>
+        <app-text-input
+          [formControl]="registerForm.controls['email']"
+          [label]="'E-mail'"
+        ></app-text-input>
+        <app-text-input
+          [formControl]="registerForm.controls['password']"
+          [type]="'password'"
+          [label]="'Senha'"
+        ></app-text-input>
       </div>
-      <app-text-input [formControl]="registerForm.controls['displayName']" [label]="'Nome da Conta'"></app-text-input>
-      <app-text-input [formControl]="registerForm.controls['email']" [label]="'E-mail'"></app-text-input>
-      <app-text-input [formControl]="registerForm.controls['password']" [type]="'password'" [label]="'Senha'"></app-text-input>
-      <form [formGroup]="address">
-        <app-text-input [formControl]="address.controls['firstName']" [label]="'Nome'"></app-text-input>
-        <app-text-input [formControl]="address.controls['lastName']" [label]="'Sobrenome'"></app-text-input>
-        <app-text-input [formControl]="address.controls['street']" [label]="'Rua'"></app-text-input>
-        <app-text-input [formControl]="address.controls['city']" [label]="'Cidade'"></app-text-input>
-        <app-text-input [formControl]="address.controls['state']" [label]="'Estado'"></app-text-input>
-        <app-text-input [formControl]="address.controls['postalCode']" [label]="'Código Postal'"></app-text-input>
-      </form>
-
-      <div class="d-grid">
-        <button [disabled]="registerForm.invalid" class="btn btn-lg btn-primary mt-3" type="submit">Registrar</button>
+      <div class="col-6">
+        <h3>Dados Pessoais</h3>
+        <form [formGroup]="address">
+          <app-text-input
+            [formControl]="address.controls['firstName']"
+            [label]="'Nome'"
+          ></app-text-input>
+          <app-text-input
+            [formControl]="address.controls['lastName']"
+            [label]="'Sobrenome'"
+          ></app-text-input>
+          <app-text-input
+            [formControl]="address.controls['street']"
+            [label]="'Rua'"
+          ></app-text-input>
+          <app-text-input
+            [formControl]="address.controls['city']"
+            [label]="'Cidade'"
+          ></app-text-input>
+          <app-text-input
+            [formControl]="address.controls['state']"
+            [label]="'Estado'"
+          ></app-text-input>
+          <app-text-input
+            [formControl]="address.controls['postalCode']"
+            [label]="'Código Postal'"
+          ></app-text-input>
+        </form>
       </div>
     </form>
+    <div class="d-flex justify-content-center">
+      <button
+        mat-flat-button
+        color="primary"
+        [disabled]="registerForm.invalid"
+        class="btn btn-lg btn-primary mt-3 col-8"
+        type="submit"
+      >
+        Registrar
+      </button>
+    </div>
   </div>
 </div>

@@ -8,4 +8,9 @@ button.nav-link {
     color: #333;
     background: #e9ecef;
   }
+
+  &.active {
+    background: #673ab7;
+    color: #fff;
+  }
 }

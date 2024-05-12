@@ -1,8 +1,8 @@
 
 .cart-no {
   position: absolute;
-  min-height: 15px;
-  min-width: 15px;
+  height: 15px;
+  width: 15px;
   border-radius: 50%;
   font-size: .6em;
   background-color: black;
@@ -11,8 +11,12 @@
   box-shadow: 1px 1px 2px black;
   color: white;
   text-align: center;
+  line-height: 15px; /* Adicione esta linha */
   top: -2px;
   right: 40px;
+  display: flex; /* Adicione esta linha */
+  align-items: center; /* Adicione esta linha */
+  justify-content: center; /* Adicione esta linha */
 }
 
 a {

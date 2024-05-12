@@ -12,6 +12,7 @@ import { SharedModule } from '../shared/shared.module';
 
 
 
+
 @NgModule({
   declarations: [
     NavBarComponent,
@@ -28,7 +29,7 @@ import { SharedModule } from '../shared/shared.module';
       preventDuplicates: true
     }),
     NgxSpinnerModule,
-    SharedModule
+    SharedModule,
 
   ],
   exports: [

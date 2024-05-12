@@ -53,20 +53,20 @@
 
   <ng-template #template>
     <div class="modal-header">
-       <h4 class="modal-title pull-left">Marca</h4>
+       <h4 class="modal-title pull-left">Unidade</h4>
        <button type="button" class="btn close pull-right" aria-label="Close" (click)="closeModal()">
           <span aria-hidden="true">×</span>
        </button>
     </div>
     <div class="modal-body">
       <form [formGroup]="unitForm" >
-        <app-text-input [formControl]="unitForm.controls['name']" [label]="'Unidade'" />
+        <app-text-input [formControl]="unitForm.controls['name']" [label]="'Nome da Unidade'" />
         <div class="d-grid">
           @if(isEdit){
-            <button [disabled]="unitForm.invalid" class="btn btn-outline-dark mt-3" type="submit" (click)="onEdit()">Editar</button>
+            <button [disabled]="unitForm.invalid" mat-flat-button color="primary" type="submit" (click)="onEdit()">Editar</button>
           }
           @else {
-            <button [disabled]="unitForm.invalid" class="btn btn-outline-dark mt-3" type="submit" (click)="onSubmit()">Criar</button>
+            <button [disabled]="unitForm.invalid" mat-flat-button color="primary" type="submit" (click)="onSubmit()">Criar</button>
           }
         </div>
       </form>
