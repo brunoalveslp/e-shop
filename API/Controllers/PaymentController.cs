@@ -44,6 +44,8 @@ public class PaymentController : BaseApiController
 
         PaymentIntent intent;
 
+        Order order;
+
         switch (stripeEvent.Type)
         {
             case "payment_intent.succeeded":
