@@ -90,6 +90,7 @@ Figura 10: Loja  Listagem de produtos
 
 Figura 11: Loja - Adicionar produtos pela tela de listagem, filtrar, grifado em vermelho a funcionalidade após escolher o tamanho do produto.
 ![Loja - Adicionar produtos pela tela de listagem, filtrar, grifado em vermelho a funcionalidade após escolher o tamanho do produto.](/Imagens_do_projeto/Loja_Adicionar_Produtos.png)
+![Loja - Adicionar produtos pela tela de listagem, filtrar, grifado em vermelho a funcionalidade após escolher o tamanho do produto.](/Imagens_do_projeto/escolhendo-tamanho-e-adicionando.png)
 
 Figura 12: Loja - Detalhes do produto, grifado em vermelho a funcionalidade um slide contendo as imagens do produto.
 ![Loja - Detalhes do produto, grifado em vermelho a funcionalidade um slide contendo as imagens do produto.](/Imagens_do_projeto/Loja_Detalhes_Produto.png)
