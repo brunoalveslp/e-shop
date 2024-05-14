@@ -34,6 +34,6 @@ export class ProductsService {
   }
 
   deleteProduct(id: number){
-    return this.http.delete(this.baseUrl+'stock/delete-product/'+id);
+    return this.http.delete(this.baseUrl+'stock/delete-product/'+id, { responseType: 'text' });
   }
 }

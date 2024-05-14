@@ -96,7 +96,7 @@
             <form [formGroup]="productForm" enctype="multipart/form-data">
               <div class="input-group mb-3 grid gap-2">
                 @if(isEdit){
-                  <app-image-input [url]="productForm.value.pictureUrl" (newImageEvent)="onAddImage($event.value)"></app-image-input>
+                  <app-image-input [url]="productForm.value.pictureUrl ?? null" (newImageEvent)="onAddImage($event)" (removeImageEvent)="onRemoveImage()"></app-image-input>
                 } @else {
                   <app-image-input (newImageEvent)="onAddImage($event)"></app-image-input>
                 }

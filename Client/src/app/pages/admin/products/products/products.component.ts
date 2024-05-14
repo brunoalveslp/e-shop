@@ -22,6 +22,8 @@ import { UnitsService } from '../../units/units.service';
 import { ProductSize } from 'src/app/shared/models/productSize';
 import { Size } from 'src/app/shared/models/size';
 import { SizesComponent } from 'src/app/shared/components/sizes/sizes.component';
+import { tap } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-products',
@@ -60,15 +62,16 @@ export class ProductsComponent implements OnInit {
     private productsService: ProductsService,
     private fb: FormBuilder,
     private modalService: BsModalService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
-    this.getProducts();
     this.getBrands();
     this.getTypes();
     this.getUnits();
     this.getSizes();
+    this.getProducts();
   }
 
   getBrands() {
@@ -144,9 +147,10 @@ export class ProductsComponent implements OnInit {
   onDelete(id: number) {
     this.productsService.deleteProduct(id).subscribe({
       next: () => {
-        this.modalRef.hide();
+        this.toastr.success('Produto deletado com sucesso!');
         this.getProducts();
       },
+      error: () => this.toastr.error('Erro ao deletar produto!')
     });
   }
 
@@ -241,16 +245,15 @@ export class ProductsComponent implements OnInit {
   }
 
   onEdit() {
-
-
+    console.log(this.productImage);
+  console.log(this.productAditionalImages);
     let formData = new FormData();
     Object.keys(this.productForm.controls).forEach((formControlName) => {
-      if (formControlName == 'pictureUrl' && this.productImage) {
-        formData.append('picture', this.productImage, this.productImage.name);
-      } else if (
-        formControlName == 'aditionalPicturesUrls' &&
-        this.productAditionalImages.length > 0
-      ) {
+      if (formControlName == 'pictureUrl') {
+        if (this.productImage) {
+          formData.append('picture', this.productImage, this.productImage.name);
+        }
+      } else if (formControlName == 'aditionalPicturesUrls') {
         this.productAditionalImages.forEach((file) => {
           if (file) {
             formData.append('aditionalPictures', file, file.name);
