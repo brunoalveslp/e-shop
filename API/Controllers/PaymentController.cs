@@ -44,19 +44,15 @@ public class PaymentController : BaseApiController
 
         PaymentIntent intent;
 
-        Order order;
-
         switch (stripeEvent.Type)
         {
             case "payment_intent.succeeded":
                 intent = (PaymentIntent)stripeEvent.Data.Object;
                 await _paymentService.UpdateOrderForSucceededPayment(intent.Id);
-                //_logger.LogInformation($"Pagamento realizado com sucesso e status atualizado para pagamento recebido no pedido: {order.Id}");
                 break;
             case "payment_intent.payment_failed":
                 intent = (PaymentIntent)stripeEvent.Data.Object;
                 await _paymentService.UpdateOrderForSucceededPayment(intent.Id);
-                //_logger.LogInformation($"Pagamento com problemas e status atualizado para falha no pagamento no pedido: {order.Id}");
                 break;
         }
 

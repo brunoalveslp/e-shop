@@ -17,6 +17,7 @@ public interface IGenericRepository<T> where T : BaseEntity
     Task<T> GetEntityWithSpecification(ISpecification<T> spec);
     Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec);
     Task<Order> GetOrderWithSpecification(ISpecification<T> spec);
+    void DeleteRange(IEnumerable<T> entities);
 
     Task<int> CountAsync(ISpecification<T> spec);
     Task AddAsync(T entity);

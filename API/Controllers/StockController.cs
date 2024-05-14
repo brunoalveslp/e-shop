@@ -318,27 +318,26 @@ namespace API.Controllers
 
             if (product is not null)
             {
-                if (product.AditionalPicturesUrls is not null)
-                {
                     try
                     {
-                        _fileService.DeleteImage(product.PictureUrl);
-
-                        foreach (var image in product.AditionalPicturesUrls)
+           
+                        if(product.ProductSizes is not null)
                         {
-                            _fileService.DeleteImage(image);
+                            foreach(var size in product.ProductSizes)
+                            {
+                                await StockOutgoingAsync(product.Id, size.SizeId, size.Quantity);
+                            }
                         }
-
-                        
                     }
                     catch (Exception ex)
                     {
                         return BadRequest(new ApiException(400, ex.Message));
                     }
-                }
             }
 
-            _unitOfWork.Repository<Product>().Delete(product);
+        
+            product.IsDeleted = true;
+            await _unitOfWork.Repository<Product>().UpdateAsync(product);
             await _unitOfWork.Complete();
 
             return Ok("Product " + product.Name + " Deleted Successfully!");

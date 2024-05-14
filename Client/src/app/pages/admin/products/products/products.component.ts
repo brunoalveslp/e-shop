@@ -28,7 +28,7 @@ import { SizesComponent } from 'src/app/shared/components/sizes/sizes.component'
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss',
 })
-export class ProductsComponent implements OnInit, AfterViewInit {
+export class ProductsComponent implements OnInit {
   @ViewChild('search') searchTerm?: ElementRef;
   public products: Product[] = [];
   public types: Type[] = [];
@@ -69,15 +69,6 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     this.getTypes();
     this.getUnits();
     this.getSizes();
-  }
-
-  ngAfterViewInit(): void {
-
-  }
-
-  saveSize(e: any){
-    console.log('saving size')
-    console.log(this.productSizes)
   }
 
   getBrands() {
@@ -153,8 +144,8 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   onDelete(id: number) {
     this.productsService.deleteProduct(id).subscribe({
       next: () => {
-        this.getProducts();
         this.modalRef.hide();
+        this.getProducts();
       },
     });
   }
@@ -202,10 +193,6 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   }
   }
 
-  updateSize(event: any){
-    console.log(event)
-  }
-
   closeModal() {
     this.modalRef.hide();
     this.clearEntity();
@@ -218,11 +205,9 @@ export class ProductsComponent implements OnInit, AfterViewInit {
     Object.keys(this.productForm.controls).forEach((formControlName) => {
       if (formControlName == 'pictureUrl') {
         if (this.productImage) {
-          console.log(this.productImage);
           formData.append('picture', this.productImage, this.productImage.name);
         }
       } else if (formControlName == 'aditionalPicturesUrls') {
-        console.log(this.productAditionalImages);
         this.productAditionalImages.forEach((file) => {
           if (file) {
             formData.append('aditionalPictures', file, file.name);
@@ -307,24 +292,20 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   }
 
   onAddImage(img: File) {
-    console.log(img);
     this.productImage = img;
   }
 
   onAddAditionalImage(img: File) {
-    console.log(img);
     this.productAditionalImages.push(img);
   }
 
   onRemoveImage(){
     this.productImage = undefined;
-    console.log('removed')
   }
 
   onRemoveAditionalImage(index: number, url: string | undefined){
     this.productAditionalImages.splice(index, 1);
     this.quantityOfAditionalImages -= 1;
-    console.log('removed')
     if(url) {
       this.productForm.value.aditionalPicturesUrls?.splice(this.productForm.value.aditionalPicturesUrls?.indexOf(url), 1);
     }

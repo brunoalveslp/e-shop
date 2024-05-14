@@ -1,4 +1,3 @@
-
 using Domain.Entities;
 
 namespace Domain.Specifications;
@@ -7,10 +6,11 @@ public class ProductsWithTypesAndBrandAndUnitSpecification : BaseSpecification<P
 {
     public ProductsWithTypesAndBrandAndUnitSpecification(ProductSpecParams productParams)
         : base(x =>
+                (!x.IsDeleted) &&
                 (string.IsNullOrEmpty(productParams.Search) || x.Name.ToLower().Contains(productParams.Search)) &&
                 (!productParams.TypeId.HasValue || x.ProductTypeId == productParams.TypeId) &&
                 (!productParams.BrandId.HasValue || x.ProductBrandId == productParams.BrandId) &&
-               (!productParams.UnitId.HasValue || x.ProductUnitId == productParams.UnitId)
+                (!productParams.UnitId.HasValue || x.ProductUnitId == productParams.UnitId)
         )
     {
         AddInclude(p => p.ProductType);
@@ -36,7 +36,7 @@ public class ProductsWithTypesAndBrandAndUnitSpecification : BaseSpecification<P
         }
     }
 
-    public ProductsWithTypesAndBrandAndUnitSpecification(int id) : base(p => p.Id == id)
+    public ProductsWithTypesAndBrandAndUnitSpecification(int id) : base(p => p.Id == id && !p.IsDeleted)
     {
         AddInclude(p => p.ProductType);
         AddInclude(p => p.ProductBrand);

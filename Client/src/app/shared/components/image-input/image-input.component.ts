@@ -16,7 +16,7 @@ export class ImageInputComponent implements OnInit {
 
   ngOnInit(): void {
     if(this.url == ''){
-      this.url = 'https://bit.ly/3ubuq5o'
+      this.url = '../../../../assets/images/image-placeholder.jpg'
     }
   }
 
@@ -35,7 +35,7 @@ export class ImageInputComponent implements OnInit {
     }
 
     resetImage(){
-      this.url = 'https://bit.ly/3ubuq5o';
+      this.url = '../../../../assets/images/image-placeholder.jpg';
       this.removeImageEvent.emit();
     }
 

@@ -37,6 +37,13 @@ namespace Infrastructure.Data
             context.SaveChanges();
         }
 
+        public void DeleteRange(IEnumerable<T> entities)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            context.Set<T>().RemoveRange(entities);
+            context.SaveChanges();
+        }
+
         public IReadOnlyList<T> GetAll()
         {
             using var context = _contextFactory.CreateDbContext();
