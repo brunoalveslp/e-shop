@@ -292,6 +292,7 @@ export class ProductsComponent implements OnInit {
     this.productForm = this.createForm();
     this.isEdit = false;
     this.quantityOfAditionalImages = 0;
+    this.productSizes = [];
   }
 
   onAddImage(img: File) {
