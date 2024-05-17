@@ -49,10 +49,13 @@ volumes:
 ```
 <br>
 Para facilitar, basta abrir o powershell na pasta com este arquivo e rodar o seguinte comando.
+
 ```
 docker-compose up --detach
 ```
+<br>
 Passo 7: Alterar as configurações da conexão com o Postgres do projeto: Na pasta API no arquivo appsettings.json alterar as configurações do Host, Database, Username e Password.
+
 ```
  "ConnectionStrings": {
     "DefaultConnection": "Host=localhost; Database=eshop; Username=postgres; Password=master",
@@ -63,6 +66,7 @@ Passo 7: Alterar as configurações da conexão com o Postgres do projeto: Na pa
 <br>
 Passo 8: Rodar os comandos para gerar os bancos de dados:
 No Nuget Console
+
 ```
 Update-Database -Context AppIdentityDbContext -Project Infrastructure
 Update-Database -Context StoreDbContext -Project Infrastructure
@@ -75,6 +79,7 @@ dotnet ef database update -c StoreDbContext -p .\Infrastructure\Infrastructure.c
 <br>
 Passo 9: Atualize os dados de integração com a Stripe: No arquivo appsettings.json e no controlador em API/Controllers/PaymentController.cs
 No appsettings.json
+
 ```
 "StripeSettings": {
     "PublishableKey": "pk_test_51Om2WKFYstaow4m6KfJj2wUSpP1bSN3tpmcODZ1VIhUBROorNrCJApeWZOmbelyop5RGgW6OxfRYGp2oenFIg7SN00CDM2mNSQ",
@@ -88,6 +93,7 @@ private const string WebhookSecret = "whsec_733c88e502c45981dd8a7a7880680e7f46cb
 <br>
 Passo 10: Realize a insatalação do listener da stripe: no meu caso eu utilizo o arquivo stripe.exe rodando via terminal, no seu caso pode ser diferente, validar a documentação e configuração do listener para a seu caso, segue <a href="https://docs.stripe.com/webhooks?locale=pt-BR">link</a>.<br>
 Passo  11: Construa e execute a aplicação: Ainda no terminal, você pode construir a aplicação com o comando dotnet build e depois executá-la com dotnet run, ou clicar no simbolo de play no VS2022.
+
 ```
 dotnet build
 dotnet run
