@@ -92,11 +92,22 @@ private const string WebhookSecret = "whsec_733c88e502c45981dd8a7a7880680e7f46cb
 ```
 <br>
 Passo 10: Realize a insatalação do listener da stripe: no meu caso eu utilizo o arquivo stripe.exe rodando via terminal, no seu caso pode ser diferente, validar a documentação e configuração do listener para a seu caso, segue <a href="https://docs.stripe.com/webhooks?locale=pt-BR">link</a>.<br>
-Passo  11: Construa e execute a aplicação: Ainda no terminal, você pode construir a aplicação com o comando dotnet build e depois executá-la com dotnet run, ou clicar no simbolo de play no VS2022.
+
+Passo 11: Instale o Angular CLI: segue <a href="https://angular.io/cli">link</a>
+
+Passo  12: Construa e execute a aplicação backend: Ainda no terminal, você pode construir a aplicação com o comando dotnet build e depois executá-la com dotnet run, ou clicar no simbolo de play no VS2022.
+Na pasta API abra o terminal ou execute o projeto API pelo VS2022
 
 ```
 dotnet build
 dotnet run
+```
+
+Passo 12: Execute o front end da aplicação: Com um console na pasta Client rode o seguinte comando.
+```
+ng s
+OU
+ng serve
 ```
 <br>
 ## Introdução
