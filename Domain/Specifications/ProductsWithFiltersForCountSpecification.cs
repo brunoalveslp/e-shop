@@ -7,10 +7,12 @@ public class ProductsWithFiltersForCountSpecification : BaseSpecification<Produc
 {
     public ProductsWithFiltersForCountSpecification(ProductSpecParams productParams)
        : base(x =>
+                (!x.IsDeleted) &&
                (string.IsNullOrEmpty(productParams.Search) || x.Name.ToLower().Contains(productParams.Search)) &&
                (!productParams.TypeId.HasValue || x.ProductTypeId == productParams.TypeId) &&
                (!productParams.BrandId.HasValue || x.ProductBrandId == productParams.BrandId) &&
                (!productParams.UnitId.HasValue || x.ProductUnitId == productParams.UnitId)
+               
        )
     { }
 
