@@ -8,21 +8,21 @@
   <div class="d-flex align-items-center">
     <a routerLink="/cart" class="position-relative">
       <i class="fa fa-shopping-cart fa-2x me-5 text-dark"></i>
-      @if(cartService.cartSource$ | async; as Cart){
+      @if(cartSource$ | async; as Cart){
         <div class="cart-no">
           {{ getCount(Cart.items) }}
         </div>
       }
     </a>
-    @if((accountService.currentUserSource$ | async) == null){
+    @if((currentUser$ | async) == null){
     <ng-container>
       <a routerLink="/account/login" mat-raised-button class="me-2">Entrar</a>
       <a routerLink="/account/register" mat-raised-button class="me-2">Registrar</a>
     </ng-container>
   }
-    <ng-container *ngIf="accountService.currentUserSource$ | async as user">
+    <ng-container *ngIf="currentUser$ | async as user">
       <mat-menu #appMenu="matMenu">
-        <button mat-menu-item routerLink="/admin" *ngIf="user.roles.includes('Admin')">
+        <button mat-menu-item routerLink="/admin" *ngIf="user && user.roles && user.roles.includes('Admin')">
           <mat-icon>edit</mat-icon>
           <span>Painel do Administrador</span>
         </button>

@@ -3,7 +3,7 @@ import { AbstractControl, AsyncValidatorFn, FormBuilder, Validators } from '@ang
 import { AccountService } from '../account.service';
 import { Router } from '@angular/router';
 import { debounceTime, finalize, map, switchMap, take } from 'rxjs';
-import { Address } from 'src/app/shared/models/user';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-register',
@@ -13,7 +13,7 @@ import { Address } from 'src/app/shared/models/user';
 export class RegisterComponent {
   errors: string[] | null = null;
 
-  constructor(private fb: FormBuilder, private accountService: AccountService, private router: Router) {}
+  constructor(private fb: FormBuilder, private accountService: AccountService, private router: Router, private toastr: ToastrService) {}
 
   complexPassword = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).{6,}$";
 
@@ -29,15 +29,22 @@ export class RegisterComponent {
   registerForm = this.fb.group({
     displayName: ['', Validators.required],
     email: ['', [Validators.required, Validators.email],[this.validateEmailNotTaken()]],
-    roles: [['User']],
+    roles: [["User"]],
     password: ['', [Validators.required, Validators.pattern(this.complexPassword)]],
     address: this.address
   })
 
   onSubmit(){
+    console.log(this.registerForm.value)
     this.accountService.register(this.registerForm.value).subscribe({
-      next: () => this.router.navigateByUrl('/shop'),
-      error: error => this.errors = error.errors
+      next: () => {
+          this.router.navigateByUrl('/shop');
+          this.toastr.success('Usuário registrado com sucesso!');
+      },
+      error: (error) => {
+        this.errors = error.errors
+        this.toastr.error(error.errors[0] || 'Erro ao registrar usuário!');
+      }
     })
   }
 

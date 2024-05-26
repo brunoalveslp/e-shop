@@ -59,13 +59,13 @@ namespace API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterDto registerUser)
+        public async Task<ActionResult<UserDto>> Register(RegisterDto registerUser)
         {
             if (CheckIfEmailExistsAsync(registerUser.Email).Result.Value)
             {
                 return new BadRequestObjectResult(
                     new ApiValidationErrorResponse
-                    { Errors = new[] { "E-mail Address is currently in Use." } });
+                    { Errors = new[] { "O E-mail já está em uso." } });
             }
 
             var user = new AppUser
@@ -95,10 +95,14 @@ namespace API.Controllers
             if (!result.Succeeded)
             {
                 return BadRequest(new ApiResponse(400));
-
             }
 
-            return Ok("Registration Succeded!");
+            return new UserDto
+            {
+                DisplayName = user.DisplayName,
+                Token = _tokenService.CreateToken(user),
+                Email = user.Email
+            };
 
         }
 
@@ -120,7 +124,7 @@ namespace API.Controllers
 
             if (!result.Succeeded)
             {
-                return BadRequest("Login Error occured!");
+                return BadRequest("Ocorreu um erro ao logar!");
             }
 
             return new UserDto
@@ -163,7 +167,7 @@ namespace API.Controllers
                 return Ok(_mapper.Map<Address, AddressDto>(user.Address));
             }
 
-            return BadRequest("Problem updating the user");
+            return BadRequest("Ocorreu algum problema ao atualizar o usuário.");
         }
 
 
@@ -214,10 +218,10 @@ namespace API.Controllers
 
             if (!result.Succeeded)
             {
-                return BadRequest("Problem updating the user role");
+                return BadRequest("Ocorreu algum problema ao atualizar as atribuições do usuario.");
             }
 
-            return Ok("User Role Updated!");
+            return Ok("Atribuição atualizada com sucesso!");
         }
 
         [Authorize(Roles = "Admin")]

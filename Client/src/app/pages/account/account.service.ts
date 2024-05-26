@@ -1,7 +1,7 @@
 import { HttpClient, HttpHandler, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { ReplaySubject, map, of } from 'rxjs';
+import { ReplaySubject, map, of, tap } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { Address, User } from '../../shared/models/user';
 
