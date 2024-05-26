@@ -10,6 +10,106 @@ O meio de pagamento deste projeto é o STRIPE, não sendo guardado dados do cart
 Este projeto ainda está em desenvolvimento.
 </p>
 
+## Como Rodar o projeto
+Primeiro, recomendo fortemente que utilize o Visual Studio 2022 Community Edition para este projeto.
+
+Passo 1: Faça o donwload e instalação do .NET 8 SDK: Você pode encontrar neste <a href="https://dotnet.microsoft.com/pt-br/download/dotnet/8.0">link</a>.<br>
+Passo 2: Baixe o código da aplicação: Você pode clonar o repositório ou baixar o código como um arquivo ZIP.<br>
+Passo 3: Instale as dependências do projeto: Navegue até a pasta do projeto no terminal e execute o comando dotnet restore. Isso irá baixar e instalar todos os pacotes NuGet necessários para o projeto.<br>
+```
+dotnet restore
+```
+Passo 4: Instalar e configurar o PostgresSql: Você pode encontrar neste <a href="https://www.postgresql.org/download/">link</a>.<br>
+Passo 5: Instalar o Docker: Você pode encontrar neste <a href="https://www.docker.com/products/docker-desktop/">link</a>.<br>
+Passo 6: Realizar a configuração do Redis no Docker: Há um arquivo de configuração docker-compose.yml na pasta raiz do projeto, este arquivo tem o seguinte conteúdo.<br>
+```
+services:
+
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+      - HTTP_USER=root
+      - HTTP_PASSWORD=secret
+    ports:
+      - 8081:8081
+    depends_on:
+      - redis
+    
+volumes:
+  redis-data:
+```
+<br>
+Para facilitar, basta abrir o powershell na pasta com este arquivo e rodar o seguinte comando.
+
+```
+docker-compose up --detach
+```
+<br>
+Passo 7: Alterar as configurações da conexão com o Postgres do projeto: Na pasta API no arquivo appsettings.json alterar as configurações do Host, Database, Username e Password.
+
+```
+ "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost; Database=eshop; Username=postgres; Password=master",
+    "IdentityConnection": "Host=localhost; Database=eshop-users; Username=postgres; Password=master",
+    "Redis": "localhost"
+  }
+```
+<br>
+Passo 8: Rodar os comandos para gerar os bancos de dados:
+No Nuget Console
+
+```
+Update-Database -Context AppIdentityDbContext -Project Infrastructure
+Update-Database -Context StoreDbContext -Project Infrastructure
+```
+No console
+```
+dotnet ef database update -c AppIdentityDbContext -p .\Infrastructure\Infrastructure.csproj
+dotnet ef database update -c StoreDbContext -p .\Infrastructure\Infrastructure.csproj
+```
+<br>
+Passo 9: Atualize os dados de integração com a Stripe: No arquivo appsettings.json e no controlador em API/Controllers/PaymentController.cs
+No appsettings.json
+
+```
+"StripeSettings": {
+    "PublishableKey": "pk_test_51Om2WKFYstaow4m6KfJj2wUSpP1bSN3tpmcODZ1VIhUBROorNrCJApeWZOmbelyop5RGgW6OxfRYGp2oenFIg7SN00CDM2mNSQ",
+    "SecretKey": "sk_test_51Om2WKFYstaow4m6BaQSJBdsWn3eXD3NOhkvrsjhmBu0mdP9on3aCosHSUnCgZIc96UFstTyGXGAuhCi5gnr00Ym00x8cPCnmV"
+  }
+```
+No controller
+```
+private const string WebhookSecret = "whsec_733c88e502c45981dd8a7a7880680e7f46cb6aa9481671634592ffc4481b737f";
+```
+<br>
+Passo 10: Realize a insatalação do listener da stripe: no meu caso eu utilizo o arquivo stripe.exe rodando via terminal, no seu caso pode ser diferente, validar a documentação e configuração do listener para a seu caso, segue <a href="https://docs.stripe.com/webhooks?locale=pt-BR">link</a>.<br>
+
+Passo 11: Instale o Angular CLI: segue <a href="https://angular.io/cli">link</a>
+
+Passo  12: Construa e execute a aplicação backend: Ainda no terminal, você pode construir a aplicação com o comando dotnet build e depois executá-la com dotnet run, ou clicar no simbolo de play no VS2022.
+Na pasta API abra o terminal ou execute o projeto API pelo VS2022
+
+```
+dotnet build
+dotnet run
+```
+
+Passo 12: Execute o front end da aplicação: Com um console na pasta Client rode o seguinte comando.
+```
+ng s
+OU
+ng serve
+```
+<br>
 ## Introdução
 <p>  
 O comércio eletrônico é uma área de crescente importância na sociedade atual, sendo este avanço ainda maior nos anos pós pandemia onde ocorreu o aumento do consumo online e mudança de hábitos de compras dos consumidores (CASTRO, 2023). O desenvolvimento de um aplicativo de e-commerce permitirá explorar e entender melhor os desafios e oportunidades desse mercado em constante expansão, agregando assim relevância ao TCC.</p>
@@ -39,7 +139,7 @@ Análise de Requisitos e Definição de Escopo;
 O desenvolvimento do sistema começa com o levantamento de requisitos, que são transformados em diagramas para facilitar a compreensão e implementação do sistema. Abaixo podemos observar os diagramas de Caso de Uso (Figura 1), de Classe (Figura 2) e um fluxo de como a arquitetura do sistema funciona (Figura 3).
 
 Figura 1: Diagrama de Caso de Uso
-![Diagrama de Caso de Uso](,/Imagens_do_projeto/Caso_de_Uso_Base.png)
+![Diagrama de Caso de Uso](./Imagens_do_projeto/Caso_de_Uso_Base.png)
 
 Figura 2: Diagrama de Classe
 ![Diagrama de Classe](./Imagens_do_projeto/Diagrama_de_Classe.png)
@@ -64,7 +164,7 @@ A Arquitetura Limpa permite que as regras de negócio sejam facilmente testadas 
 A seguir, apresentamos a demonstração da arquitetura planejada através do código fonte e sua organização do código.
 
 Figura 4: Código Fonte Geral
-![Código Fonte Geral](,/Imagens_do_projeto/Codigo_Fonte_Geral.png)
+![Código Fonte Geral](./Imagens_do_projeto/Codigo_Fonte_Geral.png)
 
 Figura 5: Código Fonte Front-End 
 ![Código Fonte Front-End](./Imagens_do_projeto/Codigo_Fonte_Front_End.png)
@@ -90,6 +190,7 @@ Figura 10: Loja  Listagem de produtos
 
 Figura 11: Loja - Adicionar produtos pela tela de listagem, filtrar, grifado em vermelho a funcionalidade após escolher o tamanho do produto.
 ![Loja - Adicionar produtos pela tela de listagem, filtrar, grifado em vermelho a funcionalidade após escolher o tamanho do produto.](/Imagens_do_projeto/Loja_Adicionar_Produtos.png)
+![Loja - Adicionar produtos pela tela de listagem, filtrar, grifado em vermelho a funcionalidade após escolher o tamanho do produto.](/Imagens_do_projeto/escolhendo-tamanho-e-adicionando.png)
 
 Figura 12: Loja - Detalhes do produto, grifado em vermelho a funcionalidade um slide contendo as imagens do produto.
 ![Loja - Detalhes do produto, grifado em vermelho a funcionalidade um slide contendo as imagens do produto.](/Imagens_do_projeto/Loja_Detalhes_Produto.png)
@@ -201,13 +302,4 @@ Embora o sistema execute operações de venda e recebimento de pagamentos, ele d
 
 Todas as funcionalidades inicialmente propostas foram implementadas com sucesso, seguindo a arquitetura e metodologia propostas. Para cumprir os prazos, optou-se por uma versão simplificada do processo, omitindo etapas como as Sprint Reviews.
 
-## Referências Bibliográficas
-
-CASTRO, ANA PAULA. Com pandemia, comercio eletrônico cresce e movimenta R$ 450 bilhões em três anos no país. G1, maio 2023. Disponível em: [Link](https://g1.globo.com/economia/noticia/2023/05/11/com-pandemia-comercio-eletronico-cresce-e-movimenta-r-450-bilhoes-em-tres-anos-no-pais.ghtml). Acesso em: 07 set. 2023.
-
-Martin, Robert Cecil. Arquitetura Limpa: O Guia do Artesão para Estrutura e Design de Software. Alta Books Editora, 2019.
-
-Microsoft. ASP.NET Documentation. Microsoft Corporation. Disponível em: [Link](https://learn.microsoft.com/en-us/aspnet/core/?view=aspnetcore-8.0). Acesso em: 11 mai. 2024.
-
-Stripe. ASP.NET Documentation. Stripe. Disponível em: [Link](https://docs.stripe.com/?locale=pt-BR). Acesso em: 12 mai. 2024.
 
