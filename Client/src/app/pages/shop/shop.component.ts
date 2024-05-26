@@ -22,8 +22,8 @@ export class ShopComponent implements OnInit {
   public totalCount: number = 0;
   public sortOptions = [
     {name: 'Alfabeticamente', value: 'name'},
-    {name: 'Pre;o: Menor para o Maior', value: 'priceAsc'},
-    {name: 'Price: Maior para o Menor', value: 'priceDesc'},
+    {name: 'Preço: Menor para o Maior', value: 'priceAsc'},
+    {name: 'Preço: Maior para o Menor', value: 'priceDesc'},
   ]
 
   constructor(private shopService: ShopService){}
