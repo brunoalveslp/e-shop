@@ -46,7 +46,7 @@ export class ShopComponent implements OnInit {
   getProducts(){
     this.shopService.getProducts(this.shopParams).subscribe({
       next: response => {
-        this.products = response.data;
+        this.products = response.data.filter(p => p.productSizes.some(ps => ps.quantity > 0));
         this.products.forEach(p => {
           p.productSizes.forEach(ps => {
             let size = this.sizes.find(s => s.id == ps.sizeId)
@@ -55,9 +55,10 @@ export class ShopComponent implements OnInit {
             }
           })
         });
+
         this.shopParams.pageSize = response.pageSize;
         this.shopParams.pageNumber = response.pageIndex;
-        this.totalCount = response.count;
+        this.totalCount = this.products.length;
       },
       error: error => console.assert(error)
     });

@@ -22,7 +22,7 @@ public class AppIdentityDbContextSeed
 
         if (!userManager.Users.Any())
         {
-            var user = new AppUser
+            var userAdmin = new AppUser
             {
                 DisplayName = "Admin",
                 Email = "admin@test.com",
@@ -39,9 +39,30 @@ public class AppIdentityDbContextSeed
                 }
             };
 
+            var user = new AppUser
+            {
+                DisplayName = "Consumidor",
+                Email = "test@test.com",
+                UserName = "test@test.com",
+                Roles = userRole,
+                Address = new Address
+                {
+                    FirstName = "Admin",
+                    LastName = "Bruno",
+                    Street = "Rua Qualquer Nº100",
+                    City = "Brusque",
+                    State = "SC",
+                    PostalCode = "00000-000"
+                }
+            };
+
+            await userManager.CreateAsync(userAdmin, "Pa$$w0rd");
+
+            await userManager.AddToRoleAsync(userAdmin, "Admin");
+
             await userManager.CreateAsync(user, "Pa$$w0rd");
 
-            await userManager.AddToRoleAsync(user, "Admin");
+            await userManager.AddToRoleAsync(user, "User");
         }
     }
 }
