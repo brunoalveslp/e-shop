@@ -18,7 +18,7 @@ public class ProductPictureUrlResolver : IValueResolver<Product, ProductToReturn
     {
         if (!string.IsNullOrEmpty(source.PictureUrl))
         {
-            source.PictureUrl = _config["ApiUrl"] + source.PictureUrl;
+            source.PictureUrl = _config["ApiImagesUrl"] + source.PictureUrl;
             return source.PictureUrl;
         }
         return null;

@@ -3,21 +3,28 @@
     "Id": 1,
     "ShortName": "Correios - Sedex",
     "Description": "Entrega dentro de 2 dias uteis.",
-    "DeliveryTime": "1-2 Days",
+    "DeliveryTime": "1-2 Dias",
     "Price": 20
   },
   {
     "Id": 2,
     "ShortName": "Correios - PAC",
     "Description": "Entrega dentro de 5 dias uteis.",
-    "DeliveryTime": "2-5 Days",
+    "DeliveryTime": "2-5 Dias",
     "Price": 10
   },
   {
     "Id": 3,
     "ShortName": "Transportadora Barata",
     "Description": "Entrega em até 10 dias uteis.",
-    "DeliveryTime": "5-10 Days",
+    "DeliveryTime": "5-10 Dias",
+    "Price": 5
+  },
+  {
+    "Id": 4,
+    "ShortName": "Transportadora Cara",
+    "Description": "Entrega em até 2 dias uteis.",
+    "DeliveryTime": "1-2 Dias",
     "Price": 5
   }
 ]

@@ -7,6 +7,7 @@ using Infrastructure.Data;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 using StackExchange.Redis;
 using Swashbuckle.AspNetCore.Filters;
@@ -86,6 +87,13 @@ namespace API
             }
 
             app.UseStaticFiles();   
+            app.UseStaticFiles(new StaticFileOptions 
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "Files")
+                ),
+                RequestPath = "/Files"
+            });   
 
             app.UseMiddleware<ExceptionMiddleware>();
 
@@ -105,17 +113,23 @@ namespace API
 
 
             app.MapControllers();
+            app.MapFallbackToController("Index", "Fallback");
 
             // Seeds Roles and User
 
             using (var scope = app.Services.CreateScope())
             {
+
+                var context = scope.ServiceProvider.GetRequiredService<StoreDbContext>();
+
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
                 var loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
                 
                 try
                 {
+                    await context.Database.MigrateAsync();
+                    await StoreContextSeed.SeedAsync(context, loggerFactory);
                     await AppIdentityDbContextSeed.SeedUserAsync(userManager, roleManager);
 
                 }

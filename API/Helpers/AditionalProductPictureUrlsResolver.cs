@@ -26,7 +26,7 @@ public class AditionalProductPictureUrlsResolver : IValueResolver<Product, Produ
             {
                 if (!string.IsNullOrEmpty(image.value))
                 {
-                    aditionalImageUrls[image.i] = _config["ApiUrl"] + image.value;
+                    aditionalImageUrls[image.i] = _config["ApiImagesUrl"] + image.value;
                 }
             }
 
