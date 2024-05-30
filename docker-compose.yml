@@ -1,4 +1,15 @@
+version: '3.4'
+
 services:
+  api:
+    image: ${DOCKER_REGISTRY-}api
+    container_name: api
+    build:
+      context: .
+      dockerfile: API/Dockerfile
+    ports:
+        - "5000:5000"
+        - "5001:5001"
 
   redis:
     image: redis:latest
@@ -10,6 +21,7 @@ services:
 
   redis-commander:
     image: rediscommander/redis-commander:latest
+    container_name: api_redis_database
     environment:
       - REDIS_HOSTS=local:redis:6379
       - HTTP_USER=root
@@ -21,6 +33,7 @@ services:
 
   db:
     image: postgres:latest
+    container_name: api_postgres_database
     environment:
       POSTGRES_USER: appuser
       POSTGRES_PASSWORD: secret
@@ -30,5 +43,6 @@ services:
       - postgres-data:/data
     
 volumes:
+  api:  
   redis-data:
   postgres-data:

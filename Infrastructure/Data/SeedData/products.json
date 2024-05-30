@@ -1,32 +1,32 @@
 [
   {
-    "Id": 1,
+    "Id": -1,
     "Name": "Camisa Athletico - Preta",
     "Description": "Camisa de jogo do Athletico paranaense, modelo 2022/2023",
     "Price": 299.90,
     "Weight": 0.400,
     "ProductSizes": [
       {
-        "ProductId": 1,
-        "SizeId": 1,
+        "ProductId": -1,
+        "SizeId": -1,
         "Quantity": 5,
         "IsActive": true
       },
       {
-        "ProductId": 1,
-        "SizeId": 2,
+        "ProductId": -1,
+        "SizeId": -2,
         "Quantity": 10,
         "IsActive": true
       },
       {
-        "ProductId": 1,
-        "SizeId": 3,
+        "ProductId": -1,
+        "SizeId": -3,
         "Quantity": 10,
         "IsActive": true
       },
       {
-        "ProductId": 1,
-        "SizeId": 4,
+        "ProductId": -1,
+        "SizeId": -4,
         "Quantity": 5,
         "IsActive": true
       }
@@ -35,38 +35,38 @@
     "AditionalPicturesUrls": [
       "camisa-preta-02.webp"
     ],
-    "ProductTypeId": 1,
-    "ProductBrandId": 4,
-    "ProductUnitId": 1
+    "ProductTypeId": -1,
+    "ProductBrandId": -4,
+    "ProductUnitId": -1
   },
   {
-    "Id": 2,
+    "Id": -2,
     "Name": "Camisa Athletico - Vermelha",
     "Description": "Camisa de jogo do Athletico Paranaense, modelo 2022/2023",
     "Price": 299.90,
     "Weight": 0.400,
     "ProductSizes": [
       {
-        "ProductId": 2,
-        "SizeId": 1,
+        "ProductId": -2,
+        "SizeId": -1,
         "Quantity": 5,
         "IsActive": true
       },
       {
-        "ProductId": 2,
-        "SizeId": 2,
+        "ProductId": -2,
+        "SizeId": -2,
         "Quantity": 10,
         "IsActive": true
       },
       {
-        "ProductId": 2,
-        "SizeId": 3,
+        "ProductId": -2,
+        "SizeId": -3,
         "Quantity": 10,
         "IsActive": true
       },
       {
-        "ProductId": 2,
-        "SizeId": 4,
+        "ProductId": -2,
+        "SizeId": -4,
         "Quantity": 5,
         "IsActive": true
       }
@@ -76,38 +76,38 @@
       "camisa-vermelha-02.webp",
       "camisa-vermelha-03.webp"
     ],
-    "ProductTypeId": 1,
-    "ProductBrandId": 4,
-    "ProductUnitId": 1
+    "ProductTypeId": -1,
+    "ProductBrandId": -4,
+    "ProductUnitId": -1
   },
   {
-    "Id": 3,
+    "Id": -3,
     "Name": "Camisa Palmeiras - Verde",
     "Description": "Camisa de jogo do Palmeiras, modelo 2022/2023",
     "Price": 399.90,
     "Weight": 0.400,
     "ProductSizes": [
       {
-        "ProductId": 3,
-        "SizeId": 2,
+        "ProductId": -3,
+        "SizeId": -2,
         "Quantity": 10,
         "IsActive": true
       },
       {
-        "ProductId": 3,
-        "SizeId": 3,
+        "ProductId": -3,
+        "SizeId": -3,
         "Quantity": 10,
         "IsActive": true
       },
       {
-        "ProductId": 3,
-        "SizeId": 4,
+        "ProductId": -3,
+        "SizeId": -4,
         "Quantity": 5,
         "IsActive": true
       },
       {
-        "ProductId": 3,
-        "SizeId": 5,
+        "ProductId": -3,
+        "SizeId": -5,
         "Quantity": 5,
         "IsActive": true
       }
@@ -117,44 +117,44 @@
       "camisa-palmeiras-2-puma.webp",
       "camisa-palmeiras-3-puma.webp"
     ],
-    "ProductTypeId": 1,
-    "ProductBrandId": 3,
-    "ProductUnitId": 1
+    "ProductTypeId": -1,
+    "ProductBrandId": -3,
+    "ProductUnitId": -1
   },
   {
-    "Id": 4,
+    "Id": -4,
     "Name": "Camisa Corinthians - Branca",
     "Description": "Camisa de jogo do Corinthians, modelo 2022/2023",
     "Price": 399.90,
     "Weight": 0.400,
     "ProductSizes": [
       {
-        "ProductId": 4,
-        "SizeId": 1,
+        "ProductId": -4,
+        "SizeId": -1,
         "Quantity": 5,
         "IsActive": true
       },
       {
-        "ProductId": 4,
-        "SizeId": 2,
+        "ProductId": -4,
+        "SizeId": -2,
         "Quantity": 10,
         "IsActive": true
       },
       {
-        "ProductId": 4,
-        "SizeId": 3,
+        "ProductId": -4,
+        "SizeId": -3,
         "Quantity": 10,
         "IsActive": true
       },
       {
-        "ProductId": 4,
-        "SizeId": 4,
+        "ProductId": -4,
+        "SizeId": -4,
         "Quantity": 5,
         "IsActive": true
       },
       {
-        "ProductId": 4,
-        "SizeId": 5,
+        "ProductId": -4,
+        "SizeId": -5,
         "Quantity": 5,
         "IsActive": true
       }
@@ -163,32 +163,32 @@
     "AditionalPicturesUrls": [
       "camisa-corinthians-2-nike.webp"
     ],
-    "ProductTypeId": 1,
-    "ProductBrandId": 2,
-    "ProductUnitId": 1
+    "ProductTypeId": -1,
+    "ProductBrandId": -2,
+    "ProductUnitId": -1
   },
   {
-    "Id": 5,
+    "Id": -5,
     "Name": "Camisa Real Madrid - Branca",
     "Description": "Camisa de jogo do Real Madrid, modelo 2023/2024",
     "Price": 499.90,
     "Weight": 0.400,
     "ProductSizes": [
       {
-        "ProductId": 5,
-        "SizeId": 2,
+        "ProductId": -5,
+        "SizeId": -2,
         "Quantity": 10,
         "IsActive": true
       },
       {
-        "ProductId": 5,
-        "SizeId": 3,
+        "ProductId": -5,
+        "SizeId": -3,
         "Quantity": 10,
         "IsActive": true
       },
       {
-        "ProductId": 5,
-        "SizeId": 4,
+        "ProductId": -5,
+        "SizeId": -4,
         "Quantity": 5,
         "IsActive": true
       }
@@ -197,8 +197,8 @@
     "AditionalPicturesUrls": [
       "camisa-real-2.webp"
     ],
-    "ProductTypeId": 1,
-    "ProductBrandId": 4,
-    "ProductUnitId": 1
+    "ProductTypeId": -1,
+    "ProductBrandId": -4,
+    "ProductUnitId": -1
   }
 ]

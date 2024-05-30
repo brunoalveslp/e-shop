@@ -1,32 +1,32 @@
 [
   {
-    "Id": 1,
+    "Id": -1,
     "Name": "PP",
-    "isActive": true
+    "IsActive": true
   },
   {
-    "Id": 2,
+    "Id": -2,
     "Name": "P",
-    "isActive": true
+    "IsActive": true
   },
   {
-    "Id": 3,
+    "Id": -3,
     "Name": "M",
-    "isActive": true
+    "IsActive": true
   },
   {
-    "Id": 4,
+    "Id": -4,
     "Name": "G",
-    "isActive": true
+    "IsActive": true
   },
   {
-    "Id": 5,
+    "Id": -5,
     "Name": "GG",
-    "isActive": true
+    "IsActive": true
   },
   {
-    "Id": 6,
+    "Id": -6,
     "Name": "Unico",
-    "isActive": true
+    "IsActive": true
   }
 ]

@@ -64,7 +64,7 @@ public class FileService : IFileService
         try
         {
             var wwwPath = _environment.ContentRootPath;
-            var path = Path.Combine(wwwPath, "Files", "images\\", imageFileName);
+            var path = Path.Combine(wwwPath, "Files", "images", imageFileName);
             if (System.IO.File.Exists(path))
             {
                 System.IO.File.Delete(path);

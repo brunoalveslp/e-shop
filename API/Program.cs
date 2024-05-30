@@ -121,6 +121,7 @@ namespace API
             {
 
                 var context = scope.ServiceProvider.GetRequiredService<StoreDbContext>();
+                var identityContext = scope.ServiceProvider.GetRequiredService<AppIdentityDbContext>();
 
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
@@ -129,6 +130,7 @@ namespace API
                 try
                 {
                     await context.Database.MigrateAsync();
+                    await identityContext.Database.MigrateAsync();
                     await StoreContextSeed.SeedAsync(context, loggerFactory);
                     await AppIdentityDbContextSeed.SeedUserAsync(userManager, roleManager);
 

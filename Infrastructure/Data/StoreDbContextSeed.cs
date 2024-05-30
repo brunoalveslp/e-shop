@@ -13,7 +13,11 @@ namespace Infrastructure.Data
         {
             try
             {
-                var path = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\"));
+                // IF WINDOWS APP
+                // var path = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\"));
+
+                // IF DOCKER CONTAINER
+                var path = "/src/";
 
                 if (!context.ProductBrands.Any())
                 {
