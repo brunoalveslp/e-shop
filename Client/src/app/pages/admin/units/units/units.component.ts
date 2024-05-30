@@ -12,6 +12,7 @@ import { Unit } from 'src/app/shared/models/unit';
 })
 export class UnitsComponent implements OnInit {
   units: Unit[];
+  lastId = 0;
   modalRef: BsModalRef;
   isEdit: boolean = false;
 
@@ -31,6 +32,7 @@ export class UnitsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getUnits();
+    this.lastId = this.units[this.units.length - 1].id + 1;
   }
 
   getUnits() {
@@ -98,7 +100,7 @@ export class UnitsComponent implements OnInit {
 
   createForm(){
     return this.fb.group({
-      id: 0,
+      id: this.lastId,
       name: ['', Validators.required],
     });
   }

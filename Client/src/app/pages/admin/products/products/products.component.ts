@@ -43,6 +43,7 @@ export class ProductsComponent implements OnInit {
   public productImage: File | undefined;
   public productAditionalImages: File[] = [];
   public quantityOfAditionalImages: number = 0;
+  lastId = 0;
   displayedColumns: string[] = ['id', 'name', 'description', 'price', 'action'];
 
 
@@ -72,6 +73,7 @@ export class ProductsComponent implements OnInit {
     this.getUnits();
     this.getSizes();
     this.getProducts();
+    this.lastId = this.products[this.products.length - 1].id + 1;
   }
 
   getBrands() {
@@ -326,7 +328,7 @@ export class ProductsComponent implements OnInit {
 
     createForm() {
       return this.fb.group({
-        id: 0,
+        id: this.lastId,
         name: '',
         pictureUrl: '',
         description: '',

@@ -20,10 +20,10 @@ public class FileService : IFileService
 
         try
         {
-            var contentPath = _environment.WebRootPath;
+            var contentPath = _environment.ContentRootPath;
 
             // path = "c://projects/productminiapi/uploads" ,not exactly something like that
-            var path = Path.Combine(contentPath, "images");
+            var path = Path.Combine(contentPath, "Files", "images");
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
@@ -63,8 +63,8 @@ public class FileService : IFileService
     {
         try
         {
-            var wwwPath = _environment.WebRootPath;
-            var path = Path.Combine(wwwPath, "images\\", imageFileName);
+            var wwwPath = _environment.ContentRootPath;
+            var path = Path.Combine(wwwPath, "Files", "images\\", imageFileName);
             if (System.IO.File.Exists(path))
             {
                 System.IO.File.Delete(path);

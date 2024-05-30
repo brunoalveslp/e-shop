@@ -12,6 +12,7 @@ import { Brand } from 'src/app/shared/models/brand';
 })
 export class BrandsComponent implements OnInit {
   brands: Brand[];
+  lastId = 0;
   modalRef: BsModalRef;
   isEdit: boolean = false;
 
@@ -31,6 +32,7 @@ export class BrandsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getBrands();
+    this.lastId = this.brands[this.brands.length - 1].id + 1;
   }
 
   getBrands() {
@@ -98,7 +100,7 @@ export class BrandsComponent implements OnInit {
 
   createForm(){
     return this.fb.group({
-      id: 0,
+      id: this.lastId,
       name: ['', Validators.required],
     });
   }

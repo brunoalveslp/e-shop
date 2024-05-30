@@ -122,7 +122,6 @@ namespace API.Controllers
                     ProductTypeId = pt.Id,
                 };
                 
-                Console.WriteLine(product);
 
                 try
                 {

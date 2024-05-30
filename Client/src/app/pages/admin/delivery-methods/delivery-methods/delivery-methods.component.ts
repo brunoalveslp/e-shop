@@ -12,6 +12,7 @@ import { DeliveryMethodsService } from '../delivery-methods.service';
 })
 export class DeliveryMethodsComponent implements OnInit {
   deliveryMethods: DeliveryMethod[];
+  lastId = 0;
   modalRef: BsModalRef;
   isEdit: boolean = false;
 
@@ -31,6 +32,7 @@ export class DeliveryMethodsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getDeliveryNethods();
+    this.lastId = this.deliveryMethods[this.deliveryMethods.length - 1].id + 1;
   }
 
   getDeliveryNethods() {
@@ -105,7 +107,7 @@ export class DeliveryMethodsComponent implements OnInit {
       deliveryTime: ['', Validators.required],
       description: ['', Validators.required],
       price: [0, Validators.required],
-      id: 0
+      id: this.lastId
     });
   }
 }

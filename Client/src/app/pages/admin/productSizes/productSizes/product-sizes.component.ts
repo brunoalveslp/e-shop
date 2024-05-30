@@ -12,6 +12,7 @@ import { Size } from 'src/app/shared/models/size';
 })
 export class ProductSizesComponent implements OnInit{
   sizes: Size[];
+  lastId = 0;
   modalRef: BsModalRef;
   isEdit = false;
 
@@ -27,6 +28,7 @@ export class ProductSizesComponent implements OnInit{
 
   ngOnInit(): void {
     this.getSizes();
+    this.lastId = this.sizes[this.sizes.length - 1].id + 1;
   }
 
   getSizes(){
@@ -96,7 +98,7 @@ export class ProductSizesComponent implements OnInit{
 
 createForm(){
   return this.fb.group({
-    id: 0,
+    id: this.lastId,
     name: ['', Validators.required],
     isActive: false
   });

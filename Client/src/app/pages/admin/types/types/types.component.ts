@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 })
 export class TypesComponent implements OnInit{
   types: Type[];
+  lastId = 0;
   modalRef: BsModalRef;
   isEdit = false;
 
@@ -27,6 +28,7 @@ export class TypesComponent implements OnInit{
 
   ngOnInit(): void {
     this.getTypes();
+    this.lastId = this.types[this.types.length - 1].id + 1;
   }
 
   getTypes(){
@@ -94,7 +96,7 @@ export class TypesComponent implements OnInit{
 
 createForm(){
   return this.fb.group({
-    id: 0,
+    id: this.lastId,
     name: ['', Validators.required],
   });
 }

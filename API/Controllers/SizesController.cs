@@ -63,7 +63,7 @@ public class SizesController : BaseApiController
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpPost("update")]
+    [HttpPut("update")]
     public async Task<ActionResult> UpdateProductTypeAsync(Size size)
     {
         try
