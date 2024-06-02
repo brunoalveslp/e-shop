@@ -1,13 +1,6 @@
 # E-Shop: Uma Plataforma de Comércio Eletrônico em .NET e Angular
 
-<p> Este projeto é um e-commerce desenvolvido em .Net usando ASP.NET Core, Entity Framework, Identity Framework e outras ferramentas e Angular usando NGX-Bootstrap, Angular Material entre outros. </p>
-<p>
-Sua finalizade é estudar diversos pontos da engenharia de software, o principal arquitetura de software.
-</p>
-<p>
-Este projeto visa implementar de uma forma simples a Clean Architecture, sendo o mais simples possível, portanto utilizo 4 camadas, Domain, Infrastruture, API e Client.
-O meio de pagamento deste projeto é o STRIPE, não sendo guardado dados do cartão de crédito do cliente em nenhuma forma no sistema.
-Este projeto ainda está em desenvolvimento.
+<p> Este trabalho foca no desenvolvimento de um aplicativo de e-commerce com .NET e Angular, considerando a importância crescente do e-commerce após a pandemia. O objetivo é criar uma plataforma eficiente, segura e intuitiva para compras online, seguindo a arquitetura limpa. A escolha das tecnologias e da arquitetura é justificada pela relevância no mercado e potencial de contribuição para a comunidade. A metodologia ágil SCRUM foi utilizada. Os resultados incluem um software bem projetado e organizado que pode servir como base para outros projetos, proporcionando uma experiência valiosa para o mercado de trabalho.
 </p>
 
 ## Como Rodar o projeto
@@ -110,30 +103,6 @@ OU
 ng serve
 ```
 <br>
-## Introdução
-<p>  
-O comércio eletrônico é uma área de crescente importância na sociedade atual, sendo este avanço ainda maior nos anos pós pandemia onde ocorreu o aumento do consumo online e mudança de hábitos de compras dos consumidores (CASTRO, 2023). O desenvolvimento de um aplicativo de e-commerce permitirá explorar e entender melhor os desafios e oportunidades desse mercado em constante expansão, agregando assim relevância ao TCC.</p>
-<p>
-A escolha das tecnologias .NET e Angular se dá pois ambas são ferramentas amplamente utilizadas no desenvolvimento web e oferecem ferramentas poderosas para a criação de aplicações modernas e escaláveis, sendo assim aprofundar se nessas tecnologias permitirá adquirir habilidades técnicas valiosas em alinhamento com o mercado de trabalho atual.
-A escolha da arquitetura limpa para o desenvolvimento do aplicativo se dá por sua manutenibilidade do código, através de sua divisão em várias camadas como por exemplo as camadas de Apresentação, Aplicação, Infraestrutura e Domínio. Esta arquitetura comumente aplica conceitos de design de software como Inversão de dependência, código limpo, onde temos uma aplicação robusta, flexível e adaptável para futuras mudanças. Com isso será possível demonstrar competências em design de software e organização de projetos e código.
-</p>
-<p>
-	O objetivo geral é desenvolver um aplicativo de e-commerce utilizando as tecnologias .NET e Angular seguindo os princípios da Clean Architecture, para oferecer aos usuários uma plataforma eficiente, segura e intuitiva para realização de compras online, contribuindo para modernização do comércio eletrônico e a comunidade de desenvolvedores.
-Para atingir o objetivo geral proposto, faz-se necessário atingir os objetivos específicos:
-</p>
-<p>
-Análise de Requisitos e Definição de Escopo;
-* Escolha de Tecnologias e Arquitetura;
-* Desenvolvimento do Back End em Asp.NET implementando os requisitos e arquitetura definida;
-* Desenvolvimento do Front End utilizando o framework Angular;
-* Integração com a plataforma de pagamentos Stripe;
-* Documentação e Entrega;
-* Apresentação e Conclusão;
-</p>
-<p>
-	A escolha por desenvolver este aplicativo com a plataforma .NET e Angular integrando com a ferramenta de pagamentos Stripe e seguindo a arquitetura limpa, é justificável por sua relevância no contexto e mercado atual, através da contribuição potencial para a comunidade e a aplicação das habilidades técnicas, estes fatores transformam o projeto em um desafio estimulante e valioso para o TCC.
-</p>
-
 
 ## Diagramas
 O desenvolvimento do sistema começa com o levantamento de requisitos, que são transformados em diagramas para facilitar a compreensão e implementação do sistema. Abaixo podemos observar os diagramas de Caso de Uso (Figura 1), de Classe (Figura 2) e um fluxo de como a arquitetura do sistema funciona (Figura 3).
@@ -150,14 +119,19 @@ Figura 3: Demonstração do fluxo da arquitetura
 
 ## Arquitetura
 
-A Arquitetura Limpa, também conhecida como “Clean Architecture”, é um modelo de design de software proposto por Robert C. Martin, também conhecido como Uncle Bob. Ela é organizada em camadas concêntricas, onde cada camada depende da camada imediatamente interna a ela. Vamos explorar as quatro camadas mencionadas: Domain, Infrastructure, API e Client realizadas por meio do ASP.NET Core 8.
+A Arquitetura Limpa é um modelo de arquitetura de software proposto por Robert C. Martin, também conhecido como Uncle Bob ou “Tio Bob” em tradução livre, e é detalhada em seu livro “Arquitetura Limpa: O Guia do Artesão para Estrutura e Design de Software” (MARTIN, 2019).
 
-- **Domain**: Esta biblioteca contém as regras de negócio da aplicação. Ela é independente de qualquer estrutura externa e é onde residem as entidades, que são os objetos que incorporam as regras de negócio. Como é uma biblioteca, ela pode ser facilmente reutilizada em diferentes partes da aplicação ou em diferentes aplicações.
-- **Infrastructure**: Esta biblioteca fornece suporte técnico para as outras camadas. Ela contém tudo o que é necessário para fazer a aplicação funcionar, mas que não está diretamente relacionado com as regras de negócio, como a integração com bancos de dados, servidores, frameworks, etc. No caso do .NET Core, esta biblioteca pode conter a configuração e a implementação dos serviços do .NET Core, como o Entity Framework Core para o acesso a dados.
-- **API**: A camada de API é uma aplicação ASP.NET Core que expõe as funcionalidades do domínio através de uma API REST. Esta camada recebe as requisições dos clientes, as processa e retorna as respostas. Ela usa as bibliotecas de domínio e infraestrutura para realizar seu trabalho.
-- **Client**: Esta é a camada mais externa e é onde os usuários interagem com a aplicação. Pode ser uma interface de usuário web, um aplicativo móvel, um script, etc. Esta camada faz requisições para a API REST para acessar as funcionalidades da aplicação.
+A arquitetura é organizada em camadas concêntricas lembrando o formato de uma cebola que é outra nomenclatura comum para esta arquitetura, onde cada camada depende da camada interna de uma forma que encapsula o comportamento contido nas mais internas, não as expondo diretamente. O autor menciona quatro camadas em seu livro e abaixo explicamos como nesta aplicação ASP.NET Core como estão implementadas.
+Entidades (Domain/Domínio): Esta camada correspondente à biblioteca de domínio contém as regras de negócio da aplicação. Ela é independente de qualquer estrutura externa e é onde residem as entidades, que são os objetos que incorporam as regras de negócio (MARTIN, 2019, p.204).
+Casos de Uso (Infrastructure/Infraestrutura): Esta camada, correspondente à biblioteca de infraestrutura, fornece suporte técnico para as outras camadas. Ela contém tudo o que é necessário para fazer a aplicação funcionar, mas que não está diretamente relacionado com as regras de negócio, como a integração com bancos de dados, servidores, frameworks, etc. (MARTIN, 2019, p.204).
+Adaptadores de Interface (API/Application Programing Interface): A camada de API é uma aplicação ASP.NET Core que expõe as funcionalidades do domínio através de uma API REST. Esta camada recebe as requisições dos clientes, as processa e retorna as respostas. Ela usa as bibliotecas de domínio e infraestrutura para realizar seu trabalho (MARTIN, 2019, p.205).
+Frameworks e Drivers (Client/Cliente): Esta é a camada mais externa e é onde os usuários interagem com a aplicação. Pode ser uma interface de usuário web, um aplicativo móvel, um script, etc. Esta camada faz requisições para a API REST para acessar as funcionalidades da aplicação (MARTIN, 2019, p.205).
 
-A Arquitetura Limpa permite que as regras de negócio sejam facilmente testadas e que a aplicação seja facilmente mantida e estendida, pois as dependências são direcionadas para o interior. Isso significa que as camadas mais externas podem ser alteradas sem afetar as camadas mais internas.
+
+Neste projeto, a Arquitetura Limpa foi implementada em conjunto com os padrões de design Repository Pattern, Specification Pattern e Unit of Work para abstrair a complexidade da lógica de acesso a dados. O padrão Unit Of Work é utilizado para agrupar várias operações em uma única transação (FOWLER, 2006). O Repository Pattern faz abstração da lógica de acesso a dados do resto do código (EVANS, 2003. cap. 6 p. 90 - 99) também implementado através de um repositório genérico para uso geral da aplicação e um específico para ser utilizado no carrinho, pois este utiliza o Redis como banco de dados (MICROSOFT, 2020). O Specification Pattern é usado para encapsular a lógica de negócios complexa em uma especificação que pode ser reutilizada, fazendo por exemplo a união entre duas tabelas trazendo os dados relacionados. (EVANS, 2003. cap.14 p. 214 - 255).
+
+A Arquitetura Limpa permite que as regras de negócio sejam facilmente testadas e que a aplicação seja facilmente mantida e estendida, pois as dependências são direcionadas para o interior. Isso significa que as camadas mais externas podem ser alteradas sem afetar as camadas mais internas (MARTIN, Robert C., 2019, p.206-209).
+
 
 ## Sistema funcional e código fonte
 
@@ -298,8 +272,19 @@ Figura 44: Cadastro de movimentações de estoque
 
 ## Considerações Finais 
 
-Embora o sistema execute operações de venda e recebimento de pagamentos, ele deve ser visto como um protótipo, necessitando de melhorias, como a inclusão de mais meios de pagamento. A funcionalidade de movimentação de estoque ainda está em desenvolvimento.
+O sistema de e-commerce desenvolvido, embora funcional, é um protótipo com espaço para melhorias e refinamentos. A inclusão de mais opções de pagamento e o desenvolvimento da funcionalidade de gerenciamento de estoque são áreas-chave para aprimoramento. Todas as funcionalidades propostas foram implementadas com sucesso, graças à metodologia Ágil Scrum e à arquitetura limpa. No entanto, a inclusão de etapas como as Sprint Reviews em futuros ciclos de desenvolvimento pode trazer insights valiosos. O projeto demonstrou a importância de uma arquitetura sólida, uma metodologia de desenvolvimento eficaz e a necessidade de flexibilidade no desenvolvimento de software. À medida que o sistema evolui, ele se aproxima de se tornar uma solução de e-commerce robusta e confiável.
 
-Todas as funcionalidades inicialmente propostas foram implementadas com sucesso, seguindo a arquitetura e metodologia propostas. Para cumprir os prazos, optou-se por uma versão simplificada do processo, omitindo etapas como as Sprint Reviews.
+## Referencias
+
+MARTIN, ROBERT  C. Arquitetura Limpa: O Guia do Artesão para Estrutura e Design de Software. 1. ed, Tradução: Samantha Batista, Rio de Janeiro: ed. Alta Books Editora, 2019 cap. 22, p 201-209.
+
+FOWLER, MARTIN. Padrões de Arquitetura de Aplicações Corporativas. 1. ed, Tradução: Acauan Fernandes, Porto Alegre: ed. Bookman Editora, 2006 cap.11 p 187-213.
+
+
+EVANS, ERIC. Domain-Driven Design: Tackling Complexity in the Heart of Software. 1. ed, Boston: ed. Addison-Wesley, 2006 cap.6 p 90 - 99, cap.14 p 214 - 255 .
+
+MICROSOFT. ASP.NET Documentation. Microsoft Corporation. Disponível em: <https://docs.microsoft.com/en-us/aspnet/core/>. Acesso em: 25 mai. 2024.
+
+STRIPE. Stripe documentation. Stripe. Disponível em: <https://docs.stripe.com/?locale=pt-BR>. Acesso em: 12 mai. 2024.
 
 
